@@ -1,7 +1,13 @@
 <template>
-  <form class="wrapper-book" @submit="onSubmit">
+  <form
+    class="wrapper-book"
+    @submit="onSubmit"
+  >
     <h1>Забронювати простір</h1>
-    <div v-if="!authUser().name" class="input-wrapper">
+    <div
+      v-if="!authUser().name"
+      class="input-wrapper"
+    >
       <input
         :class="{ 'input-error': errors.nameValidation }"
         placeholder="Ім'я*"
@@ -10,12 +16,15 @@
         maxlength="30"
         v-bind="nameValidation"
         @input="onInput"
-      />
+      >
       <div class="error-text">
         {{ errors.nameValidation }}
       </div>
     </div>
-    <div v-if="!authUser().surname" class="input-wrapper">
+    <div
+      v-if="!authUser().surname"
+      class="input-wrapper"
+    >
       <input
         :class="{ 'input-error': errors.surnameValidation }"
         placeholder="Прізвище*"
@@ -24,12 +33,15 @@
         maxlength="30"
         v-bind="surnameValidation"
         @input="onInput"
-      />
+      >
       <div class="error-text">
         {{ errors.surnameValidation }}
       </div>
     </div>
-    <div v-if="!authUser().email" class="input-wrapper">
+    <div
+      v-if="!authUser().email"
+      class="input-wrapper"
+    >
       <input
         :class="{ 'input-error': errors.emailValidation }"
         placeholder="Email*"
@@ -37,12 +49,15 @@
         type="email"
         maxlength="30"
         v-bind="emailValidation"
-      />
+      >
       <div class="error-text">
         {{ errors.emailValidation }}
       </div>
     </div>
-    <div v-if="!authUser().phone" class="input-wrapper">
+    <div
+      v-if="!authUser().phone"
+      class="input-wrapper"
+    >
       <input
         :class="{ 'input-error': errors.phoneValidation }"
         placeholder="+38"
@@ -50,7 +65,7 @@
         type="text"
         v-bind="phoneValidation"
         @input="onInputPhone"
-      />
+      >
       <div class="error-text">
         {{ errors.phoneValidation }}
       </div>
@@ -65,7 +80,7 @@
             :class="{ 'input-error': errors.firstDateValidation }"
             type="date"
             :min="getCurrentDate()"
-          />
+          >
           <div class="error-text">
             {{ errors.firstDateValidation }}
           </div>
@@ -90,7 +105,7 @@
             class="time-date"
             :class="{ 'input-error': errors.firstTimeValidation }"
             type="time"
-          />
+          >
           <div class="error-text">
             {{ errors.firstTimeValidation }}
           </div>
@@ -104,7 +119,7 @@
             class="time-date"
             :class="{ 'input-error': errors.lastTimeValidation }"
             type="time"
-          />
+          >
           <div class="error-text">
             {{ errors.lastTimeValidation }}
           </div>
@@ -122,8 +137,11 @@
             v-bind="peopleValidation"
             type="number"
             @input="onPersonInput"
-          />
-          <img src="~assets/icon_amount.png" alt="icon" />
+          >
+          <img
+            src="~assets/icon_amount.png"
+            alt="icon"
+          >
         </div>
         <div class="error-text">
           {{ errors.peopleValidation }}

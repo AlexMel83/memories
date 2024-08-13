@@ -1,5 +1,8 @@
 <template>
-  <form class="wrapper" @submit="onSubmit">
+  <form
+    class="wrapper"
+    @submit="onSubmit"
+  >
     <Social />
     <h1>Або зареєструватися</h1>
     <div class="user-selection">
@@ -11,9 +14,8 @@
             value="user"
             name="fav_language"
             @click="showRegUser"
-          />
-          Користувач</label
-        ><br />
+          >
+          Користувач</label><br>
       </div>
       <div>
         <label :class="{ selected: userRole === 'manager' }">
@@ -23,12 +25,14 @@
             value="manager"
             name="fav_language"
             @click="showRegUser"
-          />
-          Менеджер</label
-        ><br />
+          >
+          Менеджер</label><br>
       </div>
     </div>
-    <div v-if="showRegistrationUser" class="user-registration">
+    <div
+      v-if="showRegistrationUser"
+      class="user-registration"
+    >
       <div class="input-wrapper">
         <input
           name="email"
@@ -38,7 +42,7 @@
           maxlength="30"
           v-bind="emailValidation"
           @input="emailError = ''"
-        />
+        >
         <div class="error-text">
           {{ errors.emailValidation }}
           {{ emailError }}
@@ -55,20 +59,20 @@
             name="password"
             placeholder="Пароль*"
             v-bind="passwordValidation"
-          />
+          >
           <div class="show-password">
             <img
               v-if="isShowPassword"
               src="~assets/icon_show_password.png"
               alt="show"
               @click="showPassword"
-            />
+            >
             <img
               v-else
               src="~assets/icon_close_password.png"
               alt="close"
               @click="showPassword"
-            />
+            >
           </div>
         </div>
         <div class="error-text">
@@ -86,20 +90,20 @@
             name="repeatPassword"
             placeholder="Підтвердити пароль*"
             v-bind="confirmPasswordValidation"
-          />
+          >
           <div class="show-password">
             <img
               v-if="isShowRepeatPassword"
               src="~assets/icon_show_password.png"
               alt="show"
               @click="showRepeatPassword"
-            />
+            >
             <img
               v-else
               src="~assets/icon_close_password.png"
               alt="close"
               @click="showRepeatPassword"
-            />
+            >
           </div>
         </div>
         <div class="error-text">
@@ -107,7 +111,10 @@
         </div>
       </div>
     </div>
-    <div v-else class="space-registration">
+    <div
+      v-else
+      class="space-registration"
+    >
       <div class="input-wrapper">
         <input
           :class="{ 'input-error': errors.emailValidation }"
@@ -117,7 +124,7 @@
           maxlength="30"
           v-bind="emailValidation"
           @input="emailError = ''"
-        />
+        >
         <div class="error-text">
           {{ errors.emailValidation }}
           {{ emailError }}
@@ -136,20 +143,20 @@
             placeholder="Пароль*"
             v-bind="passwordValidation"
             @input="passwordError = ''"
-          />
+          >
           <div class="show-password">
             <img
               v-if="isShowPassword"
               src="~assets/icon_show_password.png"
               alt="show"
               @click="showPassword"
-            />
+            >
             <img
               v-else
               src="~assets/icon_close_password.png"
               alt="close"
               @click="showPassword"
-            />
+            >
           </div>
         </div>
         <div class="error-text">
@@ -168,20 +175,20 @@
             name="repeatPassword"
             placeholder="Підтвердити пароль*"
             v-bind="confirmPasswordValidation"
-          />
+          >
           <div class="show-password">
             <img
               v-if="isShowRepeatPassword"
               src="~assets/icon_show_password.png"
               alt="show"
               @click="showRepeatPassword"
-            />
+            >
             <img
               v-else
               src="~assets/icon_close_password.png"
               alt="close"
               @click="showRepeatPassword"
-            />
+            >
           </div>
         </div>
         <div class="error-text">
@@ -190,7 +197,12 @@
       </div>
     </div>
     <RegLoginButton text-content="Зареєструватися" />
-    <button class="link-btn" @click="openLogin">Увійти</button>
+    <button
+      class="link-btn"
+      @click="openLogin"
+    >
+      Увійти
+    </button>
   </form>
 </template>
 

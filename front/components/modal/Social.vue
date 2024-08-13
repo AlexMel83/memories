@@ -1,16 +1,33 @@
 <template>
   <div class="wrapper-login-using">
-    <p class="social-title">Увійти за допомогою соцмереж</p>
+    <p class="social-title">
+      Увійти за допомогою соцмереж
+    </p>
     <div class="login-using">
-      <div class="login-using-item" @click="handleSocialLogin('google')">
-        <img src="~assets/icon_google.png" alt="google" />
+      <div
+        class="login-using-item"
+        @click="handleSocialLogin('google')"
+      >
+        <img
+          src="~assets/icon_google.png"
+          alt="google"
+        >
       </div>
-      <div class="login-using-item" @click="handleSocialLogin('facebook')">
-        <img src="~assets/icon_facebook.png" alt="facebook" />
+      <div
+        class="login-using-item"
+        @click="handleSocialLogin('facebook')"
+      >
+        <img
+          src="~assets/icon_facebook.png"
+          alt="facebook"
+        >
       </div>
     </div>
-    <div v-if="error" class="social-error">
-      {{ error }} вже був зареєстрований <br />
+    <div
+      v-if="error"
+      class="social-error"
+    >
+      {{ error }} вже був зареєстрований <br>
       скористайтесь полями нижче для входу
     </div>
   </div>

@@ -8,7 +8,7 @@
         type="text"
         maxlength="30"
         @input="onInput"
-      />
+      >
       <p>{{ textNameError }}</p>
     </div>
   </div>

@@ -4,18 +4,17 @@
       <!-- <img src="~/assets/profile.svg" alt="Profile Icon" /> -->
       <span> {{ userName }}</span> &nbsp;<span>{{ userSurname }}</span>
     </div>
-    <div class="item cabinet" :class="{ active: isInCabinet }">
+    <div
+      class="item cabinet"
+      :class="{ active: isInCabinet }"
+    >
       <a :href="setRout()">
-        <span @click="menuOpen = false"
-          ><v-icon class="icon">mdi-account</v-icon>Кабінет</span
-        >
+        <span @click="menuOpen = false"><v-icon class="icon">mdi-account</v-icon>Кабінет</span>
       </a>
     </div>
     <div class="item exit">
       <nuxt-link href="/">
-        <span @click="goOut"
-          ><v-icon class="icon">mdi-logout</v-icon>Вихід</span
-        >
+        <span @click="goOut"><v-icon class="icon">mdi-logout</v-icon>Вихід</span>
       </nuxt-link>
     </div>
   </div>

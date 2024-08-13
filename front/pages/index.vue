@@ -3,7 +3,10 @@
     <section class="search">
       <SearchInput />
     </section>
-    <section class="coworkings-list" :class="{ blurred: isMenuOpen }">
+    <section
+      class="coworkings-list"
+      :class="{ blurred: isMenuOpen }"
+    >
       <div class="spaces-wrapper">
         <template v-if="filteredSpaces.length > 0 && !isLoading">
           <v-row>
@@ -17,13 +20,19 @@
               xl="4"
               class="spaces-col"
             >
-              <nuxt-link class="container" :to="'/'">
+              <nuxt-link
+                class="container"
+                :to="'/'"
+              >
                 <div class="photo">
                   <img
                     v-if="space.coworking_photo"
                     :src="`${baseURL}/${space.coworking_photo}`"
-                  />
-                  <img v-else src="./../public/default-coworking.png" />
+                  >
+                  <img
+                    v-else
+                    src="./../public/default-coworking.png"
+                  >
                   <div class="rating">
                     <v-rating
                       readonly
@@ -51,7 +60,7 @@
                       :key="advantage.name"
                       :title="advantage.description"
                       :src="`${baseURL}/${advantage.icon}`"
-                    />
+                    >
                     <v-icon
                       v-if="space.advantages.length > 7"
                       color="var(--header-bg)"
@@ -60,18 +69,22 @@
                       mdi-dots-horizontal
                     </v-icon>
                   </div>
-                  <div v-if="space.address" class="map" @click.stop>
+                  <div
+                    v-if="space.address"
+                    class="map"
+                    @click.stop
+                  >
                     <a
                       :href="
                         'https://maps.google.com/?q=' +
-                        encodeURIComponent(space.address)
+                          encodeURIComponent(space.address)
                       "
                       target="_blank"
                     >
                       <img
                         src="~assets/spaces_images/location-marker.png"
                         alt="local"
-                      />
+                      >
                       <span>{{ space.address }}</span>
                     </a>
                   </div>
@@ -83,7 +96,7 @@
                       <img
                         src="~assets/spaces_images/time.svg"
                         alt="time icon"
-                      />
+                      >
                       {{ space.workday_start }} - {{ space.workday_end }}
                     </div>
                   </div>
@@ -108,9 +121,14 @@
           <Map :coworkings="spacesDataApi || []" />
         </template>
         <template v-else>
-          <div v-if="isLoad()" class="no-results-message">
-            <h3 class="text-center">На жаль нічого не знайдено...</h3>
-            <br />
+          <div
+            v-if="isLoad()"
+            class="no-results-message"
+          >
+            <h3 class="text-center">
+              На жаль нічого не знайдено...
+            </h3>
+            <br>
             <h3 class="text-center">
               Спробуйте змінити запит <v-icon>mdi-magnify</v-icon>
             </h3>

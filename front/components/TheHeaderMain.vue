@@ -2,42 +2,66 @@
   <div :class="{ 'header-main': true, 'home-page': isHomePage }">
     <div class="header-wrapper">
       <div class="logo-container">
-        <div class="logo" @click="hideMenu">
+        <div
+          class="logo"
+          @click="hideMenu"
+        >
           <NuxtLink to="/">
-            <img src="~/assets/favicon.ico" alt="logo" />
+            <img
+              src="~/assets/favicon.ico"
+              alt="logo"
+            >
           </NuxtLink>
         </div>
         <div class="header-buttons">
           <span class="lang-active">Ua &nbsp; </span><span> | En</span>
-          <v-btn icon class="burger" @click="toggleMenu">
+          <v-btn
+            icon
+            class="burger"
+            @click="toggleMenu"
+          >
             <img
               v-if="!menuOpen"
               src="~/assets/menu.svg"
               alt="Profile Icon"
               style="width: 30px"
-            />
+            >
             <img
               v-else
               src="~/assets/menu.svg"
               alt="Profile Icon"
               style="width: 30px"
-            />
+            >
           </v-btn>
           <template v-if="!isAuthed">
-            <v-btn class="header-btn" @click="openRegistration">
+            <v-btn
+              class="header-btn"
+              @click="openRegistration"
+            >
               Зареєструватися
             </v-btn>
-            <v-btn class="header-btn" @click="openLogin"> Увійти </v-btn>
+            <v-btn
+              class="header-btn"
+              @click="openLogin"
+            >
+              Увійти
+            </v-btn>
           </template>
         </div>
       </div>
-      <div v-if="menuOpen" class="menu">
+      <div
+        v-if="menuOpen"
+        class="menu"
+      >
         <Login
           v-if="menuLogin"
           :initial-email="email"
           @open-reg-component="changeCompenent"
         />
-        <Registration v-else @open-login-component="changeCompenent" />
+        <Registration
+          v-else
+          @open-login-component="changeCompenent"
+        />
       </div>
       <p class="header-text">
         <span class="bold">Memory</span> - Пам'ять про міста, що постраждали від
@@ -45,7 +69,10 @@
       </p>
     </div>
   </div>
-  <ModalComponents :initial-email="email" @close-modal="closeModal" />
+  <ModalComponents
+    :initial-email="email"
+    @close-modal="closeModal"
+  />
 </template>
 
 <script>

@@ -1,11 +1,24 @@
 <template>
-  <div v-if="modal" class="modal-registration-wrapper" @click.self="closeModal">
+  <div
+    v-if="modal"
+    class="modal-registration-wrapper"
+    @click.self="closeModal"
+  >
     <div class="registration">
-      <button class="close" @click="closeModal">
-        <img src="~/assets/icon_close_modal.png" alt="close" />
+      <button
+        class="close"
+        @click="closeModal"
+      >
+        <img
+          src="~/assets/icon_close_modal.png"
+          alt="close"
+        >
       </button>
       <Registration v-if="openRegistration" />
-      <Login v-if="openLogin" :initial-email="initialEmail" />
+      <Login
+        v-if="openLogin"
+        :initial-email="initialEmail"
+      />
       <BookForm v-if="openBook" />
       <BookSpace v-if="openBookSpace" />
       <p>{{ textModalMessage }}</p>

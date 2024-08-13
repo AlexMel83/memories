@@ -1,5 +1,8 @@
 <template>
-  <div class="modal-wrapper" @click.self="closeModal">
+  <div
+    class="modal-wrapper"
+    @click.self="closeModal"
+  >
     <div class="first-modal">
       <button @click="closeModal" />
       <span class="sp">{{ title }}</span>

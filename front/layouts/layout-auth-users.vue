@@ -3,11 +3,17 @@
     <HeaderAuthUsers />
 
     <div class="auth-user-container">
-      <div v-if="isLoading" class="auth-menu">
+      <div
+        v-if="isLoading"
+        class="auth-menu"
+      >
         <component :is="getMenu()" />
       </div>
 
-      <div class="auth-user-content" :class="{ 'user-border': isLoading }">
+      <div
+        class="auth-user-content"
+        :class="{ 'user-border': isLoading }"
+      >
         <NuxtPage />
       </div>
     </div>

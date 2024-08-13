@@ -1,7 +1,7 @@
 <template>
   <div>
     <p>
-      <span>EduHUB</span>- обирай коворкінг для<br />
+      <span>EduHUB</span>- обирай коворкінг для<br>
       ефективного навчання та роботи.
     </p>
   </div>
