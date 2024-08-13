@@ -2,49 +2,52 @@
   <div class="input-wrapper-date">
     <div class="input-wrapper-date-first">
       <span>Дата з</span>
-      <input class="time-date" v-model="firstDate" type="date" />
+      <input v-model="firstDate" class="time-date" type="date" />
     </div>
     <div class="input-wrapper-date-second">
       <span>до</span>
-      <input class="time-date" v-model="secondDate" type="date" />
+      <input v-model="secondDate" class="time-date" type="date" />
     </div>
   </div>
 </template>
+
 <script>
 export default {
+  emits: ['getDate'],
   data() {
     return {
-      firstDate: "",
-      secondDate: "",
+      firstDate: '',
+      secondDate: '',
     };
+  },
+  watch: {
+    firstDate: 'passDate',
+    secondDate: 'passDate',
+  },
+  mounted() {
+    this.firstDate = this.getCurrentDate();
   },
   methods: {
     passDate() {
-      this.secondDate == ""
-        ? (this.secondDate = this.firstDate)
-        : this.secondDate;
-      this.$emit("getDate", {
+      if (this.secondDate === '') {
+        this.secondDate = this.firstDate;
+      }
+      this.$emit('getDate', {
         firstDate: this.firstDate,
         secondDate: this.secondDate,
       });
     },
     getCurrentDate() {
       const now = new Date();
-      const day = now.getDate().toString().padStart(2, "0");
-      const month = (now.getMonth() + 1).toString().padStart(2, "0");
+      const day = now.getDate().toString().padStart(2, '0');
+      const month = (now.getMonth() + 1).toString().padStart(2, '0');
       const year = now.getFullYear();
       return `${year}-${month}-${day}`;
     },
   },
-  mounted() {
-    this.firstDate = this.getCurrentDate();
-  },
-  watch: {
-    firstDate: "passDate",
-    secondDate: "passDate",
-  },
 };
 </script>
+
 <style scoped>
 .input-wrapper-date {
   display: flex;
@@ -80,6 +83,7 @@ export default {
   font-size: 14px;
   padding: 6px 12px;
 }
+
 @media (min-width: 375px) {
   .input-wrapper-date .input-wrapper-date-first,
   .input-wrapper-date .input-wrapper-date-second {

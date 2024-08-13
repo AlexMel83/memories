@@ -11,13 +11,11 @@
 </template>
 
 <script setup>
-import { useAttrs } from 'vue'
-const attrs = useAttrs()
-const router = useRouter()
+const router = useRouter();
 
 const goBack = () => {
-  router.push('/')
-}
+  router.push('/');
+};
 </script>
 
 <style scoped>

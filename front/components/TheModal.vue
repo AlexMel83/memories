@@ -1,7 +1,7 @@
 <template>
-  <div @click.self="closeModal" class="modal-wrapper">
+  <div class="modal-wrapper" @click.self="closeModal">
     <div class="first-modal">
-      <button @click="closeModal"></button>
+      <button @click="closeModal" />
       <span class="sp">{{ title }}</span>
       <p>{{ description }}</p>
     </div>
@@ -10,17 +10,24 @@
 
 <script>
 export default {
-  props: {
-    title: "",
-    description: "",
-  },
   components: {},
+  props: {
+    title: {
+      type: String,
+      default: '',
+    },
+    description: {
+      type: String,
+      default: '',
+    },
+  },
+  emits: ['close'],
   data() {
     return {};
   },
   methods: {
     closeModal() {
-      this.$emit("close");
+      this.$emit('close');
     },
   },
 };
@@ -70,7 +77,7 @@ p {
   top: 10px;
   right: 16px;
   cursor: pointer;
-  background-image: url("~/assets/icon_close_modal.png");
+  background-image: url('~/assets/icon_close_modal.png');
   background-color: transparent;
   border: none;
 }

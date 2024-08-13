@@ -3,24 +3,23 @@
     <label>Телефон*</label>
     <div>
       <input
-        @input="onInput"
         :class="['input', { error: isError }]"
         type="text"
+        @input="onInput"
       />
       <p>{{ textPhoneError }}</p>
     </div>
   </div>
 </template>
+
 <script>
 export default {
-  name: "PhoneInput",
-  data() {
-    return {
-      value: "",
-    };
-  },
+  name: 'PhoneInput',
   props: {
-    textPhoneError: "",
+    textPhoneError: {
+      type: String,
+      default: '',
+    },
     isError: {
       default: false,
       type: Boolean,
@@ -30,11 +29,20 @@ export default {
       type: Boolean,
     },
   },
+  emits: ['givePhone'],
+  data() {
+    return {
+      value: '',
+    };
+  },
+  watch: {
+    clearForm: 'handleClearForm',
+  },
   methods: {
     onInput(event) {
       event.target.value = event.target.value
-        .replace("+38 (0", "")
-        .replace(/\D/g, "")
+        .replace('+38 (0', '')
+        .replace(/\D/g, '')
         .slice(0, 9);
       const phoneRegex = /^(\d{0,2})(\d{0,3})(\d{0,2})(\d{0,2})$/;
 
@@ -56,21 +64,19 @@ export default {
             formattedNumber.push(` ${p4}`);
           }
 
-          return formattedNumber.join("");
-        }
+          return formattedNumber.join('');
+        },
       );
       this.value = event.target.value;
-      this.$emit("givePhone", this.value);
+      this.$emit('givePhone', this.value);
     },
-    clearForm() {
-      this.value = "";
+    handleClearForm() {
+      this.value = '';
     },
-  },
-  watch: {
-    clearForm: "clearForm",
   },
 };
 </script>
+
 <style>
 .error {
   border: 1px solid red !important;

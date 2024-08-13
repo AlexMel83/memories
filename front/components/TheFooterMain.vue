@@ -56,10 +56,12 @@
         </div>
       </div>
       <div class="additional-links">
-        <nuxt-link to="/terms" class="terms-link">Умови використання</nuxt-link>
-        <nuxt-link to="/privacy" class="terms-link"
-          >Політика конфіденційності</nuxt-link
-        >
+        <nuxt-link to="/terms" class="terms-link">
+          Умови використання
+        </nuxt-link>
+        <nuxt-link to="/privacy" class="terms-link">
+          Політика конфіденційності
+        </nuxt-link>
       </div>
       <div class="developers">
         <nuxt-link to="/" class="developers-link">
@@ -76,7 +78,7 @@
 
 <script>
 export default {
-  name: 'Footer',
+  name: 'FooterComponent',
   components: {},
   data() {
     return {};

@@ -1,23 +1,23 @@
 <template>
-  <div class="menu" v-if="manager">
+  <div v-if="manager" class="menu">
     <button
       class="btn"
-      @click="goTo('/manager')"
       :class="{ active: activeTab === 'profileActive' }"
+      @click="goTo('/manager')"
     >
       Профіль
     </button>
     <button
       class="btn"
-      @click="goTo('/manager/coworking')"
       :class="{ active: activeTab === 'coworkingActive' }"
+      @click="goTo('/manager/coworking')"
     >
       Коворкінг
     </button>
     <button
       class="btn"
-      @click="goTo('/manager/books')"
       :class="{ active: activeTab === 'booksActive' }"
+      @click="goTo('/manager/books')"
     >
       Бронювання
     </button>
@@ -30,8 +30,8 @@
     </button>
   </div>
 </template>
-  
-  <script>
+
+<script>
 export default {
   computed: {
     manager() {
@@ -48,9 +48,9 @@ export default {
     },
   },
 };
-</script> 
-  
-  <style scoped>
+</script>
+
+<style scoped>
 .menu {
   display: flex;
   flex-direction: column;

@@ -2,15 +2,15 @@
   <div class="home-page">
     <TheHeader />
 
-    <NuxtPage></NuxtPage>
+    <NuxtPage />
 
     <TheFooter />
   </div>
 </template>
 
 <script>
-import TheHeader from "../components/TheHeader.vue";
-import TheFooter from "../components/TheFooter.vue";
+import TheHeader from '../components/TheHeader.vue';
+import TheFooter from '../components/TheFooter.vue';
 export default {
   components: {
     TheHeader,
@@ -26,7 +26,7 @@ export default {
 .home-page {
   width: 100%;
   margin: 0 auto;
-  background-image: url("~/assets/main_background.jpg");
+  background-image: url('~/assets/main_background.jpg');
   background-size: cover;
 }
 </style>

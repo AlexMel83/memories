@@ -1,20 +1,27 @@
 <template>
-  <button type="submit">{{ textContent }}</button>
+  <button type="submit">
+    {{ textContent }}
+  </button>
 </template>
-  <script>
+<script>
 export default {
+  props: {
+    textContent: {
+      type: String,
+      default: '',
+    },
+    required: {
+      type: Boolean,
+      default: true,
+    },
+  },
   data() {
     return {};
   },
-  props: {
-    textContent: String,
-    required: true,
-  },
 };
 </script>
-  
 
-  <style scoped>
+<style scoped>
 button {
   width: 100%;
   height: 46px;
@@ -34,7 +41,7 @@ button {
 button:hover,
 button:active {
   color: white;
-} 
+}
 
 @media (min-width: 768px) {
   button {
@@ -54,4 +61,3 @@ button:active {
   }
 }
 </style>
-  

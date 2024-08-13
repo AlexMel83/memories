@@ -8,7 +8,7 @@
       </div>
 
       <div class="auth-user-content" :class="{ 'user-border': isLoading }">
-        <NuxtPage></NuxtPage>
+        <NuxtPage />
       </div>
     </div>
 
@@ -55,13 +55,13 @@
     </button>
   </div>
 </template>
-  <script>
-import TheFooterMain from "~/components/TheFooterMain.vue";
-import HeaderAuthUsers from "~/layouts/headers/HeaderAuthUsers.vue";
-import ManagerMenu from "~/layouts/menuAuthUsers/ManagerMenu.vue";
-import UserMenu from "~/layouts/menuAuthUsers/UserMenu.vue";
-import AdminMenu from "~/layouts/menuAuthUsers/AdminMenu.vue";
-import Loader from "~/components/Loader.vue";
+<script>
+import TheFooterMain from '~/components/TheFooterMain.vue';
+import HeaderAuthUsers from '~/layouts/headers/HeaderAuthUsers.vue';
+import ManagerMenu from '~/layouts/menuAuthUsers/ManagerMenu.vue';
+import UserMenu from '~/layouts/menuAuthUsers/UserMenu.vue';
+import AdminMenu from '~/layouts/menuAuthUsers/AdminMenu.vue';
+import Loader from '~/components/Loader.vue';
 
 export default {
   components: {
@@ -86,9 +86,16 @@ export default {
       return this.$store.state.isLoading;
     },
   },
+  mounted() {
+    this.getRole();
+    window.addEventListener('scroll', this.handleScroll);
+  },
+  unmounted() {
+    window.removeEventListener('scroll', this.handleScroll);
+  },
   methods: {
     scrollToTop() {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     },
     handleScroll() {
       const footer = this.$refs.footerRef;
@@ -106,37 +113,30 @@ export default {
       }
     },
     getRole() {
-      if (localStorage.getItem("userRole")) {
-        this.$store.state.userRole = localStorage.getItem("userRole");
+      if (localStorage.getItem('userRole')) {
+        this.$store.state.userRole = localStorage.getItem('userRole');
       } else {
-        this.$store.state.userRole = "unknown";
+        this.$store.state.userRole = 'unknown';
       }
     },
     getMenu() {
       switch (this.role) {
-        case "manager":
+        case 'manager':
           return ManagerMenu;
-        case "user":
+        case 'user':
           return UserMenu;
-        case "admin":
+        case 'admin':
           return AdminMenu;
       }
     },
   },
-  mounted() {
-    this.getRole();
-    window.addEventListener("scroll", this.handleScroll);
-  },
-  destroyed() {
-    window.removeEventListener("scroll", this.handleScroll);
-  },
 };
 </script>
-  
-  <style>
+
+<style>
 .other-page {
   margin: 0 auto;
-  font-family: "Inter", sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 .grecaptcha-badge {
@@ -158,7 +158,9 @@ export default {
   font-size: 1.5em;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s, visibility 0.3s;
+  transition:
+    opacity 0.3s,
+    visibility 0.3s;
   background-color: var(--space-bg);
   z-index: 4;
 }

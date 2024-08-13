@@ -4,12 +4,12 @@
     <div class="input-wrapper">
       <input
         :class="{ 'input-error': errors.nameValidation }"
-        @input="onInput"
         placeholder="Ім'я*"
         type="text"
         name="name"
         maxlength="30"
         v-bind="nameValidation"
+        @input="onInput"
       />
       <div class="error-text">
         {{ errors.nameValidation }}
@@ -33,9 +33,9 @@
         :class="{ 'input-error': errors.phoneValidation }"
         placeholder="Телефон*"
         name="phone"
-        @input="onInputPhone"
         type="text"
         v-bind="phoneValidation"
+        @input="onInputPhone"
       />
       <div class="error-text">
         {{ errors.phoneValidation }}
@@ -77,65 +77,64 @@
         <input
           v-model="people"
           type="text"
-          @click="onPersonInput"
           maxlength="3"
+          @click="onPersonInput"
         />
         <img src="~assets/icon_amount.png" alt="icon" />
       </div>
     </div>
     <button type="submit">Забронювати</button>
     <TheModal
-      @close="closeModal"
       v-if="isShownModal"
       :title="modalTitle"
       :description="modalDescription"
+      @close="closeModal"
     />
   </Form>
 </template>
 
 <script setup>
-import * as yup from "yup";
-import { useForm } from "vee-validate";
-import { useReCaptcha } from "vue-recaptcha-v3";
-import axios from "axios";
-import { ref } from "vue";
-const bus = useNuxtApp().$bus;
+import * as yup from 'yup';
+import { useForm } from 'vee-validate';
+import { useReCaptcha } from 'vue-recaptcha-v3';
+import axios from 'axios';
+import { ref } from 'vue';
 
 const { defineInputBinds, errors, handleSubmit } = useForm({
   validationSchema: yup.object({
     nameValidation: yup
       .string()
-      .required("Це поле є обов’язковим для заповнення")
-      .matches(/^[a-zA-Zа-яА-ЯЁё\s]{2,}$/, "Поле заповнено невірно"),
+      .required('Це поле є обов’язковим для заповнення')
+      .matches(/^[a-zA-Zа-яА-ЯЁё\s]{2,}$/, 'Поле заповнено невірно'),
     emailValidation: yup
       .string()
-      .email("Поле заповнено некоректно")
-      .required("Це поле є обов’язковим для заповнення")
+      .email('Поле заповнено некоректно')
+      .required('Це поле є обов’язковим для заповнення')
       .matches(
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,})+$/,
-        "Поле заповнено невірно"
+        'Поле заповнено невірно',
       ),
     phoneValidation: yup
       .string()
-      .required("Це поле є обов’язковим для заповнення")
+      .required('Це поле є обов’язковим для заповнення')
       .matches(
         /^\+38 \(0[1-9]\d{1}\) \d{3} \d{2} \d{2}$/,
-        "Поле заповнено невірно"
+        'Поле заповнено невірно',
       ),
   }),
 });
-var modalTitle = ref("");
-var modalDescription = ref("");
+var modalTitle = ref('');
+var modalDescription = ref('');
 var isShownModal = ref(false);
-const nameValidation = defineInputBinds("nameValidation");
-const emailValidation = defineInputBinds("emailValidation");
-const phoneValidation = defineInputBinds("phoneValidation");
+const nameValidation = defineInputBinds('nameValidation');
+const emailValidation = defineInputBinds('emailValidation');
+const phoneValidation = defineInputBinds('phoneValidation');
 const recaptchaInstance = useReCaptcha();
 let firstDate = ref(getCurrentDate());
-let lastDate = ref("відсутнє");
-let firstTime = ref("відсутнє");
-let lastTime = ref("відсутнє");
-let people = ref("1");
+let lastDate = ref('відсутнє');
+let firstTime = ref('відсутнє');
+let lastTime = ref('відсутнє');
+let people = ref('1');
 function closeModal() {
   isShownModal.value = false;
   //   bus.$emit("Modal", {
@@ -156,7 +155,7 @@ function getCurrentDate() {
 }
 
 function onPersonInput(event) {
-  event.target.value = event.target.value.replace(/\D/g, "");
+  event.target.value = event.target.value.replace(/\D/g, '');
 }
 
 const onSubmit = handleSubmit(async (values) => {
@@ -164,36 +163,35 @@ const onSubmit = handleSubmit(async (values) => {
     const newToken = ref(null);
     const recaptcha = async () => {
       await recaptchaInstance?.recaptchaLoaded();
-      newToken.value = await recaptchaInstance?.executeRecaptcha(
-        "yourActionHere"
-      );
+      newToken.value =
+        await recaptchaInstance?.executeRecaptcha('yourActionHere');
       return newToken;
     };
     await recaptcha();
 
     let formData = new FormData();
-    formData.append("first_name", values.nameValidation);
-    formData.append("email", values.emailValidation);
-    formData.append("phone", values.phoneValidation);
+    formData.append('first_name', values.nameValidation);
+    formData.append('email', values.emailValidation);
+    formData.append('phone', values.phoneValidation);
     formData.append(
-      "comments",
+      'comments',
       JSON.stringify([
         { firstDate: firstDate.value, lastDate: lastDate.value },
         { firstTime: firstTime.value, lastTime: lastTime.value },
         { people: people.value },
-      ])
+      ]),
     );
-    formData.append("g-recaptcha-response", newToken.value);
-    formData.append("organization_id", "1");
-    await axios.post("https://intita.com/api/v1/entrant", formData);
-    modalTitle.value = "Дякуємо!";
+    formData.append('g-recaptcha-response', newToken.value);
+    formData.append('organization_id', '1');
+    await axios.post('https://intita.com/api/v1/entrant', formData);
+    modalTitle.value = 'Дякуємо!';
     modalDescription.value =
-      "Менеджер зв’яжеться з Вами найближчим часом для підтвердження бронювання.";
+      'Менеджер зв’яжеться з Вами найближчим часом для підтвердження бронювання.';
   } catch (error) {
     console.log(error);
-    modalTitle.value = "";
+    modalTitle.value = '';
     modalDescription.value =
-      "Сервер тимчасово перевантажений. Будь ласка, cпробуйте пізніше";
+      'Сервер тимчасово перевантажений. Будь ласка, cпробуйте пізніше';
   } finally {
     isShownModal.value = true;
   }
@@ -202,14 +200,14 @@ const onSubmit = handleSubmit(async (values) => {
 function onInput(event) {
   event.target.value = event.target.value.replace(
     /[^a-zA-Zа-яА-ЯїЇєЄіІґҐ'-]/g,
-    ""
+    '',
   );
 }
 
 function onInputPhone(event) {
   event.target.value = event.target.value
-    .replace("+38 (0", "")
-    .replace(/\D/g, "")
+    .replace('+38 (0', '')
+    .replace(/\D/g, '')
     .slice(0, 9);
   const phoneRegex = /^(\d{0,2})(\d{0,3})(\d{0,2})(\d{0,2})$/;
 
@@ -231,8 +229,8 @@ function onInputPhone(event) {
         formattedNumber.push(` ${p4}`);
       }
 
-      return formattedNumber.join("");
-    }
+      return formattedNumber.join('');
+    },
   );
   phoneValidation = event.target.value;
 }

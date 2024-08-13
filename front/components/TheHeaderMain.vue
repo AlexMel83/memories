@@ -2,14 +2,14 @@
   <div :class="{ 'header-main': true, 'home-page': isHomePage }">
     <div class="header-wrapper">
       <div class="logo-container">
-        <div @click="hideMenu" class="logo">
+        <div class="logo" @click="hideMenu">
           <NuxtLink to="/">
             <img src="~/assets/favicon.ico" alt="logo" />
           </NuxtLink>
         </div>
         <div class="header-buttons">
           <span class="lang-active">Ua &nbsp; </span><span> | En</span>
-          <v-btn icon @click="toggleMenu" class="burger">
+          <v-btn icon class="burger" @click="toggleMenu">
             <img
               v-if="!menuOpen"
               src="~/assets/menu.svg"
@@ -27,17 +27,17 @@
             <v-btn class="header-btn" @click="openRegistration">
               Зареєструватися
             </v-btn>
-            <v-btn class="header-btn" @click="openLogin"> Увійти</v-btn>
+            <v-btn class="header-btn" @click="openLogin"> Увійти </v-btn>
           </template>
         </div>
       </div>
-      <div class="menu" v-if="menuOpen">
+      <div v-if="menuOpen" class="menu">
         <Login
           v-if="menuLogin"
-          @openRegComponent="changeCompenent"
-          :initialEmail="email"
+          :initial-email="email"
+          @open-reg-component="changeCompenent"
         />
-        <Registration v-else @openLoginComponent="changeCompenent" />
+        <Registration v-else @open-login-component="changeCompenent" />
       </div>
       <p class="header-text">
         <span class="bold">Memory</span> - Пам'ять про міста, що постраждали від
@@ -45,18 +45,16 @@
       </p>
     </div>
   </div>
-  <ModalComponents @closeModal="closeModal" :initialEmail="email" />
+  <ModalComponents :initial-email="email" @close-modal="closeModal" />
 </template>
 
 <script>
 import ModalComponents from '~/components/modal/ModalComponents.vue';
 import Login from '~/components/modal/Login.vue';
 import Registration from '~/components/modal/Registration.vue';
-import { useStore } from 'vuex';
-import { onMounted } from 'vue';
 
 export default {
-  name: 'Header',
+  name: 'HeaderComponent',
   components: {
     ModalComponents,
     Login,
@@ -82,6 +80,25 @@ export default {
     isMenuOpen() {
       return this.$store.state.isMenuOpen;
     },
+  },
+  mounted() {
+    const emailRegex = /([\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})/;
+    const uuidRegex =
+      /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+    if (this.$route.query.email) {
+      this.email = this.$route.query.email;
+      const match = this.email.match(emailRegex);
+      if (match) {
+        this.email = match[0];
+        this.openLogin();
+      } else this.email = '';
+    }
+    if (this.$route.query.authLink) {
+      this.authLink = this.$route.query.authLink;
+      if (uuidRegex.test(this.authLink)) {
+        this.fetchUserData(this.authLink);
+      }
+    }
   },
   methods: {
     hideMenu() {
@@ -132,25 +149,6 @@ export default {
         console.error('Error fetching user data:', error);
       }
     },
-  },
-  mounted() {
-    const emailRegex = /([\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})/;
-    const uuidRegex =
-      /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
-    if (this.$route.query.email) {
-      this.email = this.$route.query.email;
-      const match = this.email.match(emailRegex);
-      if (match) {
-        this.email = match[0];
-        this.openLogin();
-      } else this.email = '';
-    }
-    if (this.$route.query.authLink) {
-      this.authLink = this.$route.query.authLink;
-      if (uuidRegex.test(this.authLink)) {
-        this.fetchUserData(this.authLink);
-      }
-    }
   },
 };
 </script>

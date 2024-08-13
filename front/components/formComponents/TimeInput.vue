@@ -2,42 +2,43 @@
   <div class="input-wrapper-time">
     <div class="input-wrapper-time-first">
       <span>Час з</span>
-      <input class="time-date" v-model="firstTime" type="time" />
+      <input v-model="firstTime" class="time-date" type="time" />
     </div>
     <div class="input-wrapper-time-second">
       <span>до</span>
-      <input class="time-date" v-model="secondTime" type="time" />
+      <input v-model="secondTime" class="time-date" type="time" />
     </div>
   </div>
 </template>
 <script>
 export default {
+  emits: ['getTime'],
   data() {
     return {
-      firstTime: "",
-      secondTime: "",
+      firstTime: '',
+      secondTime: '',
     };
+  },
+  watch: {
+    firstTime: 'passTime',
+    secondTime: 'passTime',
+  },
+  mounted() {
+    this.firstTime = this.getCurrentTime();
   },
   methods: {
     passTime() {
-      this.$emit("getTime", {
+      this.$emit('getTime', {
         firstTime: this.firstTime,
         secondTime: this.secondTime,
       });
     },
     getCurrentTime() {
       const now = new Date();
-      const hours = now.getHours().toString().padStart(2, "0");
-      const minutes = now.getMinutes().toString().padStart(2, "0");
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
       return `${hours}:${minutes}`;
     },
-  },
-  mounted() {
-    this.firstTime = this.getCurrentTime();
-  },
-  watch: {
-    firstTime: "passTime",
-    secondTime: "passTime",
   },
 };
 </script>

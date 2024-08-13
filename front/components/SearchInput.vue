@@ -11,16 +11,15 @@
         class="custom-search-input"
         variant="solo"
         clearable
-      ></v-text-field>
-      
+      />
     </v-col>
   </v-row>
 </template>
 
 <script setup>
-import { ref, provide } from "vue";
+import { ref, provide } from 'vue';
 
-const searchTerm = ref("");
+const searchTerm = ref('');
 provide('searchTerm', searchTerm);
 
 const bus = useNuxtApp().$bus;
@@ -31,7 +30,7 @@ watch(searchTerm, (newValue) => {
 </script>
 
 <style scoped>
-@import "../assets/src/styles.css";
+@import '../assets/src/styles.css';
 
 .search-wrapper {
   padding: 0 16px;

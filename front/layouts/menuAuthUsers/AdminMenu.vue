@@ -1,20 +1,26 @@
 <template>
-  <div class="menu" >
-    <button class="btn" 
-      @click="navigateTo('/admin')"
+  <div class="menu">
+    <button
+      class="btn"
       :class="{ active: adminCoworkingActive }"
-      >Coworking
+      @click="navigateTo('/admin')"
+    >
+      Coworking
     </button>
-    <button class="btn" 
-    @click="navigateTo('/admin/adminUser')"
-    :class="{ active: adminUserActive }"
-    >User
-  </button>
-    <button class="btn" 
-    @click="navigateTo('/admin/adminConstructor')"
-    :class="{ active: adminConstructorActive }"
-    >Constructor
-  </button>
+    <button
+      class="btn"
+      :class="{ active: adminUserActive }"
+      @click="navigateTo('/admin/adminUser')"
+    >
+      User
+    </button>
+    <button
+      class="btn"
+      :class="{ active: adminConstructorActive }"
+      @click="navigateTo('/admin/adminConstructor')"
+    >
+      Constructor
+    </button>
   </div>
 </template>
 
@@ -22,7 +28,7 @@
 export default {
   props: {
     adminCoworkingActive: {
-      default:false,
+      default: false,
       type: Boolean,
     },
     adminUserActive: {
@@ -39,8 +45,7 @@ export default {
       return this.$store.state.admi;
     },
   },
-}
-
+};
 </script>
 
 <style scoped>

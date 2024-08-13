@@ -1,26 +1,46 @@
 <template>
   <v-container>
-    <div class="review-container" v-if="authUser().role === 'user'">
+    <div v-if="authUser().role === 'user'" class="review-container">
       <h2 class="white-text">Залишити відгук</h2>
       <v-card-text>
         <v-form @submit.prevent="submit">
           <div class="rating-box">
             <p class="white-text">Ваша оцінка</p>
-            <v-rating v-model="rating.value.value" length="5" color="#AF3800" background-color="white"
-              active-color="#AF3800" large :error-messages="rating.errorMessage.value"></v-rating>
-            <span v-if="rating.errorMessage.value" class="error">{{ rating.errorMessage.value }}</span>
+            <v-rating
+              v-model="rating.value.value"
+              length="5"
+              color="#AF3800"
+              background-color="white"
+              active-color="#AF3800"
+              large
+              :error-messages="rating.errorMessage.value"
+            />
+            <span v-if="rating.errorMessage.value" class="error">{{
+              rating.errorMessage.value
+            }}</span>
           </div>
-          <v-text-field v-if="!authUser().name" v-model="name.value.value" label="Ім'я" variant="solo" dense
-            :error-messages="name.errorMessage.value"></v-text-field>
-          <v-textarea v-model="text.value.value" label="Текст відгуку" variant="solo" dense
-            :error-messages="text.errorMessage.value"></v-textarea>
-          <v-btn type="submit">Залишити відгук</v-btn>
+          <v-text-field
+            v-if="!authUser().name"
+            v-model="name.value.value"
+            label="Ім'я"
+            variant="solo"
+            dense
+            :error-messages="name.errorMessage.value"
+          />
+          <v-textarea
+            v-model="text.value.value"
+            label="Текст відгуку"
+            variant="solo"
+            dense
+            :error-messages="text.errorMessage.value"
+          />
+          <v-btn type="submit"> Залишити відгук </v-btn>
         </v-form>
       </v-card-text>
     </div>
     <div v-else class="review-container">
       <h2>Відгуки та рейтинг</h2>
-      <br>
+      <br />
       <h3 class="text-center text-mob">
         Для оцінки коворкінгу, будь ласка,
         <span @click="openReg">зареєструйтесь.</span>
@@ -32,19 +52,22 @@
         <span @click="openReg">зареєструйтесь.</span>
       </h3>
     </div>
-    <Login v-if="menuLogin" @openRegComponent="changeCompenent" :initialEmail="email" />
-    <ModalComponents @closeModal="closeModal" :initialEmail="email" />
+    <Login
+      v-if="menuLogin"
+      :initial-email="email"
+      @open-reg-component="changeCompenent"
+    />
+    <ModalComponents :initial-email="email" @close-modal="closeModal" />
   </v-container>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref } from 'vue';
 import { useStore } from 'vuex';
 import { useForm, useField } from 'vee-validate';
 import { useRoute } from 'vue-router';
-import ModalComponents from "~/components/modal/ModalComponents.vue";
-import Login from "~/components/modal/Login.vue";
-import Registration from "~/components/modal/Registration.vue";
+import ModalComponents from '~/components/modal/ModalComponents.vue';
+import Login from '~/components/modal/Login.vue';
 
 const menuLogin = ref('');
 const email = ref('');
@@ -64,14 +87,14 @@ const { handleSubmit, handleReset } = useForm({
       return 'Оцінка не повинна бути пустою.';
     },
     name(value) {
-      if (authUser().name || (value?.length >= 2)) return true;
-      return 'Ім\'я не повинно бути менше 2-х символів.';
+      if (authUser().name || value?.length >= 2) return true;
+      return "Ім'я не повинно бути менше 2-х символів.";
     },
     text(value) {
       if (value?.length >= 5) return true;
       return 'Текст відгуку не повинен бути менше 5-ти символів.';
     },
-  }
+  },
 });
 
 const rating = useField('rating');
@@ -84,7 +107,7 @@ const submit = handleSubmit(async ({ rating, text, name }) => {
       const response = await $api.put('/users/', {
         id: authUser().id,
         email: authUser().email,
-        name
+        name,
       });
       store.commit('setUserData', response.data);
     }
@@ -99,13 +122,14 @@ const submit = handleSubmit(async ({ rating, text, name }) => {
     handleReset();
   } catch (error) {
     alert('Помилка при відправці відгуку. Спробуйте ще раз.');
+    console.error(error);
   }
 });
 
 const openLogin = () => {
   if (window.innerWidth > 768) {
-    document.body.style.overflow = "hidden";
-    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
     bus.$emit('Modal', {
       showLogin: true,
       openModal: true,
@@ -114,8 +138,8 @@ const openLogin = () => {
 };
 
 const openReg = () => {
-  document.body.style.overflow = "hidden";
-  document.documentElement.style.overflow = "hidden";
+  document.body.style.overflow = 'hidden';
+  document.documentElement.style.overflow = 'hidden';
   bus.$emit('Modal', {
     showRegistration: true,
     openModal: true,
@@ -127,13 +151,12 @@ const changeCompenent = () => {
 };
 
 const closeModal = () => {
-  document.body.style.overflow = "";
-  document.documentElement.style.overflow = "";
+  document.body.style.overflow = '';
+  document.documentElement.style.overflow = '';
   bus.$emit('Modal', {
     openModal: false,
   });
 };
-
 </script>
 
 <style scoped>
@@ -179,7 +202,7 @@ const closeModal = () => {
 }
 
 .rating-box span {
-  color: #B00020;
+  color: #b00020;
   font-size: 12px;
 }
 
@@ -193,9 +216,8 @@ const closeModal = () => {
 }
 
 .text-mob {
-    display: none;
-  }
-
+  display: none;
+}
 
 @media (min-width: 768px) {
   .rating-box {

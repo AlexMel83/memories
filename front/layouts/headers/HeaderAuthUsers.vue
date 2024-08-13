@@ -2,7 +2,7 @@
   <div :class="{ 'header-main': true, 'home-page': isHomePage }">
     <div class="header-wrapper">
       <div class="logo-container">
-        <div @click="hideMenu" class="logo">
+        <div class="logo" @click="hideMenu">
           <NuxtLink to="/">
             <img src="~/assets/logo.png" alt="logo" />
           </NuxtLink>
@@ -14,7 +14,7 @@
           <div class="auth-user-name">
             <UserName />
           </div>
-          <v-btn icon @click="toggleMenu" class="burger">
+          <v-btn icon class="burger" @click="toggleMenu">
             <img
               v-if="!isMenuOpen"
               src="~/assets/menu.svg"
@@ -30,7 +30,7 @@
           </v-btn>
         </div>
       </div>
-      <div class="menu" v-if="isMenuOpen">
+      <div v-if="isMenuOpen" class="menu">
         <div class="mobile-auth-user-name">
           <UserName />
         </div>
@@ -43,12 +43,12 @@
     </div>
   </div>
 </template>
-  
-  <script>
-import ManagerMenu from "~/layouts/menuAuthUsers/ManagerMenu.vue";
-import UserMenu from "~/layouts/menuAuthUsers/UserMenu.vue";
-import AdminMenu from "~/layouts/menuAuthUsers/AdminMenu.vue";
-import UserName from "~/layouts/headers/UserName.vue";
+
+<script>
+import ManagerMenu from '~/layouts/menuAuthUsers/ManagerMenu.vue';
+import UserMenu from '~/layouts/menuAuthUsers/UserMenu.vue';
+import AdminMenu from '~/layouts/menuAuthUsers/AdminMenu.vue';
+import UserName from '~/layouts/headers/UserName.vue';
 
 export default {
   components: {
@@ -64,7 +64,7 @@ export default {
   },
   computed: {
     isHomePage() {
-      return this.$route.path === "/";
+      return this.$route.path === '/';
     },
     isMenuOpen() {
       return this.$store.state.menuOpen;
@@ -72,6 +72,9 @@ export default {
     role() {
       return this.$store.state.userRole;
     },
+  },
+  mounted() {
+    this.setUserData();
   },
   methods: {
     hideMenu() {
@@ -85,30 +88,27 @@ export default {
     },
     getMenu() {
       switch (this.role) {
-        case "manager":
+        case 'manager':
           return ManagerMenu;
-        case "user":
+        case 'user':
           return UserMenu;
-        case "admin":
+        case 'admin':
           return AdminMenu;
       }
     },
     setUserData() {
-      if (localStorage.getItem("authUserData")) {
+      if (localStorage.getItem('authUserData')) {
         this.$store.commit(
-          "setUserData",
-          JSON.parse(localStorage.getItem("authUserData"))
+          'setUserData',
+          JSON.parse(localStorage.getItem('authUserData')),
         );
       }
     },
   },
-  mounted() {
-    this.setUserData();
-  },
 };
 </script>
-  
-  <style scoped>
+
+<style scoped>
 .header-main {
   display: flex;
   flex-direction: column;
@@ -218,7 +218,7 @@ export default {
 
 @media (min-width: 768px) {
   .header-main.home-page {
-    background-image: url("~/assets/header_bg.png");
+    background-image: url('~/assets/header_bg.png');
     background-size: cover;
   }
   .header-main.home-page .header-text {

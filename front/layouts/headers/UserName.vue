@@ -37,47 +37,46 @@ export default {
       if (this.$store.state.authUser.name) {
         return this.$store.state.authUser.name;
       } else {
-        return "";
+        return '';
       }
     },
     userSurname() {
       if (this.$store.state.authUser.surname) {
         return this.$store.state.authUser.surname;
       } else {
-        return "";
+        return '';
       }
     },
     isInCabinet() {
       const currentPath = this.$route.path;
       return (
-        currentPath.startsWith("/manager") ||
-        currentPath.startsWith("/user") ||
-        currentPath.startsWith("/admin")
+        currentPath.startsWith('/manager') ||
+        currentPath.startsWith('/user') ||
+        currentPath.startsWith('/admin')
       );
     },
   },
+  mounted() {},
   methods: {
     toggleMenu() {
       this.menuOpen = !this.menuOpen;
     },
     setRout() {
-      if (this.userRole == "manager") {
-        return "/manager/coworking";
-      } else if (this.userRole == "user") {
-        return "/user";
-      } else if (this.userRole == "admin") {
-        return "/admin";
+      if (this.userRole == 'manager') {
+        return '/manager/coworking';
+      } else if (this.userRole == 'user') {
+        return '/user';
+      } else if (this.userRole == 'admin') {
+        return '/admin';
       }
     },
     goOut() {
       this.menuOpen = false;
-      this.$store.commit("logOut");
+      this.$store.commit('logOut');
     },
   },
-  mounted() {},
 };
 </script>
-
 
 <style scoped>
 .container-user-auth-name {

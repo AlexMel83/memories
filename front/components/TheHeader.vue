@@ -1,12 +1,12 @@
 <template>
   <div class="header">
-    <div class="logo"></div>
+    <div class="logo" />
   </div>
 </template>
 
 <script>
 export default {
-  name: "Header",
+  name: 'HeaderComponent',
   components: {},
   data() {
     return {};
@@ -24,7 +24,7 @@ export default {
 .logo {
   width: 84px;
   height: 51px;
-  background-image: url("~/assets/logo.png");
+  background-image: url('~/assets/logo.png');
   background-color: transparent;
 }
 .header-link {

@@ -50,7 +50,7 @@
 
 <script>
 export default {
-  name: 'Footer',
+  name: 'FooterComponent',
   components: {},
   data() {
     return {};

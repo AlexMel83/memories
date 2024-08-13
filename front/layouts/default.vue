@@ -3,7 +3,7 @@
     <HeaderAuthUsers v-if="role !== 'unknown'" />
     <TheHeaderMain v-else />
 
-    <NuxtPage></NuxtPage>
+    <NuxtPage />
 
     <TheFooterMain ref="footerRef" />
 
@@ -51,8 +51,8 @@
 </template>
 
 <script>
-import TheFooterMain from "../components/TheFooterMain.vue";
-import HeaderAuthUsers from "~/layouts/headers/HeaderAuthUsers.vue";
+import TheFooterMain from '../components/TheFooterMain.vue';
+import HeaderAuthUsers from '~/layouts/headers/HeaderAuthUsers.vue';
 
 export default {
   components: {
@@ -70,9 +70,16 @@ export default {
       return this.$store.state.userRole;
     },
   },
+  mounted() {
+    this.getRole();
+    window.addEventListener('scroll', this.handleScroll);
+  },
+  unmounted() {
+    window.removeEventListener('scroll', this.handleScroll);
+  },
   methods: {
     scrollToTop() {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     },
     handleScroll() {
       const footer = this.$refs.footerRef;
@@ -90,19 +97,12 @@ export default {
       }
     },
     getRole() {
-      if (localStorage.getItem("userRole")) {
-        this.$store.state.userRole = localStorage.getItem("userRole");
+      if (localStorage.getItem('userRole')) {
+        this.$store.state.userRole = localStorage.getItem('userRole');
       } else {
-        this.$store.state.userRole = "unknown";
+        this.$store.state.userRole = 'unknown';
       }
     },
-  },
-  mounted() {
-    this.getRole();
-    window.addEventListener("scroll", this.handleScroll);
-  },
-  destroyed() {
-    window.removeEventListener("scroll", this.handleScroll);
   },
 };
 </script>
@@ -110,7 +110,7 @@ export default {
 <style>
 .other-page {
   margin: 0 auto;
-  font-family: "Inter", sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 .grecaptcha-badge {
@@ -132,7 +132,9 @@ export default {
   font-size: 1.5em;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s, visibility 0.3s;
+  transition:
+    opacity 0.3s,
+    visibility 0.3s;
   background-color: var(--space-bg);
   z-index: 4;
 }

@@ -39,7 +39,9 @@
                     />
                   </div>
                   <div class="title">
-                    <h2 class="space-title">{{ space.coworking_name }}</h2>
+                    <h2 class="space-title">
+                      {{ space.coworking_name }}
+                    </h2>
                   </div>
                 </div>
                 <div class="info-card">
@@ -54,10 +56,11 @@
                       v-if="space.advantages.length > 7"
                       color="var(--header-bg)"
                       class="dots-icon"
-                      >mdi-dots-horizontal</v-icon
                     >
+                      mdi-dots-horizontal
+                    </v-icon>
                   </div>
-                  <div class="map" @click.stop v-if="space.address">
+                  <div v-if="space.address" class="map" @click.stop>
                     <a
                       :href="
                         'https://maps.google.com/?q=' +
@@ -74,8 +77,8 @@
                   </div>
                   <div class="icons-container up">
                     <div
-                      class="time"
                       v-if="space.workday_start && space.workday_end"
+                      class="time"
                     >
                       <img
                         src="~assets/spaces_images/time.svg"
@@ -101,11 +104,11 @@
             rounded="0"
             color="#1A679A"
             class="custom-pagination"
-          ></v-pagination>
+          />
           <Map :coworkings="spacesDataApi || []" />
         </template>
         <template v-else>
-          <div class="no-results-message" v-if="isLoad()">
+          <div v-if="isLoad()" class="no-results-message">
             <h3 class="text-center">На жаль нічого не знайдено...</h3>
             <br />
             <h3 class="text-center">

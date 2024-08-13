@@ -4,24 +4,23 @@
     <div>
       <input
         v-model="value"
-        @input="onInput"
         :class="['input', { error: isError }]"
         type="text"
+        @input="onInput"
       />
       <p>{{ textEmailError }}</p>
     </div>
   </div>
 </template>
+
 <script>
 export default {
-  name: "EmailInput",
-  data() {
-    return {
-      value: "",
-    };
-  },
+  name: 'EmailInput',
   props: {
-    textEmailError: "",
+    textEmailError: {
+      type: String,
+      default: '',
+    },
     isError: {
       default: false,
       type: Boolean,
@@ -31,19 +30,26 @@ export default {
       type: Boolean,
     },
   },
-  methods: {
-    onInput(event) {
-      this.$emit("giveEmail", event.target.value);
-    },
-    clearForm() {
-      this.value = "";
-    },
+  emits: ['giveEmail'],
+  data() {
+    return {
+      value: '',
+    };
   },
   watch: {
-    clearForm: "clearForm",
+    clearForm: 'handleClearForm',
+  },
+  methods: {
+    onInput(event) {
+      this.$emit('giveEmail', event.target.value);
+    },
+    handleClearForm() {
+      this.value = '';
+    },
   },
 };
 </script>
+
 <style>
 .error {
   border: 1px solid red !important;

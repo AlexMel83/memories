@@ -14,10 +14,13 @@ export default defineNuxtRouteMiddleware((to) => {
         return navigateTo('/');
       } else if (newRole !== 'admin' && to.path === '/admin') {
         return navigateTo('/');
-      } else if (newRole === 'unknown' && ['/manager', '/user', '/admin'].includes(to.path)) {
+      } else if (
+        newRole === 'unknown' &&
+        ['/manager', '/user', '/admin'].includes(to.path)
+      ) {
         return navigateTo('/');
       }
     },
-    { immediate: true }
+    { immediate: true },
   );
 });

@@ -6,11 +6,11 @@
       <div>
         <label :class="{ selected: userRole === 'user' }">
           <input
-            @click="showRegUser"
+            v-model="userRole"
             type="radio"
             value="user"
-            v-model="userRole"
             name="fav_language"
+            @click="showRegUser"
           />
           Користувач</label
         ><br />
@@ -18,11 +18,11 @@
       <div>
         <label :class="{ selected: userRole === 'manager' }">
           <input
-            @click="showRegUser"
+            v-model="userRole"
             type="radio"
             value="manager"
-            v-model="userRole"
             name="fav_language"
+            @click="showRegUser"
           />
           Менеджер</label
         ><br />
@@ -59,15 +59,15 @@
           <div class="show-password">
             <img
               v-if="isShowPassword"
-              @click="showPassword"
               src="~assets/icon_show_password.png"
               alt="show"
+              @click="showPassword"
             />
             <img
               v-else
-              @click="showPassword"
               src="~assets/icon_close_password.png"
               alt="close"
+              @click="showPassword"
             />
           </div>
         </div>
@@ -90,15 +90,15 @@
           <div class="show-password">
             <img
               v-if="isShowRepeatPassword"
-              @click="showRepeatPassword"
               src="~assets/icon_show_password.png"
               alt="show"
+              @click="showRepeatPassword"
             />
             <img
               v-else
-              @click="showRepeatPassword"
               src="~assets/icon_close_password.png"
               alt="close"
+              @click="showRepeatPassword"
             />
           </div>
         </div>
@@ -140,15 +140,15 @@
           <div class="show-password">
             <img
               v-if="isShowPassword"
-              @click="showPassword"
               src="~assets/icon_show_password.png"
               alt="show"
+              @click="showPassword"
             />
             <img
               v-else
-              @click="showPassword"
               src="~assets/icon_close_password.png"
               alt="close"
+              @click="showPassword"
             />
           </div>
         </div>
@@ -172,15 +172,15 @@
           <div class="show-password">
             <img
               v-if="isShowRepeatPassword"
-              @click="showRepeatPassword"
               src="~assets/icon_show_password.png"
               alt="show"
+              @click="showRepeatPassword"
             />
             <img
               v-else
-              @click="showRepeatPassword"
               src="~assets/icon_close_password.png"
               alt="close"
+              @click="showRepeatPassword"
             />
           </div>
         </div>
@@ -189,55 +189,56 @@
         </div>
       </div>
     </div>
-    <RegLoginButton textContent="Зареєструватися" />
+    <RegLoginButton text-content="Зареєструватися" />
     <button class="link-btn" @click="openLogin">Увійти</button>
   </form>
 </template>
 
 <script setup>
-import * as yup from "yup";
-import { useForm } from "vee-validate";
-import { ref } from "vue";
-import RegLoginButton from "~/components/modal/RegLoginButton.vue";
+import * as yup from 'yup';
+import { useForm } from 'vee-validate';
+import { ref } from 'vue';
+import RegLoginButton from '~/components/modal/RegLoginButton.vue';
 import Social from './Social.vue';
 const bus = useNuxtApp().$bus;
+defineEmits(['openLoginComponent']);
 
 const { defineInputBinds, errors, handleSubmit } = useForm({
   validationSchema: yup.object({
     emailValidation: yup
       .string()
-      .email("поле заповнено некоректно")
-      .required("Це поле є обов’язковим для заповнення")
+      .email('поле заповнено некоректно')
+      .required('Це поле є обов’язковим для заповнення')
       .matches(
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,})+$/,
-        "Поле заповнено невірно"
+        'Поле заповнено невірно',
       ),
     passwordValidation: yup
       .string()
-      .required("Це поле є обов’язковим для заповнення")
-      .min(4, "Пароль повинен містити принаймні 4 символа"),
+      .required('Це поле є обов’язковим для заповнення')
+      .min(4, 'Пароль повинен містити принаймні 4 символа'),
     confirmPasswordValidation: yup
       .string()
-      .required("Це поле є обов’язковим для заповнення")
+      .required('Це поле є обов’язковим для заповнення')
       .oneOf(
-        [yup.ref("passwordValidation"), null],
-        "Паролі повинні співпадати"
+        [yup.ref('passwordValidation'), null],
+        'Паролі повинні співпадати',
       ),
   }),
 });
-const emailValidation = defineInputBinds("emailValidation");
-const passwordValidation = defineInputBinds("passwordValidation");
-const confirmPasswordValidation = defineInputBinds("confirmPasswordValidation");
+const emailValidation = defineInputBinds('emailValidation');
+const passwordValidation = defineInputBinds('passwordValidation');
+const confirmPasswordValidation = defineInputBinds('confirmPasswordValidation');
 const isShowPassword = ref(false);
 const isShowRepeatPassword = ref(false);
 const showRegistrationUser = ref(true);
-const userRole = ref("user");
+const userRole = ref('user');
 const { $api } = useNuxtApp();
-let emailError = ref("");
+let emailError = ref('');
 const onSubmit = handleSubmit(async (values) => {
   try {
     await $api
-      .post("/registration", {
+      .post('/registration', {
         email: values.emailValidation,
         password: values.passwordValidation,
         role: userRole.value,
@@ -245,17 +246,17 @@ const onSubmit = handleSubmit(async (values) => {
       .then((response) => {
         if (
           response.data.status == 400 &&
-          response.data.message.includes("already exist")
+          response.data.message.includes('already exist')
         ) {
-          emailError.value = "даний email вже зареєстрований";
+          emailError.value = 'даний email вже зареєстрований';
         } else {
-          emailError.value = "";
-          bus.$emit("Modal", {
+          emailError.value = '';
+          bus.$emit('Modal', {
             openModal: true,
             showLogin: false,
             showRegistration: false,
             textModalMessage:
-              "На зазначену Вами електронну пошту надіслано лист з посиланням, перейдіть по ньому для активації аккаунту.",
+              'На зазначену Вами електронну пошту надіслано лист з посиланням, перейдіть по ньому для активації аккаунту.',
           });
         }
       });
@@ -274,25 +275,17 @@ function showRepeatPassword() {
 
 function showRegUser() {
   showRegistrationUser.value = !showRegistrationUser.value;
-  showRegistrationUser.value
-    ? (userRole.value = "user")
-    : (userRole.value = "manager");
+  if (showRegistrationUser.value) {
+    userRole.value = 'user';
+  } else {
+    userRole.value = 'manager';
+  }
 }
 
-const passwordError = ref("");
+const passwordError = ref('');
 </script>
 
-<script>
-export default {
-  methods: {
-    openLogin() {
-      this.$emit("openLoginComponent");
-    },
-  },
-};
-</script>
- 
-  <style scoped>
+<style scoped>
 .error-text {
   color: red;
   font-size: 12px;
@@ -430,7 +423,7 @@ input:autofill {
   cursor: pointer;
 }
 
-input[type="radio"] {
+input[type='radio'] {
   display: none;
 }
 
@@ -443,7 +436,7 @@ label {
 }
 
 label:before {
-  content: "";
+  content: '';
   width: 34px;
   height: 34px;
   border: 1px solid var(--white-color);
@@ -456,7 +449,7 @@ label:before {
 }
 
 label:after {
-  content: "";
+  content: '';
   position: absolute;
   left: 5px;
   top: 0px;
@@ -536,4 +529,3 @@ label:after {
   }
 }
 </style>
-  

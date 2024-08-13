@@ -46,15 +46,15 @@
           <div class="show-password">
             <img
               v-if="showPassword"
-              @click="isShow"
               src="~assets/icon_show_password.png"
               alt="show"
+              @click="isShow"
             />
             <img
               v-else
-              @click="isShow"
               src="~assets/icon_close_password.png"
               alt="close"
+              @click="isShow"
             />
           </div>
         </div>
@@ -66,28 +66,28 @@
     </div>
     <div class="remind-password">
       <span
-        @click="openResetPassword"
         :style="{
           cursor:
             textPasswordError || textErrorLogin ? 'pointer' : 'not-allowed',
           color:
             textPasswordError || textErrorLogin ? 'var(--btn-border)' : 'grey',
         }"
+        @click="openResetPassword"
         >Забули свій пароль?</span
       >
     </div>
-    <RegLoginButton textContent="Увійти" />
+    <RegLoginButton text-content="Увійти" />
     <button class="link-btn" @click="openReg">Зареєструватися</button>
   </form>
 </template>
 
 <script setup>
-import * as yup from "yup";
-import { useForm } from "vee-validate";
-import RegLoginButton from "~/components/modal/RegLoginButton.vue";
-import { ref } from "vue";
-import { useStore } from "vuex";
-import Social from "./Social.vue";
+import * as yup from 'yup';
+import { useForm } from 'vee-validate';
+import RegLoginButton from '~/components/modal/RegLoginButton.vue';
+import { ref } from 'vue';
+import { useStore } from 'vuex';
+import Social from './Social.vue';
 const store = useStore();
 const bus = useNuxtApp().$bus;
 
@@ -95,7 +95,7 @@ const props = defineProps({
   initialEmail: {
     type: String,
     required: false,
-    default: "",
+    default: '',
   },
 });
 const emailProps = ref(props.initialEmail);
@@ -104,30 +104,29 @@ const { defineInputBinds, errors, handleSubmit } = useForm({
   validationSchema: yup.object({
     emailValidation: yup
       .string()
-      .email("поле заповнено некоректно")
-      .min(2, "Це поле є обов’язковим для заповнення")
+      .email('поле заповнено некоректно')
+      .min(2, 'Це поле є обов’язковим для заповнення')
       .matches(
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,})+$/,
-        "Поле заповнено невірно"
+        'Поле заповнено невірно',
       ),
     passwordValidation: yup
       .string()
-      .required("Це поле є обов’язковим для заповнення")
-      .min(3, "Пароль повинен містити принаймні 4 символа"),
+      .required('Це поле є обов’язковим для заповнення')
+      .min(3, 'Пароль повинен містити принаймні 4 символа'),
   }),
 });
-const emailValidation = defineInputBinds("emailValidation", emailProps.value);
-const passwordValidation = defineInputBinds("passwordValidation");
+const emailValidation = defineInputBinds('emailValidation', emailProps.value);
+const passwordValidation = defineInputBinds('passwordValidation');
 let showPassword = ref(false);
-let textErrorLogin = ref("");
-let textPasswordError = ref("");
+let textErrorLogin = ref('');
+let textPasswordError = ref('');
 
 if (emailProps.value && emailProps.value.length) {
   emailValidation.value.value = emailProps.value;
 }
 
 const { $api } = useNuxtApp();
-const baseURL = $api.defaults.baseURL;
 
 function isShow() {
   showPassword.value = !showPassword.value;
@@ -142,34 +141,34 @@ const onSubmit = handleSubmit(async (values) => {
     postObject.email = emailProps.value;
   }
   try {
-    await $api.post("/login", postObject).then((response) => {
+    await $api.post('/login', postObject).then((response) => {
       if (
         response.data.status == 500 &&
-        response.data.message.includes("Користувач з email", "не знайдений")
+        response.data.message.includes('Користувач з email', 'не знайдений')
       ) {
-        textErrorLogin.value = "даний email незареєстрований";
+        textErrorLogin.value = 'даний email незареєстрований';
       } else if (
         response.data.status == 400 &&
-        response.data.message.includes("Обліковий запис", "не активовано")
+        response.data.message.includes('Обліковий запис', 'не активовано')
       ) {
-        textErrorLogin.value = "обліковий запис не активовано, перевірте пошту";
+        textErrorLogin.value = 'обліковий запис не активовано, перевірте пошту';
       } else if (
         response.data.status == 400 &&
-        response.data.message.includes("Невірний пароль")
+        response.data.message.includes('Невірний пароль')
       ) {
-        textPasswordError.value = "невірний пароль";
+        textPasswordError.value = 'невірний пароль';
       } else if (response.data.statusCode !== 401) {
-        store.commit("getUserData", response.data.user);
-        localStorage.setItem("access_token", response.data.accessToken);
-        localStorage.setItem("userId", response.data.user.id);
-        store.commit("setRole", response.data.user.role);
-        localStorage.setItem("email", emailValidation.value.value);
-        textErrorLogin.value = "";
-        bus.$emit("Modal", {
+        store.commit('getUserData', response.data.user);
+        localStorage.setItem('access_token', response.data.accessToken);
+        localStorage.setItem('userId', response.data.user.id);
+        store.commit('setRole', response.data.user.role);
+        localStorage.setItem('email', emailValidation.value.value);
+        textErrorLogin.value = '';
+        bus.$emit('Modal', {
           openModal: false,
         });
-        document.documentElement.style.overflow = "";
-        document.body.style.position = "";
+        document.documentElement.style.overflow = '';
+        document.body.style.position = '';
       }
     });
   } catch (error) {
@@ -180,9 +179,10 @@ const onSubmit = handleSubmit(async (values) => {
 
 <script>
 export default {
+  emits: ['openRegComponent'],
   methods: {
     openReg() {
-      this.$emit("openRegComponent");
+      this.$emit('openRegComponent');
     },
   },
 };

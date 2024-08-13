@@ -1,46 +1,53 @@
 <template>
-  <div class="reviews-container" v-if="allReviews.length > 0">
+  <div v-if="allReviews.length > 0" class="reviews-container">
     <v-container>
       <div class="ratings-distribution">
         <div v-for="n in [5, 4, 3, 2, 1]" :key="n" class="rating-distribution">
-          <div class="star-box">{{ n }} <i class="mdi mdi-star"></i></div>
+          <div class="star-box">{{ n }} <i class="mdi mdi-star" /></div>
           <div class="bar">
-            <div class="filled" :style="{ width: ratingsDistribution[n] + '%' }"></div>
+            <div
+              class="filled"
+              :style="{ width: ratingsDistribution[n] + '%' }"
+            />
           </div>
-          <div class="percentage">{{ Math.round(ratingsDistribution[n]) }}%</div>
+          <div class="percentage">
+            {{ Math.round(ratingsDistribution[n]) }}%
+          </div>
         </div>
       </div>
 
       <div class="sort">
         <v-select
+          v-model="sortBy"
           label="Сортувати за"
           :items="['За датою', 'За рейтингом']"
-          v-model="sortBy"
-          @change="sortReviews"
           variant="outlined"
-        ></v-select>
+          @change="sortReviews"
+        />
 
         <v-select
           v-if="sortBy === 'За датою'"
+          v-model="sortDate"
           label="За датою"
           :items="['Спочатку нові', 'Спочатку старі']"
-          v-model="sortDate"
-          @change="sortReviews"
           variant="outlined"
-        ></v-select>
+          @change="sortReviews"
+        />
 
         <v-select
           v-if="sortBy === 'За рейтингом'"
+          v-model="sortRating"
           label="За рейтингом"
           :items="['По зростанню', 'По спаданню']"
-          v-model="sortRating"
-          @change="sortReviews"
           variant="outlined"
-        ></v-select>
+          @change="sortReviews"
+        />
       </div>
 
       <div v-for="review in sortedReviews" :key="review.id" class="review flex">
-        <p class="review-name">{{ review.name }}</p>
+        <p class="review-name">
+          {{ review.name }}
+        </p>
         <div class="review-info">
           <div class="review-data flex">
             <p>
@@ -53,9 +60,11 @@
                 readonly
                 size="small"
                 density="comfortable"
-              ></v-rating>
+              />
             </p>
-            <p class="review-date">{{ formatDate(review.updated_at) }}</p>
+            <p class="review-date">
+              {{ formatDate(review.updated_at) }}
+            </p>
           </div>
           <p>{{ review.content }}</p>
         </div>
@@ -65,17 +74,17 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import useFallbackReviews from '@/mixins/useFallbackReviews'; 
+import useFallbackReviews from '@/mixins/useFallbackReviews';
 
 const route = useRoute();
 const bus = useNuxtApp().$bus;
 const { $api } = useNuxtApp();
 const reviews = ref([]);
-const sortBy = ref('За датою'); 
-const sortDate = ref('Спочатку нові'); 
-const sortRating = ref('По зростанню'); 
+const sortBy = ref('За датою');
+const sortDate = ref('Спочатку нові');
+const sortRating = ref('По зростанню');
 
 const { getFallbackReviews } = useFallbackReviews();
 
@@ -87,22 +96,28 @@ onMounted(async () => {
 const fetchReviews = async () => {
   try {
     const coworkingId = route.params.id;
-    const response = await $api.get("/reviews?coworkingId=" + coworkingId);
-    reviews.value = response.data.length > 0 ? response.data : getFallbackReviews(coworkingId);
+    const response = await $api.get('/reviews?coworkingId=' + coworkingId);
+    reviews.value =
+      response.data.length > 0
+        ? response.data
+        : getFallbackReviews(coworkingId);
     emitAverageRating();
   } catch (error) {
-    console.error("Error fetching reviews:", error);
+    console.error('Error fetching reviews:', error);
   }
 };
 
 const formatDate = (date) => {
   const d = new Date(date);
   return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
-}
+};
 
 const averageRating = computed(() => {
   if (reviews.value.length === 0) return 0;
-  const totalRating = reviews.value.reduce((sum, review) => sum + review.rating, 0);
+  const totalRating = reviews.value.reduce(
+    (sum, review) => sum + review.rating,
+    0,
+  );
   return (totalRating / reviews.value.length).toFixed(1);
 });
 
@@ -112,12 +127,12 @@ const emitAverageRating = () => {
 
 const ratingsDistribution = computed(() => {
   const distribution = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
-  reviews.value.forEach(review => {
+  reviews.value.forEach((review) => {
     distribution[review.rating]++;
   });
   const totalReviews = reviews.value.length;
   for (const rating in distribution) {
-    distribution[rating] = ((distribution[rating] / totalReviews) * 100);
+    distribution[rating] = (distribution[rating] / totalReviews) * 100;
   }
   return distribution;
 });
@@ -127,9 +142,13 @@ const sortedReviews = computed(() => {
 
   if (sortBy.value === 'За датою') {
     if (sortDate.value === 'Спочатку нові') {
-      sorted = sorted.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+      sorted = sorted.sort(
+        (a, b) => new Date(b.updated_at) - new Date(a.updated_at),
+      );
     } else if (sortDate.value === 'Спочатку старі') {
-      sorted = sorted.sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at));
+      sorted = sorted.sort(
+        (a, b) => new Date(a.updated_at) - new Date(b.updated_at),
+      );
     }
   } else if (sortBy.value === 'За рейтингом') {
     if (sortRating.value === 'По зростанню') {
@@ -147,13 +166,15 @@ watch([sortBy, sortDate, sortRating], () => {
 });
 
 const sortReviews = () => {
-  sortedReviews.value; 
+  return sortedReviews.value;
 };
 
-const allReviews = computed(() => reviews.value.length > 0 ? reviews.value : getFallbackReviews(route.params.id));
+const allReviews = computed(() =>
+  reviews.value.length > 0
+    ? reviews.value
+    : getFallbackReviews(route.params.id),
+);
 </script>
-
-
 
 <style scoped>
 .v-container {
@@ -215,7 +236,7 @@ const allReviews = computed(() => reviews.value.length > 0 ? reviews.value : get
 }
 
 .mdi-star {
-  color: #AF3800;
+  color: #af3800;
 }
 
 .bar {
@@ -256,7 +277,7 @@ const allReviews = computed(() => reviews.value.length > 0 ? reviews.value : get
 @media (min-width: 768px) {
   .review {
     flex-direction: row;
-    padding: 40px 0;  
+    padding: 40px 0;
     align-items: center;
   }
 
@@ -264,5 +285,4 @@ const allReviews = computed(() => reviews.value.length > 0 ? reviews.value : get
     padding: 0px 64px;
   }
 }
-
 </style>

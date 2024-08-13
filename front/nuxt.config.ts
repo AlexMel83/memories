@@ -1,5 +1,5 @@
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify';
-require('dotenv').config();
+import 'dotenv/config';
 
 export default defineNuxtConfig({
   plugins: [
@@ -23,7 +23,7 @@ export default defineNuxtConfig({
   modules: [
     (_options, nuxt) => {
       nuxt.hooks.hook('vite:extendConfig', (config) => {
-        // @ts-expect-error
+        // @ts-expect-error: Добавление плагина vuetify требует игнорирования ошибки типизации.
         config.plugins.push(vuetify({ autoImport: true }))
       })
     },
@@ -38,10 +38,10 @@ export default defineNuxtConfig({
   },
 
   app: {
-    head:{
+    head: {
       title: 'Memories',
       meta: [
-        { name: 'discription', content: 'The project aims to collect and preserve the memories of residents of cities that suffered from the military aggression of the Russian Federation. It also creates a database of housing destruction to provide an evidence base for the registers of damage caused by this aggression.' },
+        { name: 'description', content: 'The project aims to collect and preserve the memories of residents of cities that suffered from the military aggression of the Russian Federation. It also creates a database of housing destruction to provide an evidence base for the registers of damage caused by this aggression.' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui' },
       ],
       link: [
@@ -60,4 +60,4 @@ export default defineNuxtConfig({
   },
 
   compatibilityDate: '2024-08-13',
-})
+});

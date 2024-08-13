@@ -4,12 +4,12 @@
     <div v-if="!authUser().name" class="input-wrapper">
       <input
         :class="{ 'input-error': errors.nameValidation }"
-        @input="onInput"
         placeholder="Ім'я*"
         type="text"
         name="name"
         maxlength="30"
         v-bind="nameValidation"
+        @input="onInput"
       />
       <div class="error-text">
         {{ errors.nameValidation }}
@@ -18,12 +18,12 @@
     <div v-if="!authUser().surname" class="input-wrapper">
       <input
         :class="{ 'input-error': errors.surnameValidation }"
-        @input="onInput"
         placeholder="Прізвище*"
         type="text"
         name="name"
         maxlength="30"
         v-bind="surnameValidation"
+        @input="onInput"
       />
       <div class="error-text">
         {{ errors.surnameValidation }}
@@ -47,9 +47,9 @@
         :class="{ 'input-error': errors.phoneValidation }"
         placeholder="+38"
         name="phone"
-        @input="onInputPhone"
         type="text"
         v-bind="phoneValidation"
+        @input="onInputPhone"
       />
       <div class="error-text">
         {{ errors.phoneValidation }}
@@ -119,9 +119,9 @@
           :class="{ 'input-error': errors.peopleValidation }"
         >
           <input
-            @input="onPersonInput"
             v-bind="peopleValidation"
             type="number"
+            @input="onPersonInput"
           />
           <img src="~assets/icon_amount.png" alt="icon" />
         </div>
@@ -134,21 +134,20 @@
       Забронювати <span v-if="totalPrice">за {{ totalPrice }} грн</span>
     </button>
     <TheModal
-      @close="closeModal"
       v-if="isShownModal"
       :title="modalTitle"
       :description="modalDescription"
+      @close="closeModal"
     />
   </form>
 </template>
-  
-  <script setup>
-import * as yup from "yup";
-import { useForm } from "vee-validate";
-import { ref } from "vue";
-import { useStore } from "vuex";
+
+<script setup>
+import * as yup from 'yup';
+import { useForm } from 'vee-validate';
+import { ref } from 'vue';
+import { useStore } from 'vuex';
 const store = useStore();
-const bus = useNuxtApp().$bus;
 const { $api } = useNuxtApp();
 let totalPrice = ref(null);
 
@@ -156,33 +155,33 @@ const { defineInputBinds, errors, handleSubmit, setFieldValue } = useForm({
   validationSchema: yup.object({
     nameValidation: yup
       .string()
-      .required("Це поле є обов’язковим для заповнення")
-      .matches(/^[a-zA-Zа-яА-ЯїЇєЄіІґҐ' -\s]{2,}$/, "Поле заповнено невірно"),
+      .required('Це поле є обов’язковим для заповнення')
+      .matches(/^[a-zA-Zа-яА-ЯїЇєЄіІґҐ' -\s]{2,}$/, 'Поле заповнено невірно'),
     surnameValidation: yup
       .string()
-      .required("Введіть Ваше прізвище")
+      .required('Введіть Ваше прізвище')
       .matches(
         /^[a-zA-Zа-яА-ЯїЇєЄіІґҐ' -\s]{2,}$/,
-        "Поле заповнено некоректно"
+        'Поле заповнено некоректно',
       ),
     emailValidation: yup
       .string()
-      .email("Поле заповнено некоректно")
-      .required("Це поле є обов’язковим для заповнення")
+      .email('Поле заповнено некоректно')
+      .required('Це поле є обов’язковим для заповнення')
       .matches(
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,})+$/,
-        "Поле заповнено невірно"
+        'Поле заповнено невірно',
       ),
     phoneValidation: yup
       .string()
-      .required("Введіть Ваш номер телефону")
-      .matches(/^380\d{9}$/, "Поле заповнено некоректно"),
-    firstDateValidation: yup.string().required("Введіть дату"),
-    firstTimeValidation: yup.string().required("Введіть час"),
+      .required('Введіть Ваш номер телефону')
+      .matches(/^380\d{9}$/, 'Поле заповнено некоректно'),
+    firstDateValidation: yup.string().required('Введіть дату'),
+    firstTimeValidation: yup.string().required('Введіть час'),
     lastTimeValidation: yup
       .string()
-      .required("Введіть час")
-      .test("is-later", "Час вказан невірно", function (value, context) {
+      .required('Введіть час')
+      .test('is-later', 'Час вказан невірно', function (value, context) {
         const firstTime = context.parent.firstTimeValidation;
         const firstDate = context.parent.firstDateValidation;
         return (
@@ -192,46 +191,47 @@ const { defineInputBinds, errors, handleSubmit, setFieldValue } = useForm({
       }),
     peopleValidation: yup
       .number()
-      .required("Введіть кількість осіб")
+      .required('Введіть кількість осіб')
       .max(
         store.state.currentBookSpace.amount,
-        `лише ${store.state.currentBookSpace.amount} місць`
+        `лише ${store.state.currentBookSpace.amount} місць`,
       ),
   }),
 });
-var modalTitle = ref("");
-var modalDescription = ref("");
+var modalTitle = ref('');
+var modalDescription = ref('');
 var isShownModal = ref(false);
-const nameValidation = defineInputBinds("nameValidation");
-const surnameValidation = defineInputBinds("surnameValidation");
-const emailValidation = defineInputBinds("emailValidation");
-const phoneValidation = defineInputBinds("phoneValidation");
-const firstDateValidation = defineInputBinds("firstDateValidation");
-const firstTimeValidation = defineInputBinds("firstTimeValidation");
-const lastTimeValidation = defineInputBinds("lastTimeValidation");
-const peopleValidation = defineInputBinds("peopleValidation", "1");
+const nameValidation = defineInputBinds('nameValidation');
+const surnameValidation = defineInputBinds('surnameValidation');
+const emailValidation = defineInputBinds('emailValidation');
+const phoneValidation = defineInputBinds('phoneValidation');
+const firstDateValidation = defineInputBinds('firstDateValidation');
+const firstTimeValidation = defineInputBinds('firstTimeValidation');
+const lastTimeValidation = defineInputBinds('lastTimeValidation');
+const peopleValidation = defineInputBinds('peopleValidation', '1');
 
 const authUser = () => {
   return store.state.authUser;
 };
 watchEffect(() => {
-  authUser().name ? setFieldValue("nameValidation", authUser().name) : null;
-  authUser().email ? setFieldValue("emailValidation", authUser().email) : null;
-  authUser().phone ? setFieldValue("phoneValidation", authUser().phone) : null;
-  authUser().surname
-    ? setFieldValue("surnameValidation", authUser().surname)
-    : null;
-
-  setFieldValue("firstDateValidation", getCurrentDate());
-  setFieldValue("peopleValidation", 1);
+  if (authUser().name) {
+    setFieldValue('nameValidation', authUser().name);
+  }
+  if (authUser().email) {
+    setFieldValue('nameValidation', authUser().email);
+  }
+  if (authUser().phone) {
+    setFieldValue('nameValidation', authUser().phone);
+  }
+  if (authUser().surname) {
+    setFieldValue('nameValidation', authUser().surname);
+  }
+  setFieldValue('firstDateValidation', getCurrentDate());
+  setFieldValue('peopleValidation', 1);
 });
 
 function closeModal() {
   isShownModal.value = false;
-  //   bus.$emit("Modal", {
-  //     openModal: false,
-  //   });
-  //   document.body.style.position = "";
 }
 
 function getCurrentDate() {
@@ -246,17 +246,17 @@ function getCurrentDate() {
 }
 
 function onPersonInput(event) {
-  event.target.value = event.target.value.replace(/\D/g, "");
+  event.target.value = event.target.value.replace(/\D/g, '');
 }
 
 function bookSpace(values) {
   const price = () => {
     let currentTime =
       (new Date(
-        `${values.firstDateValidation}T${values.lastTimeValidation}:00`
+        `${values.firstDateValidation}T${values.lastTimeValidation}:00`,
       ) -
         new Date(
-          `${values.firstDateValidation}T${values.firstTimeValidation}:00`
+          `${values.firstDateValidation}T${values.firstTimeValidation}:00`,
         )) /
       (1000 * 60);
     if (currentTime <= 60) {
@@ -265,14 +265,14 @@ function bookSpace(values) {
       return Math.ceil(
         Math.ceil(currentTime / 30) *
           (store.state.currentBookSpace.price / 2) *
-          values.peopleValidation
+          values.peopleValidation,
       );
     }
   };
 
   try {
     $api
-      .post("/bookings", {
+      .post('/bookings', {
         spaceId: store.state.currentBookSpace.id,
         startTime: `${values.firstDateValidation}T${values.firstTimeValidation}:00Z`,
         endTime: `${values.firstDateValidation}T${values.lastTimeValidation}:00Z`,
@@ -315,7 +315,7 @@ const onSubmit = handleSubmit(async (values) => {
     } else {
       try {
         $api
-          .put("/users/", {
+          .put('/users/', {
             id: authUser().id,
             email: values.emailValidation,
             name: values.nameValidation,
@@ -328,7 +328,7 @@ const onSubmit = handleSubmit(async (values) => {
                 $api
                   .get(`/users?id=${store.state.authUser.id}`)
                   .then((response) => {
-                    store.commit("getUserData", response.data);
+                    store.commit('getUserData', response.data);
                     if (response.data.id) {
                       bookSpace(values);
                     }
@@ -343,20 +343,24 @@ const onSubmit = handleSubmit(async (values) => {
       }
     }
   };
-  authUser().id ? bookAuthUser() : bookSpace(values);
+  if (authUser().id) {
+    bookAuthUser();
+  } else {
+    bookSpace(values);
+  }
 });
 
 function onInput(event) {
   event.target.value = event.target.value.replace(
     /[^a-zA-Zа-яА-ЯїЇєЄіІґҐ'-]/g,
-    ""
+    '',
   );
 }
 
 function onInputPhone(event) {
   event.target.value = event.target.value
-    .replace("38", "")
-    .replace(/\D/g, "")
+    .replace('38', '')
+    .replace(/\D/g, '')
     .slice(0, 10);
   const phoneRegex = /^(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})$/;
 
@@ -377,8 +381,8 @@ function onInputPhone(event) {
         formattedNumber.push(`${p4}`);
       }
 
-      return formattedNumber.join("");
-    }
+      return formattedNumber.join('');
+    },
   );
   phoneValidation = event.target.value;
 }
@@ -394,7 +398,7 @@ watchEffect(() => {
       firstDateValidation.value.value,
       firstTimeValidation.value.value,
       lastTimeValidation.value.value,
-      peopleValidation.value.value
+      peopleValidation.value.value,
     );
   }
 });
@@ -412,13 +416,13 @@ const showTotalPrice = (firstDate, firstTime, lastTime, people) => {
     return Math.ceil(
       Math.ceil(currentTime / 30) *
         (store.state.currentBookSpace.price / 2) *
-        people
+        people,
     );
   }
 };
 </script>
-  
-  <style>
+
+<style>
 .wrapper-book {
   display: flex;
   flex-direction: column;

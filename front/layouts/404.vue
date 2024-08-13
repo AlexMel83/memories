@@ -3,7 +3,7 @@
     <p class="text-whoops">Упс</p>
     <img class="fail-404" src="~/public/404.png" alt="404" />
     <p>Сторінка, яку ви шукали, не існує.</p>
-    <nuxt-link to="/" class="btn">На головну</nuxt-link>
+    <nuxt-link to="/" class="btn"> На головну </nuxt-link>
   </div>
 </template>
 
@@ -14,7 +14,7 @@
 
 p {
   text-align: center;
-  color: var(--1, #09273B);
+  color: var(--1, #09273b);
   text-align: center;
   font-family: Inter;
   font-size: 24px;
@@ -54,6 +54,5 @@ p {
     font-size: 26px;
     line-height: 140%;
   }
-
 }
 </style>

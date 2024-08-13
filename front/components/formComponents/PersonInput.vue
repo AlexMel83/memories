@@ -4,29 +4,30 @@
       <span>Кількість осіб</span>
     </label>
     <div :class="['input-wrapper-icon', { error: isError }]">
-      <input v-model="value" @input="onInput" type="text" maxlength="3" />
+      <input v-model="value" type="text" maxlength="3" @input="onInput" />
       <img src="~assets/icon_amount.png" alt="icon" />
     </div>
   </div>
 </template>
 <script>
 export default {
-  name: "PersonInput",
-  data() {
-    return {
-      value: 1,
-    };
-  },
+  name: 'PersonInput',
   props: {
     isError: {
       default: false,
       type: Boolean,
     },
   },
+  emits: ['givePerson'],
+  data() {
+    return {
+      value: 1,
+    };
+  },
   methods: {
     onInput(event) {
-      event.target.value = event.target.value.replace(/\D/g, "");
-      this.$emit("givePerson", event.target.value);
+      event.target.value = event.target.value.replace(/\D/g, '');
+      this.$emit('givePerson', event.target.value);
     },
   },
 };

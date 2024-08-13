@@ -1,5 +1,5 @@
 import { uploadMiddleware } from '../../middlewares/upload.js';
-import { dirname, resolve, join } from 'path';
+import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import fs from 'fs';

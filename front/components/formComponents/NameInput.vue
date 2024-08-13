@@ -3,26 +3,25 @@
     <label>Ім'я*</label>
     <div>
       <input
-        @input="onInput"
         v-model="value"
         :class="['input', { error: isError }]"
         type="text"
         maxlength="30"
+        @input="onInput"
       />
       <p>{{ textNameError }}</p>
     </div>
   </div>
 </template>
+
 <script>
 export default {
-  name: "NameInput",
-  data() {
-    return {
-      value: "",
-    };
-  },
+  name: 'NameInput',
   props: {
-    textNameError: "",
+    textNameError: {
+      type: String,
+      default: '',
+    },
     isError: {
       default: false,
       type: Boolean,
@@ -32,21 +31,27 @@ export default {
       type: Boolean,
     },
   },
-  methods: {
-    onInput(event) {
-      this.value = event.target.value.replace(/[^a-zA-Zа-яА-ЯїЇєЄіІґҐ'-]/g, "");
-
-      this.$emit("giveName", this.value);
-    },
-    clearForm() {
-      this.value = "";
-    },
+  emits: ['giveName'],
+  data() {
+    return {
+      value: '',
+    };
   },
   watch: {
-    clearForm: "clearForm",
+    clearForm: 'handleClearForm',
+  },
+  methods: {
+    onInput(event) {
+      this.value = event.target.value.replace(/[^a-zA-Zа-яА-ЯїЇєЄіІґҐ'-]/g, '');
+      this.$emit('giveName', this.value);
+    },
+    handleClearForm() {
+      this.value = '';
+    },
   },
 };
 </script>
+
 <style>
 .error {
   border: 1px solid red !important;
