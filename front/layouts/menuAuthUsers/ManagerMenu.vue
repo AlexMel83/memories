@@ -1,8 +1,5 @@
 <template>
-  <div
-    v-if="manager"
-    class="menu"
-  >
+  <div v-if="manager" class="menu">
     <button
       class="btn"
       :class="{ active: activeTab === 'profileActive' }"

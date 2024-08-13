@@ -6,68 +6,43 @@
           href="https://maps.app.goo.gl/TV82VnCCFqWFcaM2A"
           class="sharing-item"
           target="_blank"
-        ><img
-          src="~assets/icon_location.png"
-          alt="icon"
-        ></a>
-        <a
-          href="https://maps.app.goo.gl/TV82VnCCFqWFcaM2A"
-          target="_blank"
-        >м. Авдіївка, вул. Молодіжна, 3А</a>
+          ><img src="~assets/icon_location.png" alt="icon"
+        /></a>
+        <a href="https://maps.app.goo.gl/TV82VnCCFqWFcaM2A" target="_blank"
+          >м. Авдіївка, вул. Молодіжна, 3А</a
+        >
       </div>
       <div class="phone-number">
-        <a
-          href="tel:+380987654321"
-          class="sharing-item"
-        >
-          <img
-            src="~assets/icon_phone.png"
-            alt="icon"
-          >
+        <a href="tel:+380987654321" class="sharing-item">
+          <img src="~assets/icon_phone.png" alt="icon" />
         </a>
         <a href="tel:+3809876543214">+38 098 765 43 21</a>
       </div>
     </div>
     <div class="sharing">
-      <a
-        href="https://t.me/cfhopeua"
-        target="_blank"
-        class="sharing-item"
-      >
-        <img
-          src="~assets/icon_telega.png"
-          alt="telegram"
-        >
+      <a href="https://t.me/cfhopeua" target="_blank" class="sharing-item">
+        <img src="~assets/icon_telega.png" alt="telegram" />
       </a>
       <a
         href="https://www.facebook.com/cfhopeua"
         target="_blank"
         class="sharing-item"
       >
-        <img
-          src="~assets/icon_face.png"
-          alt="facebook"
-        >
+        <img src="~assets/icon_face.png" alt="facebook" />
       </a>
       <a
         href="viber://chat?number=+380987654321"
         class="sharing-item"
         target="_blank"
       >
-        <img
-          src="~assets/icon_twit.png"
-          alt="viber"
-        >
+        <img src="~assets/icon_twit.png" alt="viber" />
       </a>
       <a
         href="https://www.instagram.com/cfhopeua/"
         class="sharing-item instagram"
         target="_blank"
       >
-        <img
-          src="~assets/instagram.png"
-          alt="instagram"
-        >
+        <img src="~assets/instagram.png" alt="instagram" />
       </a>
     </div>
   </div>

@@ -5,12 +5,7 @@
     name="image-map"
     style="height: 400px"
   >
-    <v-btn
-      class="location"
-      @click="getLocation()"
-    >
-      Get your Location
-    </v-btn>
+    <v-btn class="location" @click="getLocation()"> Get your Location </v-btn>
     <span v-if="userLocationMarker.latLng && userLocationMarker.icon">
       {{ userLocationMarker?.latLng[0] }}, {{ userLocationMarker?.latLng[1] }}
     </span>
@@ -20,10 +15,7 @@
       :center="center"
       style="width: 100%; height: 100%"
     >
-      <l-tile-layer
-        :url="osmUrl"
-        :attribution="osmAttrib"
-      />
+      <l-tile-layer :url="osmUrl" :attribution="osmAttrib" />
       <l-marker
         v-if="userLocationMarker.latLng && userLocationMarker.icon"
         :key="'user'"

@@ -2,15 +2,9 @@
   <div :class="{ 'header-main': true, 'home-page': isHomePage }">
     <div class="header-wrapper">
       <div class="logo-container">
-        <div
-          class="logo"
-          @click="hideMenu"
-        >
+        <div class="logo" @click="hideMenu">
           <NuxtLink to="/">
-            <img
-              src="~/assets/logo.png"
-              alt="logo"
-            >
+            <img src="~/assets/logo.png" alt="logo" />
           </NuxtLink>
         </div>
         <div class="header-buttons">
@@ -20,30 +14,23 @@
           <div class="auth-user-name">
             <UserName />
           </div>
-          <v-btn
-            icon
-            class="burger"
-            @click="toggleMenu"
-          >
+          <v-btn icon class="burger" @click="toggleMenu">
             <img
               v-if="!isMenuOpen"
               src="~/assets/menu.svg"
               alt="Profile Icon"
               style="width: 30px"
-            >
+            />
             <img
               v-else
               src="~/assets/menu.svg"
               alt="Profile Icon"
               style="width: 30px"
-            >
+            />
           </v-btn>
         </div>
       </div>
-      <div
-        v-if="isMenuOpen"
-        class="menu"
-      >
+      <div v-if="isMenuOpen" class="menu">
         <div class="mobile-auth-user-name">
           <UserName />
         </div>

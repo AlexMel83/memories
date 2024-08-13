@@ -8,24 +8,15 @@
               href="https://maps.app.goo.gl/TV82VnCCFqWFcaM2A"
               class="sharing-item"
               target="_blank"
-            ><img
-              src="~assets/icon_location.png"
-              alt="icon"
-            ></a>
-            <a
-              href="https://maps.app.goo.gl/TV82VnCCFqWFcaM2A"
-              target="_blank"
-            >м. Авдіївка, вул. Молодіжна, 3А</a>
+              ><img src="~assets/icon_location.png" alt="icon"
+            /></a>
+            <a href="https://maps.app.goo.gl/TV82VnCCFqWFcaM2A" target="_blank"
+              >м. Авдіївка, вул. Молодіжна, 3А</a
+            >
           </div>
           <div class="phone-number">
-            <a
-              href="tel:+380987654321"
-              class="sharing-item"
-            >
-              <img
-                src="~assets/icon_phone.png"
-                alt="icon"
-              >
+            <a href="tel:+380987654321" class="sharing-item">
+              <img src="~assets/icon_phone.png" alt="icon" />
             </a>
             <a href="tel:+380987654321">+38 098 765-43-21</a>
           </div>
@@ -36,30 +27,21 @@
             target="_blank"
             class="sharing-item social"
           >
-            <img
-              src="~assets/icons_footer_main/facebook.png"
-              alt="facebook"
-            >
+            <img src="~assets/icons_footer_main/facebook.png" alt="facebook" />
           </a>
           <a
             href="https://t.me/cfhopeua"
             target="_blank"
             class="sharing-item social"
           >
-            <img
-              src="~assets/icons_footer_main/telegram.png"
-              alt="telegram"
-            >
+            <img src="~assets/icons_footer_main/telegram.png" alt="telegram" />
           </a>
           <a
             href="viber://chat?number=+380987654321"
             class="sharing-item social"
             target="_blank"
           >
-            <img
-              src="~assets/icons_footer_main/viber.png"
-              alt="viber"
-            >
+            <img src="~assets/icons_footer_main/viber.png" alt="viber" />
           </a>
           <a
             href="https://www.instagram.com/cfhopeua/"
@@ -69,36 +51,23 @@
             <img
               src="~assets/icons_footer_main/instagram.png"
               alt="instagram"
-            >
+            />
           </a>
         </div>
       </div>
       <div class="additional-links">
-        <nuxt-link
-          to="/terms"
-          class="terms-link"
-        >
+        <nuxt-link to="/terms" class="terms-link">
           Умови використання
         </nuxt-link>
-        <nuxt-link
-          to="/privacy"
-          class="terms-link"
-        >
+        <nuxt-link to="/privacy" class="terms-link">
           Політика конфіденційності
         </nuxt-link>
       </div>
       <div class="developers">
-        <nuxt-link
-          to="/"
-          class="developers-link"
-        >
-          <img
-            src="~assets/Avatar.png"
-            alt="Avatar logo"
-            height="50"
-          >
+        <nuxt-link to="/" class="developers-link">
+          <img src="~assets/Avatar.png" alt="Avatar logo" height="50" />
           <p>
-            Розроблено AlexMel83<br>
+            Розроблено AlexMel83<br />
             всі права захищені 2024
           </p>
         </nuxt-link>

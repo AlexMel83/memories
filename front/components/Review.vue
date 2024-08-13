@@ -1,18 +1,11 @@
 <template>
   <v-container>
-    <div
-      v-if="authUser().role === 'user'"
-      class="review-container"
-    >
-      <h2 class="white-text">
-        Залишити відгук
-      </h2>
+    <div v-if="authUser().role === 'user'" class="review-container">
+      <h2 class="white-text">Залишити відгук</h2>
       <v-card-text>
         <v-form @submit.prevent="submit">
           <div class="rating-box">
-            <p class="white-text">
-              Ваша оцінка
-            </p>
+            <p class="white-text">Ваша оцінка</p>
             <v-rating
               v-model="rating.value.value"
               length="5"
@@ -22,10 +15,7 @@
               large
               :error-messages="rating.errorMessage.value"
             />
-            <span
-              v-if="rating.errorMessage.value"
-              class="error"
-            >{{
+            <span v-if="rating.errorMessage.value" class="error">{{
               rating.errorMessage.value
             }}</span>
           </div>
@@ -44,18 +34,13 @@
             dense
             :error-messages="text.errorMessage.value"
           />
-          <v-btn type="submit">
-            Залишити відгук
-          </v-btn>
+          <v-btn type="submit"> Залишити відгук </v-btn>
         </v-form>
       </v-card-text>
     </div>
-    <div
-      v-else
-      class="review-container"
-    >
+    <div v-else class="review-container">
       <h2>Відгуки та рейтинг</h2>
-      <br>
+      <br />
       <h3 class="text-center text-mob">
         Для оцінки коворкінгу, будь ласка,
         <span @click="openReg">зареєструйтесь.</span>
@@ -72,10 +57,7 @@
       :initial-email="email"
       @open-reg-component="changeCompenent"
     />
-    <ModalComponents
-      :initial-email="email"
-      @close-modal="closeModal"
-    />
+    <ModalComponents :initial-email="email" @close-modal="closeModal" />
   </v-container>
 </template>
 

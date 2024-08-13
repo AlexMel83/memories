@@ -7,7 +7,7 @@
         :class="['input', { error: isError }]"
         type="text"
         @input="onInput"
-      >
+      />
       <p>{{ textEmailError }}</p>
     </div>
   </div>

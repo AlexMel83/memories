@@ -1,8 +1,8 @@
 import ApiError from '../middlewares/exceptions/api-errors.js';
 
 // eslint-disable-next-line no-unused-vars
-export default function (err, req, res, _next) {
-  console.error('Error middleware called with:', err);
+export default function (err, req, res, next) {
+  console.error('Error middleware called with:', next ? err : '');
   if (err instanceof ApiError) {
     return res
       .status(err.status)

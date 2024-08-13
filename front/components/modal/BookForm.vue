@@ -1,8 +1,5 @@
 <template>
-  <Form
-    class="wrapper-book"
-    @submit="onSubmit"
-  >
+  <Form class="wrapper-book" @submit="onSubmit">
     <h1>Забронювати коворкінг</h1>
     <div class="input-wrapper">
       <input
@@ -13,7 +10,7 @@
         maxlength="30"
         v-bind="nameValidation"
         @input="onInput"
-      >
+      />
       <div class="error-text">
         {{ errors.nameValidation }}
       </div>
@@ -26,7 +23,7 @@
         type="email"
         maxlength="30"
         v-bind="emailValidation"
-      >
+      />
       <div class="error-text">
         {{ errors.emailValidation }}
       </div>
@@ -39,7 +36,7 @@
         type="text"
         v-bind="phoneValidation"
         @input="onInputPhone"
-      >
+      />
       <div class="error-text">
         {{ errors.phoneValidation }}
       </div>
@@ -52,7 +49,7 @@
           class="time-date"
           type="date"
           :min="getCurrentDate()"
-        >
+        />
       </div>
       <div class="input-wrapper-date-second">
         <span>до</span>
@@ -61,25 +58,17 @@
           class="time-date"
           type="date"
           :min="firstDate"
-        >
+        />
       </div>
     </div>
     <div class="input-wrapper-time">
       <div class="input-wrapper-time-first">
         <span>Час з</span>
-        <input
-          v-model="firstTime"
-          class="time-date"
-          type="time"
-        >
+        <input v-model="firstTime" class="time-date" type="time" />
       </div>
       <div class="input-wrapper-time-second">
         <span>до</span>
-        <input
-          v-model="lastTime"
-          class="time-date"
-          type="time"
-        >
+        <input v-model="lastTime" class="time-date" type="time" />
       </div>
     </div>
     <div class="input-wrapper-person">
@@ -90,16 +79,11 @@
           type="text"
           maxlength="3"
           @click="onPersonInput"
-        >
-        <img
-          src="~assets/icon_amount.png"
-          alt="icon"
-        >
+        />
+        <img src="~assets/icon_amount.png" alt="icon" />
       </div>
     </div>
-    <button type="submit">
-      Забронювати
-    </button>
+    <button type="submit">Забронювати</button>
     <TheModal
       v-if="isShownModal"
       :title="modalTitle"

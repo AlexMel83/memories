@@ -1,20 +1,9 @@
 <template>
   <div class="box-fail">
-    <p class="text-whoops">
-      Упс
-    </p>
-    <img
-      class="fail-404"
-      src="~/public/404.png"
-      alt="404"
-    >
+    <p class="text-whoops">Упс</p>
+    <img class="fail-404" src="~/public/404.png" alt="404" />
     <p>Сторінка, яку ви шукали, не існує.</p>
-    <nuxt-link
-      to="/"
-      class="btn"
-    >
-      На головну
-    </nuxt-link>
+    <nuxt-link to="/" class="btn"> На головну </nuxt-link>
   </div>
 </template>
 
