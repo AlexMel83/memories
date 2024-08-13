@@ -17,7 +17,7 @@
               xl="4"
               class="spaces-col"
             >
-              <nuxt-link class="container" :to="'/coworking/' + space.id">
+              <nuxt-link class="container" :to="'/'">
                 <div class="photo">
                   <img
                     v-if="space.coworking_photo"
@@ -83,13 +83,9 @@
                       />
                       {{ space.workday_start }} - {{ space.workday_end }}
                     </div>
-                    <!-- <div class="money">
-                      <img src="~assets/spaces_images/money.svg" alt="money icon" />
-                      {{ space.first_price }} грн / {{ space.last_price }} грн
-                    </div> -->
                   </div>
                   <nuxt-link
-                    :to="'/coworking/' + space.id"
+                    :to="'/'"
                     class="btn"
                     :class="{ visible: isHovered }"
                   >

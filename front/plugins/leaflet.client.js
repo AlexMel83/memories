@@ -1,9 +1,17 @@
-import Vue from 'vue';
-import { LMap, LTileLayer, LMarker, LPopup, LPolyline } from 'vue2-leaflet';
+import { defineNuxtPlugin } from '#app';
+import {
+  LMap,
+  LTileLayer,
+  LMarker,
+  LPopup,
+  LPolyline,
+} from '@vue-leaflet/vue-leaflet';
 import 'leaflet/dist/leaflet.css';
 
-Vue.component('l-map', LMap);
-Vue.component('l-tile-layer', LTileLayer);
-Vue.component('l-marker', LMarker);
-Vue.component('l-popup', LPopup);
-Vue.component('l-polyline', LPolyline);
+export default defineNuxtPlugin((nuxtApp) => {
+  nuxtApp.vueApp.component('LMap', LMap);
+  nuxtApp.vueApp.component('LTileLayer', LTileLayer);
+  nuxtApp.vueApp.component('LMarker', LMarker);
+  nuxtApp.vueApp.component('LPopup', LPopup);
+  nuxtApp.vueApp.component('LPolyline', LPolyline);
+});

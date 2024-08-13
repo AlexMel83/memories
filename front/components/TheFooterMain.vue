@@ -62,7 +62,7 @@
         >
       </div>
       <div class="developers">
-        <nuxt-link to="/developers" class="developers-link">
+        <nuxt-link to="/" class="developers-link">
           <img src="~assets/Avatar.png" alt="Avatar logo" height="50" />
           <p>
             Розроблено AlexMel83<br />
