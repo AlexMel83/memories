@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "eslint . && prettier -w .",
     "test": "node --test .",
-    "precommit": "eslint --fix . && prettier --write .",
+    "precommit": "eslint --config .eslintrc.js --fix \"front/**/*.{js,cjs,ts,vue}\" \"back/**/*.{js,cjs,ts}\" --ignore-pattern \"front/.nuxt/**\" && prettier --write \"front/**/*.{js,cjs,ts,vue,css}\" \"back/**/*.{js,cjs,ts,css}\"",
     "prepare": "husky install",
     "dev": "cross-env NODE_ENV=development nodemon ./back/server.cjs",
     "start": "cross-env NODE_ENV=production node ./back/server.cjs",
@@ -21,14 +21,21 @@
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.23.2",
+    "@eslint/js": "^9.9.0",
+    "@nuxt/types": "^2.18.1",
+    "@nuxt/typescript-build": "^3.0.2",
+    "@typescript-eslint/eslint-plugin": "^8.1.0",
+    "@typescript-eslint/parser": "^8.1.0",
+    "@vue/eslint-config-standard": "^8.0.1",
     "concurrently": "^8.2.2",
-    "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-vue": "^9.24.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-vue": "^9.27.0",
     "husky": "^9.1.4",
     "lint-staged": "^15.2.7",
     "nodemon": "^3.0.1",
-    "prettier": "^3.2.5"
+    "prettier": "^3.3.3",
+    "vue-eslint-parser": "^9.4.3"
   },
   "dependencies": {
     "@babel/eslint-parser": "^7.24.6",
@@ -39,7 +46,7 @@
     "cross-env": "^7.0.3",
     "dayjs": "^1.11.10",
     "dotenv": "^16.3.1",
-    "eslint-plugin-prettier": "^5.1.3",
+    "eslint": "^8.57.0",
     "express": "^4.18.2",
     "express-session": "^1.18.0",
     "express-validator": "^7.0.1",
