@@ -1,7 +1,7 @@
 {
   "name": "memories",
   "version": "1.0.0",
-  "description": "The project aims to collect and preserve the memories of residents of cities that suffered from the military aggression of the Russian Federation. It also creates a database of housing destruction to provide an evidence base for the registers of damage caused by this aggression.",
+  "description": "Some text The project aims to collect and preserve the memories of residents of cities that suffered from the military aggression of the Russian Federation. It also creates a database of housing destruction to provide an evidence base for the registers of damage caused by this aggression.",
   "main": "./back/server.js",
   "scripts": {
     "lint": "eslint . && prettier -w .",
