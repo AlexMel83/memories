@@ -7,7 +7,7 @@
   "scripts": {
     "lint": "eslint . && prettier -w .",
     "test": "node --test .",
-    "precommit": "eslint --config .eslintrc.js --fix \"front/**/*.{js,cjs,ts,vue}\" \"back/**/*.{js,cjs,ts}\" --ignore-pattern \"front/.nuxt/**\" && prettier --write \"front/**/*.{js,cjs,ts,vue,css}\" \"back/**/*.{js,cjs,ts,css}\"",
+    "precommit": "eslint --config .eslintrc.cjs --fix \"front/**/*.{js,cjs,ts,vue}\" \"back/**/*.{js,cjs,ts}\" --ignore-pattern \"front/.nuxt/**\" && prettier --write \"front/**/*.{js,cjs,ts,vue,css}\" \"back/**/*.{js,cjs,ts,css}\"",
     "prepare": "husky install",
     "dev": "cross-env NODE_ENV=development nodemon ./back/server.cjs",
     "start": "cross-env NODE_ENV=production node ./back/server.cjs",
