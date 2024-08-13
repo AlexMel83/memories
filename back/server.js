@@ -1,12 +1,16 @@
-import * as dotenv from 'dotenv';
-import http from 'http';
-import express from 'express';
-import cors from 'cors';
+import errorMiddleware from './src/middlewares/error-middleware.js';
+import routeInit from './src/presentation-layer/routes/index.js';
+import { dirname } from 'path';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
-import routeInit from './src/presentation-layer/routes/index.cjs';
-import errorMiddleware from './src/middlewares/error-middleware.cjs';
+import { fileURLToPath } from 'url';
+import * as dotenv from 'dotenv';
+import express from 'express';
+import http from 'http';
+import cors from 'cors';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 dotenv.config({
   path: __dirname + `/../.${process.env.NODE_ENV}.env`,
 });
