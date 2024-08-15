@@ -21,6 +21,11 @@ export default defineNuxtConfig({
   },
 
   modules: [
+    "@nuxt/ui",
+    "@nuxt/image",
+    '@nuxtjs/color-mode',
+    '@formkit/auto-animate/nuxt',
+    "@pinia/nuxt",
     (_options, nuxt) => {
       nuxt.hooks.hook('vite:extendConfig', (config) => {
         // @ts-expect-error: Добавление плагина vuetify требует игнорирования ошибки типизации.
