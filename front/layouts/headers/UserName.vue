@@ -22,18 +22,30 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
 import { useAuthStore } from '@/stores/auth.store.ts';
 import { useRoute } from 'vue-router';
 
 const store = useAuthStore();
 const route = useRoute();
-
 const menuOpen = ref(false);
 
+const authUser = inject('authUser');
+const isUserDataReady = inject('isUserDataReady');
+
 const userRole = computed(() => store.userRole);
-const userName = computed(() => store.authUser.name || '');
-const userSurname = computed(() => store.authUser.surname || '');
+const userName = ref('');
+const userSurname = ref('');
+watchEffect(() => {
+  if (isUserDataReady.value && authUser.value) {
+    const userData =
+      typeof authUser.value === 'string'
+        ? JSON.parse(authUser.value)
+        : authUser.value;
+
+    userName.value = userData.name;
+    userSurname.value = userData.surname;
+  }
+});
 
 const isInCabinet = computed(() => {
   const currentPath = route.path;

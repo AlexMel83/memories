@@ -98,6 +98,7 @@ export const useAuthStore = defineStore('auth', {
           this.isAuthed = false;
           this.accessToken = '';
           localStorage.removeItem('access_token');
+          localStorage.removeItem('userData');
         }
       } catch (error) {
         console.log(error);
@@ -127,8 +128,13 @@ export const useAuthStore = defineStore('auth', {
       this.manager = data;
     },
 
-    setUserData(data: User) {
-      this.authUser = data;
+    setUserData(userData: User | string) {
+      if (typeof userData === 'string') {
+        this.authUser = JSON.parse(userData);
+      }
+      if (typeof userData === 'object') {
+        this.authUser = { ...userData };
+      }
     },
 
     setAllAdvantages(data: Advantage[]) {

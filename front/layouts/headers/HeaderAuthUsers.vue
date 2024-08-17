@@ -48,17 +48,18 @@ import ManagerMenu from '~/layouts/menuAuthUsers/ManagerMenu.vue';
 import UserMenu from '~/layouts/menuAuthUsers/UserMenu.vue';
 import AdminMenu from '~/layouts/menuAuthUsers/AdminMenu.vue';
 import UserName from '~/layouts/headers/UserName.vue';
+import { useLocalStorage } from '@vueuse/core';
 
-// Define the store
+const localStorageAuthUser = useLocalStorage('userData', null);
 const store = useAuthStore();
+const isUserDataReady = ref(false);
+const authUser = ref({});
 
-// Computed properties
 const route = useRoute();
 const isHomePage = computed(() => route.path === '/');
 const isMenuOpen = computed(() => store.menuOpen);
 const role = computed(() => store.userRole);
 
-// Methods
 const hideMenu = () => {
   store.menuOpen = false;
 };
@@ -81,16 +82,19 @@ const getMenu = () => {
 };
 
 const setUserData = () => {
-  const authUserData = localStorage.getItem('authUserData');
-  if (authUserData) {
-    store.setUserData(JSON.parse(authUserData));
+  if (localStorageAuthUser.value) {
+    store.setUserData(JSON.parse(localStorageAuthUser.value));
+    authUser.value = JSON.parse(localStorageAuthUser.value);
+    isUserDataReady.value = true;
   }
 };
 
-// Lifecycle hook
 onMounted(() => {
   setUserData();
 });
+
+provide('authUser', authUser);
+provide('isUserDataReady', isUserDataReady);
 </script>
 
 <style scoped>

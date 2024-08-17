@@ -55,11 +55,14 @@ import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { useAuthStore } from '@/stores/auth.store.ts';
 import TheFooterMain from '../components/TheFooterMain.vue';
 import HeaderAuthUsers from '~/layouts/headers/HeaderAuthUsers.vue';
+import { useLocalStorage } from '@vueuse/core';
 
+const localStorageAuthUser = useLocalStorage('userData', null);
 const store = useAuthStore();
 const isScrollToTopInFooter = ref(false);
 const showScrollToTop = ref(false);
 const footerRef = ref(null);
+const authUser = ref({});
 
 const role = computed(() => store.userRole);
 
@@ -87,6 +90,9 @@ const getRole = () => {
 };
 
 onMounted(() => {
+  store.authUser = localStorageAuthUser.value;
+  authUser.value = store.authUser;
+  inject('authUser', authUser);
   getRole();
   window.addEventListener('scroll', handleScroll);
 });
