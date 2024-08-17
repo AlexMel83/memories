@@ -17,8 +17,6 @@
 import { ref } from 'vue';
 import Registration from '~/components/modal/Registration.vue';
 import Login from '~/components/modal/Login.vue';
-import BookForm from '~/components/modal/BookForm.vue';
-import BookSpace from '~/components/modal/BookSpace.vue';
 
 defineProps({
   initialEmail: {
