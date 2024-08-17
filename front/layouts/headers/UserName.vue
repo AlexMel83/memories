@@ -21,60 +21,54 @@
   </div>
 </template>
 
-<script>
-export default {
-  components: {},
-  data() {
-    return {
-      menuOpen: false,
-    };
-  },
-  computed: {
-    userRole() {
-      return this.$store.state.userRole;
-    },
-    userName() {
-      if (this.$store.state.authUser.name) {
-        return this.$store.state.authUser.name;
-      } else {
-        return '';
-      }
-    },
-    userSurname() {
-      if (this.$store.state.authUser.surname) {
-        return this.$store.state.authUser.surname;
-      } else {
-        return '';
-      }
-    },
-    isInCabinet() {
-      const currentPath = this.$route.path;
-      return (
-        currentPath.startsWith('/manager') ||
-        currentPath.startsWith('/user') ||
-        currentPath.startsWith('/admin')
-      );
-    },
-  },
-  mounted() {},
-  methods: {
-    toggleMenu() {
-      this.menuOpen = !this.menuOpen;
-    },
-    setRout() {
-      if (this.userRole == 'manager') {
-        return '/manager/coworking';
-      } else if (this.userRole == 'user') {
-        return '/user';
-      } else if (this.userRole == 'admin') {
-        return '/admin';
-      }
-    },
-    goOut() {
-      this.menuOpen = false;
-      this.$store.commit('logOut');
-    },
-  },
+<script setup>
+import { useAuthStore } from '@/stores/auth.store.ts';
+import { useRoute } from 'vue-router';
+
+const store = useAuthStore();
+const route = useRoute();
+const menuOpen = ref(false);
+
+const authUser = inject('authUser');
+const isUserDataReady = inject('isUserDataReady');
+
+const userRole = computed(() => store.userRole);
+const userName = ref('');
+const userSurname = ref('');
+watchEffect(() => {
+  if (isUserDataReady.value && authUser.value) {
+    const userData =
+      typeof authUser.value === 'string'
+        ? JSON.parse(authUser.value)
+        : authUser.value;
+
+    userName.value = userData.name;
+    userSurname.value = userData.surname;
+  }
+});
+
+const isInCabinet = computed(() => {
+  const currentPath = route.path;
+  return (
+    currentPath.startsWith('/manager') ||
+    currentPath.startsWith('/user') ||
+    currentPath.startsWith('/admin')
+  );
+});
+
+const setRout = () => {
+  if (userRole.value === 'manager') {
+    return '/manager/coworking';
+  } else if (userRole.value === 'user') {
+    return '/user';
+  } else if (userRole.value === 'admin') {
+    return '/admin';
+  }
+};
+
+const goOut = () => {
+  menuOpen.value = false;
+  store.logOut();
 };
 </script>
 

@@ -146,8 +146,8 @@
 import * as yup from 'yup';
 import { useForm } from 'vee-validate';
 import { ref } from 'vue';
-import { useStore } from 'vuex';
-const store = useStore();
+import { useAuthStore } from '@/stores/auth.store.ts';
+const store = useAuthStore();
 const { $api } = useNuxtApp();
 let totalPrice = ref(null);
 
@@ -193,8 +193,8 @@ const { defineInputBinds, errors, handleSubmit, setFieldValue } = useForm({
       .number()
       .required('Введіть кількість осіб')
       .max(
-        store.state.currentBookSpace.amount,
-        `лише ${store.state.currentBookSpace.amount} місць`,
+        store.currentBookSpace.amount,
+        `лише ${store.currentBookSpace.amount} місць`,
       ),
   }),
 });
@@ -211,7 +211,7 @@ const lastTimeValidation = defineInputBinds('lastTimeValidation');
 const peopleValidation = defineInputBinds('peopleValidation', '1');
 
 const authUser = () => {
-  return store.state.authUser;
+  return store.authUser;
 };
 watchEffect(() => {
   if (authUser().name) {
@@ -264,7 +264,7 @@ function bookSpace(values) {
     } else {
       return Math.ceil(
         Math.ceil(currentTime / 30) *
-          (store.state.currentBookSpace.price / 2) *
+          (store.currentBookSpace.price / 2) *
           values.peopleValidation,
       );
     }
@@ -273,7 +273,7 @@ function bookSpace(values) {
   try {
     $api
       .post('/bookings', {
-        spaceId: store.state.currentBookSpace.id,
+        spaceId: store.currentBookSpace.id,
         startTime: `${values.firstDateValidation}T${values.firstTimeValidation}:00Z`,
         endTime: `${values.firstDateValidation}T${values.lastTimeValidation}:00Z`,
         seats: values.peopleValidation,
@@ -304,7 +304,7 @@ const onSubmit = handleSubmit(async (values) => {
       authUser().phone
     ) {
       try {
-        $api.get(`/users?id=${store.state.authUser.id}`).then((response) => {
+        $api.get(`/users?id=${store.authUser.id}`).then((response) => {
           if (response.data.id) {
             bookSpace(values);
           }
@@ -325,14 +325,12 @@ const onSubmit = handleSubmit(async (values) => {
           .then((response) => {
             if (response.data) {
               try {
-                $api
-                  .get(`/users?id=${store.state.authUser.id}`)
-                  .then((response) => {
-                    store.commit('getUserData', response.data);
-                    if (response.data.id) {
-                      bookSpace(values);
-                    }
-                  });
+                $api.get(`/users?id=${store.authUser.id}`).then((response) => {
+                  store.commit('getUserData', response.data);
+                  if (response.data.id) {
+                    bookSpace(values);
+                  }
+                });
               } catch (error) {
                 console.log(error);
               }
@@ -411,12 +409,10 @@ const showTotalPrice = (firstDate, firstTime, lastTime, people) => {
   if (currentTime <= 0) {
     return null;
   } else if (currentTime <= 60) {
-    return store.state.currentBookSpace.price * people;
+    return store.currentBookSpace.price * people;
   } else {
     return Math.ceil(
-      Math.ceil(currentTime / 30) *
-        (store.state.currentBookSpace.price / 2) *
-        people,
+      Math.ceil(currentTime / 30) * (store.currentBookSpace.price / 2) * people,
     );
   }
 };

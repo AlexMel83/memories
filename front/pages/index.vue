@@ -3,7 +3,7 @@
     <section class="search">
       <SearchInput />
     </section>
-    <section class="coworkings-list" :class="{ blurred: isMenuOpen }">
+    <section class="coworkings-list" :class="{ blurred: authStore.isMenuOpen }">
       <div class="spaces-wrapper">
         <template v-if="filteredSpaces.length > 0 && !isLoading">
           <v-row>
@@ -108,7 +108,7 @@
           <Map :coworkings="spacesDataApi || []" />
         </template>
         <template v-else>
-          <div v-if="isLoad()" class="no-results-message">
+          <div v-if="isLoad" class="no-results-message">
             <h3 class="text-center">На жаль нічого не знайдено...</h3>
             <br />
             <h3 class="text-center">
@@ -116,7 +116,7 @@
             </h3>
           </div>
         </template>
-        <Loader v-if="!isLoad()" />
+        <Loader v-if="isLoad" />
       </div>
     </section>
   </main>
@@ -124,22 +124,21 @@
 
 <script setup>
 import { ref, computed, onMounted, watch, inject } from 'vue';
-import { useStore } from 'vuex';
+import { useAuthStore } from '@/stores/auth.store.ts';
 import SearchInput from '@/components/SearchInput.vue';
 import useFallbackReviews from '@/mixins/useFallbackReviews';
 
 const isLoading = ref(false);
+const isLoad = ref(false);
 const { $api } = useNuxtApp();
 const isHovered = ref(false);
 const spacesDataApi = ref([]);
-const store = useStore();
+const authStore = useAuthStore();
 const baseURL = $api.defaults.baseURL;
 const searchTerm = inject('searchTerm', ref(''));
 const page = ref(1);
 const perPage = 12;
 const bus = useNuxtApp().$bus;
-const isLoad = () => store.state.isLoading;
-
 const averageRating = ref(0);
 
 const { getFallbackReviews } = useFallbackReviews();
@@ -156,10 +155,11 @@ onMounted(async () => {
 
 watch(searchTerm, async (newValue) => {
   await fetchCoworkings(newValue);
+  console.log('+', spacesDataApi.value);
 });
 
 const fetchCoworkings = async (searchQuery = null) => {
-  store.state.isLoading = false;
+  isLoading.value = true;
   try {
     let url = '/coworkings';
     if (searchQuery) {
@@ -191,14 +191,12 @@ const fetchCoworkings = async (searchQuery = null) => {
   } catch (error) {
     console.error('Error fetching coworkings data:', error);
   } finally {
-    store.state.isLoading = true;
+    isLoading.value = false;
   }
 };
 
 const filteredSpaces = computed(() => {
-  const lowerCaseSearchTerm = searchTerm.value
-    ? searchTerm.value.toLowerCase()
-    : '';
+  const lowerCaseSearchTerm = searchTerm.value.toLowerCase();
   const startIndex = (page.value - 1) * perPage;
   const endIndex = startIndex + perPage;
   return spacesDataApi.value
@@ -208,12 +206,10 @@ const filteredSpaces = computed(() => {
     .slice(startIndex, endIndex);
 });
 
-const isMenuOpen = computed(() => store.state.isMenuOpen);
-
 const getAllAdvantages = async () => {
   try {
     const response = await $api.get('/advantages');
-    store.commit('setAllAdvantages', response.data);
+    authStore.setAllAdvantages(response.data);
   } catch (error) {
     console.error('An error occurred while fetching advantages:', error);
   }

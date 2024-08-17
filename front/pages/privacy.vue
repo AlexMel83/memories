@@ -1,3 +1,3 @@
 <template>
-  <div />
+  <div class="privacy bg-white h-screen" />
 </template>
