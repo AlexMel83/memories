@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { useNuxtApp } from '#app';
+import { useLocalStorage } from '@vueuse/core';
 
 interface SocialLink {
   id: number;
@@ -58,9 +59,16 @@ export const useAuthStore = defineStore('auth', {
       { id: 4, title: 'facebook', src: '../facebook.png', link: '' },
     ] as SocialLink[],
     favoriteSpaces: [] as BookSpace[],
+    initialEmail: '',
+    userId: useLocalStorage('userId', null),
+    email: useLocalStorage('email', ''),
   }),
 
   actions: {
+    setInitialEmail(email: string) {
+      this.initialEmail = email;
+    },
+
     setName(ob: Partial<typeof this.$state>) {
       Object.assign(this, ob);
       this.isAuthed = true;
@@ -137,7 +145,7 @@ export const useAuthStore = defineStore('auth', {
       this.favoriteSpaces.push(space);
     },
 
-    removeFromFavorites(spaceId: string) {
+    removeFromFavorites(spaceId: number) {
       this.favoriteSpaces = this.favoriteSpaces.filter(
         (space) => space.id !== spaceId,
       );

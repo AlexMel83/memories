@@ -23,6 +23,7 @@ export default defineNuxtConfig({
   modules: [
     "@nuxt/ui",
     "@nuxt/image",
+    '@nuxtjs/tailwindcss',
     '@nuxtjs/color-mode',
     '@formkit/auto-animate/nuxt',
     "@pinia/nuxt",

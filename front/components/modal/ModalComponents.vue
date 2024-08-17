@@ -20,6 +20,13 @@ import Login from '~/components/modal/Login.vue';
 import BookForm from '~/components/modal/BookForm.vue';
 import BookSpace from '~/components/modal/BookSpace.vue';
 
+const props = defineProps({
+  initialEmail: {
+    type: String,
+    default: '',
+  },
+});
+
 // Объявляем событие closeModal
 const emit = defineEmits(['closeModal']);
 

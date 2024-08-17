@@ -86,9 +86,15 @@ import * as yup from 'yup';
 import { useForm } from 'vee-validate';
 import RegLoginButton from '~/components/modal/RegLoginButton.vue';
 import { ref } from 'vue';
-import { useStore } from 'vuex';
+import { useAuthStore } from '@/stores/auth.store.ts';
 import Social from './Social.vue';
-const store = useStore();
+import { useLocalStorage } from '@vueuse/core';
+const accessToken = useLocalStorage('access_token', '');
+const userId = useLocalStorage('userId', '');
+const email = useLocalStorage('email', '');
+
+const authStore = useAuthStore();
+
 const bus = useNuxtApp().$bus;
 
 const props = defineProps({
@@ -98,7 +104,8 @@ const props = defineProps({
     default: '',
   },
 });
-const emailProps = ref(props.initialEmail);
+
+const emailProps = ref(props.initialEmail || '');
 
 const { defineInputBinds, errors, handleSubmit } = useForm({
   validationSchema: yup.object({
@@ -158,34 +165,28 @@ const onSubmit = handleSubmit(async (values) => {
       ) {
         textPasswordError.value = 'невірний пароль';
       } else if (response.data.statusCode !== 401) {
-        store.commit('getUserData', response.data.user);
-        localStorage.setItem('access_token', response.data.accessToken);
-        localStorage.setItem('userId', response.data.user.id);
-        store.commit('setRole', response.data.user.role);
-        localStorage.setItem('email', emailValidation.value.value);
+        authStore.getUserData(response.data.user);
+        accessToken.value = response.data.accessToken;
+        userId.value = response.data.user.id;
+        authStore.setRole(response.data.user.role);
+        email.value = emailValidation.value.value;
         textErrorLogin.value = '';
-        bus.$emit('Modal', {
-          openModal: false,
-        });
-        document.documentElement.style.overflow = '';
-        document.body.style.position = '';
+        if (bus) {
+          bus.$emit('Modal', { openModal: false });
+        }
+        if (typeof window !== 'undefined') {
+          document.documentElement.style.overflow = '';
+          document.body.style.position = '';
+        }
       }
     });
   } catch (error) {
-    console.log(error);
+    console.error('Ошибка при входе:', error);
+    if (error.response) {
+      console.error('Ответ сервера:', error.response.data);
+    }
   }
 });
-</script>
-
-<script>
-export default {
-  emits: ['openRegComponent'],
-  methods: {
-    openReg() {
-      this.$emit('openRegComponent');
-    },
-  },
-};
 </script>
 
 <style scoped>

@@ -67,6 +67,10 @@ import ModalComponents from '~/components/modal/ModalComponents.vue';
 import Login from '~/components/modal/Login.vue';
 import Registration from '~/components/modal/Registration.vue';
 
+import { useLocalStorage } from '@vueuse/core';
+const localStorageUserId = useLocalStorage('userId', null);
+const localStorageEmail = useLocalStorage('email', null);
+
 const authStore = useAuthStore();
 const route = useRoute();
 
@@ -145,9 +149,9 @@ const fetchUserData = async (authLinkValue) => {
     const response = await $api.post(`/auth-user/${authLinkValue}`);
     if (response.data) {
       const userDataValue = response.data;
-      localStorage.setItem('userId', userDataValue.id);
+      localStorageUserId.value = userDataValue.id;
       authStore.setRole(userDataValue.role);
-      localStorage.setItem('email', userDataValue.email);
+      localStorageEmail.value = userDataValue.email;
       authStore.getUserData(userDataValue);
       useNuxtApp().$bus.$emit('Modal', {
         openModal: false,
