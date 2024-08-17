@@ -9,11 +9,33 @@ interface SocialLink {
 }
 
 interface BookSpace {
-  id: string;
+  id: number;
   price: string;
   amount: string;
 }
 
+interface User {
+  id: number;
+  email: string;
+  facabook_id: string;
+  google_id: string;
+  name: string;
+  surnaame: string;
+  phone: string;
+  picture: string;
+  role: string;
+  social_login: boolean;
+  isactivated: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+interface Advantage {
+  id: number;
+  name: string;
+  description: string;
+  icon: string;
+}
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     accessToken: localStorage.getItem('access_token') || '',
@@ -22,24 +44,20 @@ export const useAuthStore = defineStore('auth', {
     isMenuOpen: false,
     userRole: '',
     userData: null,
-    authUser: {} as any,
+    authUser: {} as User,
     activeTabAuthUserMenu: '',
     menuOpen: false,
-    manager: null as any,
-    user: null as any,
-    allAdvantages: [] as any[],
-    currentBookSpace: {
-      id: '',
-      price: '',
-      amount: '',
-    } as BookSpace,
+    manager: {} as User | null,
+    // user: null as any,
+    allAdvantages: [] as Advantage[],
+    currentBookSpace: {} as BookSpace,
     social: [
       { id: 1, title: 'telegram', src: '../telegram.png', link: '' },
       { id: 2, title: 'viber', src: '../viber.png', link: '' },
       { id: 3, title: 'instagram', src: '../instagram.png', link: '' },
       { id: 4, title: 'facebook', src: '../facebook.png', link: '' },
     ] as SocialLink[],
-    favoriteSpaces: [] as any[],
+    favoriteSpaces: [] as BookSpace[],
   }),
 
   actions: {
@@ -68,7 +86,7 @@ export const useAuthStore = defineStore('auth', {
         const response = await $api.post('/logout');
         if (response) {
           localStorage.clear();
-          this.authUser = {};
+          this.authUser = {} as User;
           this.userRole = 'unknown';
           this.isAuthed = false;
           this.accessToken = '';
@@ -79,12 +97,12 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    getManagerData(data: any) {
+    getManagerData(data: User) {
       this.manager = data;
       localStorage.setItem('managerData', JSON.stringify(data));
     },
 
-    getUserData(data: any) {
+    getUserData(data: User) {
       this.authUser = data;
       this.isAuthed = true;
       if (process.client) {
@@ -92,19 +110,19 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    getAllAdvantages(data: any[]) {
+    getAllAdvantages(data: Advantage[]) {
       this.allAdvantages = data;
     },
 
-    setManagerData(data: any) {
+    setManagerData(data: User) {
       this.manager = data;
     },
 
-    setUserData(data: any) {
+    setUserData(data: User) {
       this.authUser = data;
     },
 
-    setAllAdvantages(data: any[]) {
+    setAllAdvantages(data: Advantage[]) {
       this.allAdvantages = data;
       if (process.client) {
         localStorage.setItem('allAdvantages', JSON.stringify(data));
@@ -115,7 +133,7 @@ export const useAuthStore = defineStore('auth', {
       this.isMenuOpen = !this.isMenuOpen;
     },
 
-    addToFavorites(space: any) {
+    addToFavorites(space: BookSpace) {
       this.favoriteSpaces.push(space);
     },
 
