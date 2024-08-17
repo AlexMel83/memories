@@ -51,7 +51,6 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { useAuthStore } from '@/stores/auth.store.ts';
 import TheFooterMain from '../components/TheFooterMain.vue';
 import HeaderAuthUsers from '~/layouts/headers/HeaderAuthUsers.vue';
@@ -81,11 +80,6 @@ const handleScroll = () => {
     const screenHeight = window.innerHeight;
     showScrollToTop.value = scrollPosition > screenHeight;
   }
-};
-
-const getRole = () => {
-  const userRole = localStorage.getItem('userRole') || '';
-  store.userRole = userRole ? userRole : 'unknown';
 };
 
 const setUserData = () => {
