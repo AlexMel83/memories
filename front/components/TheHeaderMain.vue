@@ -1,37 +1,48 @@
 <template>
-  <div :class="{ 'header-main': true, 'home-page': isHomePage }">
-    <div class="header-wrapper">
-      <div class="logo-container">
-        <div class="logo" @click="hideMenu">
-          <NuxtLink to="/">
-            <img src="~/assets/favicon.ico" alt="logo" />
-          </NuxtLink>
+  <div
+    :class="{ 'bg-gray-100': true, 'bg-white': isHomePage }"
+    class="header-main"
+  >
+    <div class="container mx-auto px-4 py-6">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center">
+          <div class="cursor-pointer" @click="hideMenu">
+            <NuxtLink to="/">
+              <img src="~/assets/favicon.ico" alt="logo" class="w-10 h-10" />
+            </NuxtLink>
+          </div>
         </div>
-        <div class="header-buttons">
-          <span class="lang-active">Ua &nbsp; </span><span> | En</span>
-          <v-btn icon class="burger" @click="toggleMenu">
+        <div class="flex items-center space-x-4">
+          <span class="text-gray-700">Ua</span>
+          <span class="text-gray-400">|</span>
+          <span class="text-gray-700">En</span>
+          <button
+            class="p-2 rounded-full hover:bg-gray-200 focus:outline-none"
+            @click="toggleMenu"
+          >
             <img
-              v-if="!menuOpen"
-              src="~/assets/menu.svg"
-              alt="Profile Icon"
-              style="width: 30px"
+              :src="menuOpen ? '~/assets/menu-open.svg' : 'menu.svg'"
+              alt="Menu Icon"
+              class="w-6 h-6"
             />
-            <img
-              v-else
-              src="~/assets/menu.svg"
-              alt="Profile Icon"
-              style="width: 30px"
-            />
-          </v-btn>
+          </button>
           <template v-if="!isAuthed">
-            <v-btn class="header-btn" @click="openRegistration">
+            <button
+              class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none"
+              @click="openRegistration"
+            >
               Зареєструватися
-            </v-btn>
-            <v-btn class="header-btn" @click="openLogin"> Увійти </v-btn>
+            </button>
+            <button
+              class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none"
+              @click="openLogin"
+            >
+              Увійти
+            </button>
           </template>
         </div>
       </div>
-      <div v-if="menuOpen" class="menu">
+      <div v-if="menuOpen" class="mt-4">
         <Login
           v-if="menuLogin"
           :initial-email="email"
@@ -39,117 +50,113 @@
         />
         <Registration v-else @open-login-component="changeCompenent" />
       </div>
-      <p class="header-text">
-        <span class="bold">Memory</span> - Пам'ять про міста, що постраждали від
-        військової агресії рф.
+      <p class="mt-6 text-center text-gray-700">
+        <span class="font-bold">Memory</span> - Пам'ять про міста, що
+        постраждали від військової агресії рф.
       </p>
     </div>
   </div>
   <ModalComponents :initial-email="email" @close-modal="closeModal" />
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import { useAuthStore } from '@/stores/auth.store';
 import ModalComponents from '~/components/modal/ModalComponents.vue';
 import Login from '~/components/modal/Login.vue';
 import Registration from '~/components/modal/Registration.vue';
 
-export default {
-  name: 'HeaderComponent',
-  components: {
-    ModalComponents,
-    Login,
-    Registration,
-  },
-  data() {
-    return {
-      menuOpen: false,
-      menuLogin: true,
-      isModalOpen: false,
-      email: '',
-      userData: '',
-      authLink: '',
-    };
-  },
-  computed: {
-    isAuthed() {
-      return this.$store.state.isAuthed;
-    },
-    isHomePage() {
-      return this.$route.path === '/';
-    },
-    isMenuOpen() {
-      return this.$store.state.isMenuOpen;
-    },
-  },
-  mounted() {
-    const emailRegex = /([\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})/;
-    const uuidRegex =
-      /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
-    if (this.$route.query.email) {
-      this.email = this.$route.query.email;
-      const match = this.email.match(emailRegex);
-      if (match) {
-        this.email = match[0];
-        this.openLogin();
-      } else this.email = '';
+const authStore = useAuthStore();
+const route = useRoute();
+
+const menuOpen = ref(false);
+const menuLogin = ref(true);
+const isModalOpen = ref(false);
+const email = ref('');
+const authLink = ref('');
+
+const isAuthed = computed(() => authStore.isAuthed);
+const isHomePage = computed(() => route.path === '/');
+
+onMounted(() => {
+  const emailRegex = /([\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})/;
+  const uuidRegex =
+    /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+
+  if (route.query.email) {
+    email.value = route.query.email;
+    const match = email.value.match(emailRegex);
+    if (match) {
+      email.value = match[0];
+      openLogin();
+    } else {
+      email.value = '';
     }
-    if (this.$route.query.authLink) {
-      this.authLink = this.$route.query.authLink;
-      if (uuidRegex.test(this.authLink)) {
-        this.fetchUserData(this.authLink);
-      }
+  }
+
+  if (route.query.authLink) {
+    authLink.value = route.query.authLink;
+    if (uuidRegex.test(authLink.value)) {
+      fetchUserData(authLink.value);
     }
-  },
-  methods: {
-    hideMenu() {
-      this.menuOpen = false;
-    },
-    toggleMenu() {
-      this.menuOpen = !this.menuOpen;
-      this.$store.commit('toggleMenu');
-    },
-    closeModal() {
-      this.isModalOpen = false;
-      document.documentElement.style.overflow = '';
-    },
-    openRegistration() {
-      document.documentElement.style.overflow = 'hidden';
-      this.$bus.$emit('Modal', {
-        showRegistration: true,
-        openModal: true,
+  }
+});
+
+const hideMenu = () => {
+  menuOpen.value = false;
+};
+
+const toggleMenu = () => {
+  menuOpen.value = !menuOpen.value;
+  authStore.toggleMenu();
+};
+
+const closeModal = () => {
+  isModalOpen.value = false;
+  document.documentElement.style.overflow = '';
+};
+
+const openRegistration = () => {
+  document.documentElement.style.overflow = 'hidden';
+  useNuxtApp().$bus.$emit('Modal', {
+    showRegistration: true,
+    openModal: true,
+  });
+};
+
+const openLogin = () => {
+  if (window.innerWidth > 768) {
+    document.documentElement.style.overflow = 'hidden';
+    useNuxtApp().$bus.$emit('Modal', {
+      showLogin: true,
+      openModal: true,
+    });
+  }
+};
+
+const changeCompenent = () => {
+  menuLogin.value = !menuLogin.value;
+};
+
+const fetchUserData = async (authLinkValue) => {
+  try {
+    const { $api } = useNuxtApp();
+    const response = await $api.post(`/auth-user/${authLinkValue}`);
+    if (response.data) {
+      const userDataValue = response.data;
+      localStorage.setItem('userId', userDataValue.id);
+      authStore.setRole(userDataValue.role);
+      localStorage.setItem('email', userDataValue.email);
+      authStore.getUserData(userDataValue);
+      useNuxtApp().$bus.$emit('Modal', {
+        openModal: false,
       });
-    },
-    openLogin() {
-      if (window.innerWidth > 768) {
-        document.documentElement.style.overflow = 'hidden';
-        this.$bus.$emit('Modal', {
-          showLogin: true,
-          openModal: true,
-        });
-      }
-    },
-    changeCompenent() {
-      this.menuLogin = !this.menuLogin;
-    },
-    async fetchUserData(authLink) {
-      try {
-        const response = await this.$api.post(`/auth-user/${authLink}`);
-        if (response.data) {
-          const userData = response.data;
-          localStorage.setItem('userId', userData.id);
-          this.$store.commit('setRole', userData.role);
-          localStorage.setItem('email', userData.email);
-          this.$store.commit('getUserData', userData);
-          this.$bus.$emit('Modal', {
-            openModal: false,
-          });
-          document.body.style.position = '';
-        }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    },
-  },
+      document.body.style.position = '';
+    }
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+  }
 };
 </script>
 
