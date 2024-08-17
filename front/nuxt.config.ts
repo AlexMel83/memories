@@ -11,6 +11,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   css: [
+    '~/assets/css/tailwind.css',
     '@mdi/font/css/materialdesignicons.min.css',
     'vuetify/lib/styles/main.sass',
     '~/assets/src/styles.css',
