@@ -1,10 +1,9 @@
-<script setup lang="ts">
-import { useAuthStore } from '~/stores/auth.store';
+<script setup>
+import { useAuthStore } from '@/stores/auth.store.ts';
 import { object, string, ref as yupRef } from 'yup';
 import { defineShortcuts } from '#imports';
-import type { AuthResponse } from '@/api/auth.js';
 
-const { $api, $load } = useNuxtApp();
+const { $api } = useNuxtApp();
 const authStore = useAuthStore();
 
 const minPwd = 4;
@@ -91,19 +90,19 @@ defineShortcuts({
   },
 });
 
-const handleFocus = (field: string) => {
+const handleFocus = (field) => {
   if (field === 'email') emailActive.value = true;
   if (field === 'password') passwordActive.value = true;
   if (field === 'passConfirm') passConfirmActive.value = true;
 };
-const handleBlur = (field: string) => {
+const handleBlur = (field) => {
   if (field === 'email' && !formData.email) emailActive.value = false;
   if (field === 'password' && !formData.password) passwordActive.value = false;
   if (field === 'passConfirm' && !formData.passConfirm)
     passConfirmActive.value = false;
 };
 
-const handleSubmit = async (event: Event) => {
+const handleSubmit = async (event) => {
   if (event && typeof event.preventDefault === 'function') {
     event.preventDefault();
   }
@@ -115,15 +114,61 @@ const handleSubmit = async (event: Event) => {
     password: state.password,
     role: currentTab.value === 1 ? 'user' : '',
   };
-
+  let res = null;
   try {
-    const res: AuthResponse = await $load(
-      () =>
-        currentTab.value === 0
-          ? $api.auth.signIn(payload)
-          : $api.auth.signUp(payload),
-      errors,
-    );
+    if (currentTab.value === 0) {
+      res = await $api.post('/login', payload).then((response) => {
+        if (
+          response.data.status == 500 &&
+          response.data.message.includes('Користувач з email', 'не знайдений')
+        ) {
+          textErrorLogin.value = 'даний email незареєстрований';
+        } else if (
+          response.data.status == 400 &&
+          response.data.message.includes('Обліковий запис', 'не активовано')
+        ) {
+          textErrorLogin.value =
+            'обліковий запис не активовано, перевірте пошту';
+        } else if (
+          response.data.status == 400 &&
+          response.data.message.includes('Невірний пароль')
+        ) {
+          textPasswordError.value = 'невірний пароль';
+        } else if (response.data.statusCode !== 401) {
+          authStore.getUserData(response.data.user);
+          accessToken.value = response.data.accessToken;
+          userId.value = response.data.user.id;
+          authStore.setRole(response.data.user.role);
+          email.value = emailValidation.value.value;
+          textErrorLogin.value = '';
+          if (bus) {
+            bus.$emit('Modal', { openModal: false });
+          }
+          if (typeof window !== 'undefined') {
+            document.documentElement.style.overflow = '';
+            document.body.style.position = '';
+          }
+        }
+      });
+    } else {
+      res = await $api.post('/registration', payload).then((response) => {
+        if (
+          response.data.status == 400 &&
+          response.data.message.includes('already exist')
+        ) {
+          emailError.value = 'даний email вже зареєстрований';
+        } else {
+          emailError.value = '';
+          bus.$emit('Modal', {
+            openModal: true,
+            showLogin: false,
+            showRegistration: false,
+            textModalMessage:
+              'На зазначену Вами електронну пошту надіслано лист з посиланням, перейдіть по ньому для активації аккаунту.',
+          });
+        }
+      });
+    }
 
     if (res && [200, 201].includes(res.status)) {
       const data = res.data;
@@ -163,7 +208,7 @@ watch(isOpen, (newValue) => {
             <h3
               class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
             >
-              StarHub login
+              Memory login
             </h3>
             <UButton
               color="gray"

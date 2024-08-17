@@ -6,8 +6,6 @@
       </button>
       <Registration v-if="openRegistration" />
       <Login v-if="openLogin" :initial-email="initialEmail" />
-      <BookForm v-if="openBook" />
-      <BookSpace v-if="openBookSpace" />
       <p>{{ textModalMessage }}</p>
     </div>
   </div>

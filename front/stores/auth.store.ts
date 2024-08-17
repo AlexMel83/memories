@@ -37,6 +37,7 @@ interface Advantage {
   description: string;
   icon: string;
 }
+
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     accessToken: '',

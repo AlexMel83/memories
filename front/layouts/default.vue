@@ -1,6 +1,6 @@
 <template>
   <div class="other-page">
-    <HeaderAuthUsers v-if="role !== 'unknown'" />
+    <HeaderAuthUsers v-if="store?.authUser?.isactivated" />
     <TheHeaderMain v-else />
 
     <NuxtPage />
@@ -62,9 +62,8 @@ const store = useAuthStore();
 const isScrollToTopInFooter = ref(false);
 const showScrollToTop = ref(false);
 const footerRef = ref(null);
+const isUserDataReady = ref(false);
 const authUser = ref({});
-
-const role = computed(() => store.userRole);
 
 const scrollToTop = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -89,17 +88,25 @@ const getRole = () => {
   store.userRole = userRole ? userRole : 'unknown';
 };
 
+const setUserData = () => {
+  if (localStorageAuthUser.value) {
+    store.setUserData(JSON.parse(localStorageAuthUser.value));
+    authUser.value = JSON.parse(localStorageAuthUser.value);
+    isUserDataReady.value = true;
+  }
+};
+
 onMounted(() => {
-  store.authUser = localStorageAuthUser.value;
-  authUser.value = store.authUser;
-  inject('authUser', authUser);
-  getRole();
+  setUserData();
   window.addEventListener('scroll', handleScroll);
 });
 
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll);
 });
+
+provide('authUser', authUser);
+provide('isUserDataReady', isUserDataReady);
 </script>
 
 <style>
