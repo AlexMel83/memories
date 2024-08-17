@@ -42,7 +42,6 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useAuthStore } from '@/stores/auth.store.ts';
 import ManagerMenu from '~/layouts/menuAuthUsers/ManagerMenu.vue';
@@ -52,9 +51,6 @@ import UserName from '~/layouts/headers/UserName.vue';
 
 // Define the store
 const store = useAuthStore();
-
-// State
-const menuOpen = ref(false);
 
 // Computed properties
 const route = useRoute();
@@ -69,10 +65,6 @@ const hideMenu = () => {
 
 const toggleMenu = () => {
   store.menuOpen = !store.menuOpen;
-};
-
-const changeComponent = () => {
-  menuOpen.value = !menuOpen.value;
 };
 
 const getMenu = () => {

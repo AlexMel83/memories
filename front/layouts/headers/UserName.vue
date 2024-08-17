@@ -44,10 +44,6 @@ const isInCabinet = computed(() => {
   );
 });
 
-const toggleMenu = () => {
-  menuOpen.value = !menuOpen.value;
-};
-
 const setRout = () => {
   if (userRole.value === 'manager') {
     return '/manager/coworking';
