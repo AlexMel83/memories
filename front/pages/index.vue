@@ -3,7 +3,7 @@
     <section class="search">
       <SearchInput />
     </section>
-    <!-- <section class="coworkings-list" :class="{ blurred: authStore.isMenuOpen }">
+    <section class="coworkings-list" :class="{ blurred: authStore.isMenuOpen }">
       <div class="spaces-wrapper">
         <template v-if="filteredSpaces.length > 0 && !isLoading">
           <v-row>
@@ -118,7 +118,7 @@
         </template>
         <Loader v-if="!isLoad()" />
       </div>
-    </section> -->
+    </section>
   </main>
 </template>
 
