@@ -133,7 +133,9 @@ const handleSubmit = async (event: Event) => {
     }
     console.log(res);
   } catch (error) {
-    errors.form = 'Користувача не авторизовано';
+    if (error) {
+      errors.form = 'Користувача не авторизовано';
+    }
   }
   isLoading.value = false;
 };
@@ -198,17 +200,17 @@ watch(isOpen, (newValue) => {
                   }"
                 >
                   <UInput
+                    v-model="state.email"
                     icon="i-heroicons-envelope"
                     variant="none"
                     color="primary"
-                    v-model="state.email"
-                    @focus="handleFocus('email')"
-                    @blur="handleBlur('email')"
                     :ui="{
                       base: 'border-t-0 border-l-0 border-r-0 border-b-2 focus:ring-0',
                       input: 'bg-transparent',
                       rounded: 'rounded-none',
                     }"
+                    @focus="handleFocus('email')"
+                    @blur="handleBlur('email')"
                   >
                     <label>Email</label>
                   </UInput>
@@ -225,36 +227,36 @@ watch(isOpen, (newValue) => {
                   <div class="password-input-wrapper">
                     <UInput
                       v-if="!togglePasswordVisibility"
+                      v-model="state.password"
                       type="password"
                       icon="i-heroicons-lock-closed"
                       variant="none"
                       color="primary"
-                      v-model="state.password"
-                      @focus="handleFocus('password')"
-                      @blur="handleBlur('password')"
                       :ui="{
                         base: 'border-t-0 border-l-0 border-r-0 border-b-2 focus:ring-0',
                         input: 'bg-transparent',
                         rounded: 'rounded-none',
                       }"
-                      :passwordVisible="false"
+                      :password-visible="false"
+                      @focus="handleFocus('password')"
+                      @blur="handleBlur('password')"
                     >
                       <label>Пароль</label>
                     </UInput>
                     <UInput
                       v-else
+                      v-model="state.password"
                       type="text"
                       icon="i-heroicons-lock-closed"
                       variant="none"
                       color="primary"
-                      v-model="state.password"
-                      @focus="handleFocus('password')"
-                      @blur="handleBlur('password')"
                       :ui="{
                         base: 'border-t-0 border-l-0 border-r-0 border-b-2 focus:ring-0',
                         input: 'bg-transparent',
                         rounded: 'rounded-none',
                       }"
+                      @focus="handleFocus('password')"
+                      @blur="handleBlur('password')"
                     >
                       <label>Пароль</label>
                     </UInput>
@@ -266,8 +268,8 @@ watch(isOpen, (newValue) => {
                           ? 'i-heroicons-eye-slash'
                           : 'i-heroicons-eye'
                       "
-                      @click="handleTogglePasswordVisibility"
                       class="password-toggle"
+                      @click="handleTogglePasswordVisibility"
                     />
                   </div>
                 </UFormGroup>
@@ -284,35 +286,35 @@ watch(isOpen, (newValue) => {
                 <div class="password-input-wrapper">
                   <UInput
                     v-if="!togglePasswordVisibility"
+                    v-model="state.passConfirm"
                     type="password"
                     icon="i-heroicons-lock-closed"
                     variant="none"
                     color="primary"
-                    v-model="state.passConfirm"
-                    @focus="handleFocus('passConfirm')"
-                    @blur="handleBlur('passConfirm')"
                     :ui="{
                       base: 'border-t-0 border-l-0 border-r-0 border-b-2 focus:ring-0',
                       input: 'bg-transparent',
                       rounded: 'rounded-none',
                     }"
+                    @focus="handleFocus('passConfirm')"
+                    @blur="handleBlur('passConfirm')"
                   >
                     <label>Повторіть пароль</label>
                   </UInput>
                   <UInput
                     v-else
+                    v-model="state.passConfirm"
                     type="text"
                     icon="i-heroicons-lock-closed"
                     variant="none"
                     color="primary"
-                    v-model="state.passConfirm"
-                    @focus="handleFocus('passConfirm')"
-                    @blur="handleBlur('passConfirm')"
                     :ui="{
                       base: 'border-t-0 border-l-0 border-r-0 border-b-2 focus:ring-0',
                       input: 'bg-transparent',
                       rounded: 'rounded-none',
                     }"
+                    @focus="handleFocus('passConfirm')"
+                    @blur="handleBlur('passConfirm')"
                   >
                     <label>Повторіть пароль</label>
                   </UInput>
@@ -324,8 +326,8 @@ watch(isOpen, (newValue) => {
                         ? 'i-heroicons-eye-slash'
                         : 'i-heroicons-eye'
                     "
-                    @click="handleTogglePasswordVisibility"
                     class="password-toggle"
+                    @click="handleTogglePasswordVisibility"
                   />
                 </div>
               </UFormGroup>
