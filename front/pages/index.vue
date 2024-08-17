@@ -108,7 +108,7 @@
           <Map :coworkings="spacesDataApi || []" />
         </template>
         <template v-else>
-          <div v-if="isLoad()" class="no-results-message">
+          <div v-if="isLoad" class="no-results-message">
             <h3 class="text-center">На жаль нічого не знайдено...</h3>
             <br />
             <h3 class="text-center">
@@ -116,7 +116,7 @@
             </h3>
           </div>
         </template>
-        <Loader v-if="!isLoad()" />
+        <Loader v-if="isLoad" />
       </div>
     </section>
   </main>
@@ -129,6 +129,7 @@ import SearchInput from '@/components/SearchInput.vue';
 import useFallbackReviews from '@/mixins/useFallbackReviews';
 
 const isLoading = ref(false);
+const isLoad = ref(false);
 const { $api } = useNuxtApp();
 const isHovered = ref(false);
 const spacesDataApi = ref([]);

@@ -21,7 +21,7 @@ interface User {
   facabook_id: string;
   google_id: string;
   name: string;
-  surnaame: string;
+  surname: string;
   phone: string;
   picture: string;
   role: string;
@@ -39,7 +39,7 @@ interface Advantage {
 }
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    accessToken: localStorage.getItem('access_token') || '',
+    accessToken: '',
     isLoading: false,
     isAuthed: false,
     isMenuOpen: false,
@@ -49,7 +49,6 @@ export const useAuthStore = defineStore('auth', {
     activeTabAuthUserMenu: '',
     menuOpen: false,
     manager: {} as User | null,
-    // user: null as any,
     allAdvantages: [] as Advantage[],
     currentBookSpace: {} as BookSpace,
     social: [
@@ -76,14 +75,14 @@ export const useAuthStore = defineStore('auth', {
 
     setRole(role: string) {
       this.userRole = role;
-      if (process.client) {
+      if (typeof window !== 'undefined') {
         localStorage.setItem('userRole', role);
       }
     },
 
     setAccessToken(token: string) {
       this.accessToken = token;
-      if (process.client) {
+      if (typeof window !== 'undefined') {
         localStorage.setItem('access_token', token);
       }
     },
@@ -92,7 +91,7 @@ export const useAuthStore = defineStore('auth', {
       const { $api } = useNuxtApp();
       try {
         const response = await $api.post('/logout');
-        if (response) {
+        if (response && typeof window !== 'undefined') {
           localStorage.clear();
           this.authUser = {} as User;
           this.userRole = 'unknown';
@@ -107,13 +106,15 @@ export const useAuthStore = defineStore('auth', {
 
     getManagerData(data: User) {
       this.manager = data;
-      localStorage.setItem('managerData', JSON.stringify(data));
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('managerData', JSON.stringify(data));
+      }
     },
 
     getUserData(data: User) {
       this.authUser = data;
       this.isAuthed = true;
-      if (process.client) {
+      if (typeof window !== 'undefined') {
         localStorage.setItem('userData', JSON.stringify(data));
       }
     },
@@ -132,7 +133,7 @@ export const useAuthStore = defineStore('auth', {
 
     setAllAdvantages(data: Advantage[]) {
       this.allAdvantages = data;
-      if (process.client) {
+      if (typeof window !== 'undefined') {
         localStorage.setItem('allAdvantages', JSON.stringify(data));
       }
     },

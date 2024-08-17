@@ -1,23 +1,20 @@
 <template>
-  <div
-    :class="{ 'bg-gray-100': true, 'bg-white': isHomePage }"
-    class="header-main"
-  >
+  <div :class="{ 'home-page': isHomePage }" class="header-main bg-gray-100">
     <div class="container mx-auto px-4 py-6">
       <div class="flex justify-between items-center">
         <div class="flex items-center">
-          <div class="cursor-pointer" @click="hideMenu">
+          <div class="cursor-pointer logo" @click="hideMenu">
             <NuxtLink to="/">
               <img src="~/assets/favicon.ico" alt="logo" class="w-10 h-10" />
             </NuxtLink>
           </div>
         </div>
-        <div class="flex items-center space-x-4">
-          <span class="text-gray-700">Ua</span>
-          <span class="text-gray-400">|</span>
-          <span class="text-gray-700">En</span>
+        <div class="flex items-center space-x-4 header-buttons text-white">
+          <span сlass="cursor-pointer font-bold">Ua</span>
+          <span>|</span>
+          <span>En</span>
           <button
-            class="p-2 rounded-full hover:bg-gray-200 focus:outline-none"
+            class="md:hidden p-2 rounded-full hover:bg-gray-200 focus:outline-none"
             @click="toggleMenu"
           >
             <img
@@ -28,13 +25,13 @@
           </button>
           <template v-if="!isAuthed">
             <button
-              class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none"
+              class="hidden md:block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none"
               @click="openRegistration"
             >
               Зареєструватися
             </button>
             <button
-              class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none"
+              class="hidden md:block px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none"
               @click="openLogin"
             >
               Увійти
@@ -50,7 +47,7 @@
         />
         <Registration v-else @open-login-component="changeCompenent" />
       </div>
-      <p class="mt-6 text-center text-gray-700">
+      <p class="mt-6 text-center text-gray-700 text-white">
         <span class="font-bold">Memory</span> - Пам'ять про міста, що
         постраждали від військової агресії рф.
       </p>

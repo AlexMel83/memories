@@ -50,61 +50,50 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { useAuthStore } from '@/stores/auth.store.ts';
 import TheFooterMain from '../components/TheFooterMain.vue';
 import HeaderAuthUsers from '~/layouts/headers/HeaderAuthUsers.vue';
 
-export default {
-  components: {
-    TheFooterMain,
-    HeaderAuthUsers,
-  },
-  data() {
-    return {
-      isScrollToTopInFooter: false,
-      showScrollToTop: false,
-    };
-  },
-  computed: {
-    role() {
-      return this.$store.state.userRole;
-    },
-  },
-  mounted() {
-    this.getRole();
-    window.addEventListener('scroll', this.handleScroll);
-  },
-  unmounted() {
-    window.removeEventListener('scroll', this.handleScroll);
-  },
-  methods: {
-    scrollToTop() {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    },
-    handleScroll() {
-      const footer = this.$refs.footerRef;
+const store = useAuthStore();
+const isScrollToTopInFooter = ref(false);
+const showScrollToTop = ref(false);
+const footerRef = ref(null);
 
-      if (footer && footer.$el) {
-        const footerRect = footer.$el.getBoundingClientRect();
-        const isInFooter =
-          footerRect.top <= window.innerHeight && footerRect.bottom >= 0;
+const role = computed(() => store.userRole);
 
-        this.isScrollToTopInFooter = isInFooter;
-
-        const scrollPosition = window.scrollY;
-        const screenHeight = window.innerHeight;
-        this.showScrollToTop = scrollPosition > screenHeight;
-      }
-    },
-    getRole() {
-      if (localStorage.getItem('userRole')) {
-        this.$store.state.userRole = localStorage.getItem('userRole');
-      } else {
-        this.$store.state.userRole = 'unknown';
-      }
-    },
-  },
+const scrollToTop = () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 };
+
+const handleScroll = () => {
+  if (footerRef.value) {
+    const footerRect = footerRef.value;
+    const isInFooter =
+      footerRect.top <= window.innerHeight && footerRect.bottom >= 0;
+
+    isScrollToTopInFooter.value = isInFooter;
+
+    const scrollPosition = window.scrollY;
+    const screenHeight = window.innerHeight;
+    showScrollToTop.value = scrollPosition > screenHeight;
+  }
+};
+
+const getRole = () => {
+  const userRole = localStorage.getItem('userRole') || '';
+  store.userRole = userRole ? userRole : 'unknown';
+};
+
+onMounted(() => {
+  getRole();
+  window.addEventListener('scroll', handleScroll);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll);
+});
 </script>
 
 <style>

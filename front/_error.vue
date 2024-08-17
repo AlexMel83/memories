@@ -1,5 +1,5 @@
 <template>
-  <div v-bind="$attrs">
+  <div>
     <TheHeaderMain />
     <NuxtLayout name="404">
       <div>
@@ -12,7 +12,6 @@
 
 <script setup>
 const router = useRouter();
-
 const goBack = () => {
   router.push('/');
 };

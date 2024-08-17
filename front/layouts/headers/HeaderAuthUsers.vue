@@ -2,15 +2,12 @@
   <div :class="{ 'header-main': true, 'home-page': isHomePage }">
     <div class="header-wrapper">
       <div class="logo-container">
-        <div class="logo" @click="hideMenu">
+        <div class="cursor-pointer logo" @click="hideMenu">
           <NuxtLink to="/">
-            <img src="~/assets/logo.png" alt="logo" />
+            <img src="~/assets/favicon.ico" alt="logo" class="w-10 h-10" />
           </NuxtLink>
         </div>
         <div class="header-buttons">
-          <!-- <div class="lang">
-            <span class="lang-active">Ua &nbsp; </span><span> | En</span>
-          </div> -->
           <div class="auth-user-name">
             <UserName />
           </div>
@@ -36,76 +33,72 @@
         </div>
         <component :is="getMenu()" />
       </div>
-      <p class="header-text">
-        <span class="bold">EduHUB</span> - обирай коворкінг для ефективного
-        навчання та роботи.
+      <p class="mt-6 text-center text-gray-700 text-white">
+        <span class="font-bold">Memory</span> - Пам'ять про міста, що
+        постраждали від військової агресії рф.
       </p>
     </div>
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import { useAuthStore } from '@/stores/auth.store.ts';
 import ManagerMenu from '~/layouts/menuAuthUsers/ManagerMenu.vue';
 import UserMenu from '~/layouts/menuAuthUsers/UserMenu.vue';
 import AdminMenu from '~/layouts/menuAuthUsers/AdminMenu.vue';
 import UserName from '~/layouts/headers/UserName.vue';
 
-export default {
-  components: {
-    ManagerMenu,
-    UserMenu,
-    AdminMenu,
-    UserName,
-  },
-  data() {
-    return {
-      menuOpen: false,
-    };
-  },
-  computed: {
-    isHomePage() {
-      return this.$route.path === '/';
-    },
-    isMenuOpen() {
-      return this.$store.state.menuOpen;
-    },
-    role() {
-      return this.$store.state.userRole;
-    },
-  },
-  mounted() {
-    this.setUserData();
-  },
-  methods: {
-    hideMenu() {
-      this.$store.state.menuOpen = false;
-    },
-    toggleMenu() {
-      this.$store.state.menuOpen = !this.$store.state.menuOpen;
-    },
-    changeCompenent() {
-      this.menuLogin = !this.menuLogin;
-    },
-    getMenu() {
-      switch (this.role) {
-        case 'manager':
-          return ManagerMenu;
-        case 'user':
-          return UserMenu;
-        case 'admin':
-          return AdminMenu;
-      }
-    },
-    setUserData() {
-      if (localStorage.getItem('authUserData')) {
-        this.$store.commit(
-          'setUserData',
-          JSON.parse(localStorage.getItem('authUserData')),
-        );
-      }
-    },
-  },
+// Define the store
+const store = useAuthStore();
+
+// State
+const menuOpen = ref(false);
+
+// Computed properties
+const route = useRoute();
+const isHomePage = computed(() => route.path === '/');
+const isMenuOpen = computed(() => store.menuOpen);
+const role = computed(() => store.userRole);
+
+// Methods
+const hideMenu = () => {
+  store.menuOpen = false;
 };
+
+const toggleMenu = () => {
+  store.menuOpen = !store.menuOpen;
+};
+
+const changeComponent = () => {
+  menuOpen.value = !menuOpen.value;
+};
+
+const getMenu = () => {
+  switch (role.value) {
+    case 'manager':
+      return ManagerMenu;
+    case 'user':
+      return UserMenu;
+    case 'admin':
+      return AdminMenu;
+    default:
+      return null;
+  }
+};
+
+const setUserData = () => {
+  const authUserData = localStorage.getItem('authUserData');
+  if (authUserData) {
+    store.setUserData(JSON.parse(authUserData));
+  }
+};
+
+// Lifecycle hook
+onMounted(() => {
+  setUserData();
+});
 </script>
 
 <style scoped>
