@@ -154,8 +154,6 @@ const handleSubmit = async (event) => {
         errors.email = 'Помилка при валідації';
       }
     }
-    console.log(res);
-    console.log(errors);
   } catch (error) {
     if (error) {
       errors.form = 'Користувача не авторизовано';
