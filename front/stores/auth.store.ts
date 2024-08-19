@@ -41,6 +41,7 @@ interface Advantage {
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     accessToken: '',
+    openLoginRegistration: false,
     isLoading: false,
     isAuthed: false,
     isMenuOpen: false,
@@ -147,6 +148,10 @@ export const useAuthStore = defineStore('auth', {
 
     toggleMenu() {
       this.isMenuOpen = !this.isMenuOpen;
+    },
+
+    toggleModalLogReg() {
+      this.openLoginregistration = !this.openLoginregistration;
     },
 
     addToFavorites(space: BookSpace) {

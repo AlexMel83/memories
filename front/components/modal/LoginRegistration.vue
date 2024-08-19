@@ -194,8 +194,6 @@ watch(isOpen, (newValue) => {
 
 <template>
   <div>
-    <UButton label="Login" @click="isOpen = true" />
-
     <UModal v-model="isOpen" prevent-close>
       <UCard
         :ui="{
@@ -337,7 +335,7 @@ watch(isOpen, (newValue) => {
                     variant="none"
                     color="primary"
                     :ui="{
-                      base: 'border-t-0 border-l-0 border-r-0 border-b-2 focus:ring-0',
+                      base: 'border-t-0 border-l-0 border-р-0 border-b-2 focus:ring-0',
                       input: 'bg-transparent',
                       rounded: 'rounded-none',
                     }"
@@ -354,7 +352,7 @@ watch(isOpen, (newValue) => {
                     variant="none"
                     color="primary"
                     :ui="{
-                      base: 'border-t-0 border-l-0 border-r-0 border-b-2 focus:ring-0',
+                      base: 'border-t-0 border-l-0 border-р-0 border-b-2 focus:ring-0',
                       input: 'bg-transparent',
                       rounded: 'rounded-none',
                     }"

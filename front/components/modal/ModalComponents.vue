@@ -6,15 +6,21 @@
       </button>
       <Registration v-if="openRegistration" />
       <Login v-if="openLogin" :initial-email="initialEmail" />
+      <LoginRegistration
+        v-if="openLoginRegistration"
+        :isOpen="isLoginModalOpen"
+        @update:isOpen="isLoginModalOpen = $event"
+      />
       <p>{{ textModalMessage }}</p>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
 import Registration from '~/components/modal/Registration.vue';
 import Login from '~/components/modal/Login.vue';
+import LoginRegistration from '~/components/modal/LoginRegistration.vue';
+import { useAuthStore } from '@/stores/auth.store.ts';
 
 defineProps({
   initialEmail: {
@@ -23,16 +29,16 @@ defineProps({
   },
 });
 
-// Объявляем событие closeModal
+const store = useAuthStore();
 const emit = defineEmits(['closeModal']);
 
 // Переменные состояния модального окна
-var modal = ref(false);
-var openRegistration = ref(false);
-var openLogin = ref(false);
-var openBook = ref(false);
-var openBookSpace = ref(false);
-let textModalMessage = ref('');
+const modal = ref(false);
+const openLoginRegistration = ref(false);
+const openRegistration = ref(false);
+const openLogin = ref(false);
+const textModalMessage = ref('');
+const isLoginModalOpen = ref(false);
 
 // Работа с глобальной шиной событий
 const bus = useNuxtApp().$bus;
@@ -43,6 +49,7 @@ bus.$on('Modal', (data) => {
   openBook.value = data.showBook;
   openBookSpace.value = data.showBookSpace;
   textModalMessage.value = data.textModalMessage;
+  openLoginRegistration.value = data.showLoginRegistration;
 });
 
 // Метод закрытия модального окна
@@ -51,6 +58,10 @@ function closeModal() {
   document.body.style.position = '';
   bus.$emit('Modal', { openModal: false });
 }
+
+const openModal = () => {
+  isLoginModalOpen.value = true;
+};
 </script>
 
 <style scoped>

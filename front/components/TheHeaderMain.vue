@@ -32,7 +32,7 @@
             </button>
             <button
               class="hidden md:block px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none"
-              @click="openLogin"
+              @click="openLoginRegistration"
             >
               Увійти
             </button>
@@ -134,6 +134,15 @@ const openLogin = () => {
       openModal: true,
     });
   }
+};
+
+const openLoginRegistration = () => {
+  document.documentElement.style.overflow = 'hidden';
+  useNuxtApp().$bus.$emit('Modal', {
+    showLoginRegistration: true,
+    openModal: true,
+    email: email.value,
+  });
 };
 
 const changeCompenent = () => {
