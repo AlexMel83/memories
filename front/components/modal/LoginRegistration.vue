@@ -129,13 +129,33 @@ const handleSubmit = async (event) => {
       errors,
     );
 
-    if (res && [200, 201].includes(res.status)) {
+    if (
+      res &&
+      [200, 201].includes(res.status) &&
+      ![400, 401, 403, 404, 500].includes(res.data.status)
+    ) {
       const data = res.data;
       authStore.setUserData(data);
       console.log(data);
       isOpen.value = false;
       clearVars();
     }
+    if (res.data && res.data.message) {
+      if (res.data.message.includes('Невірний пароль')) {
+        errors.password = 'Невірний пароль';
+      } else if (res.data.message.includes('mail-server')) {
+        errors.email =
+          'mail server is not responding, activation-email was not sent';
+      } else if (res.data.message.includes('вже існує')) {
+        errors.email = 'Ця пошта вже зареєстрована';
+      } else if (res.data.message.includes('не знайдений')) {
+        errors.email = 'даний email не зареєстровано';
+      } else if (res.data.message.includes('Помилка при валідації')) {
+        errors.email = 'Помилка при валідації';
+      }
+    }
+    console.log(res);
+    console.log(errors);
   } catch (error) {
     if (error) {
       errors.form = 'Користувача не авторизовано';
@@ -165,7 +185,7 @@ watch(isOpen, (newValue) => {
             <h3
               class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
             >
-              StarHub login
+              Memory login
             </h3>
             <UButton
               color="gray"
