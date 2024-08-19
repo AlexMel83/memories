@@ -1,9 +1,9 @@
 <script setup>
-import { useAuthStore } from '@/stores/auth.store.ts';
+import { useAuthStore } from '~/stores/auth.store';
 import { object, string, ref as yupRef } from 'yup';
 import { defineShortcuts } from '#imports';
 
-const { $api } = useNuxtApp();
+const { $api, $load } = useNuxtApp();
 const authStore = useAuthStore();
 
 const minPwd = 4;
@@ -78,6 +78,11 @@ const registrationSchema = object({
   ),
 });
 
+const openModal = () => {
+  isOpen.value = true;
+};
+defineExpose({ openModal });
+
 defineShortcuts({
   escape: {
     usingInput: true,
@@ -114,61 +119,15 @@ const handleSubmit = async (event) => {
     password: state.password,
     role: currentTab.value === 1 ? 'user' : '',
   };
-  let res = null;
+
   try {
-    if (currentTab.value === 0) {
-      res = await $api.post('/login', payload).then((response) => {
-        if (
-          response.data.status == 500 &&
-          response.data.message.includes('Користувач з email', 'не знайдений')
-        ) {
-          textErrorLogin.value = 'даний email незареєстрований';
-        } else if (
-          response.data.status == 400 &&
-          response.data.message.includes('Обліковий запис', 'не активовано')
-        ) {
-          textErrorLogin.value =
-            'обліковий запис не активовано, перевірте пошту';
-        } else if (
-          response.data.status == 400 &&
-          response.data.message.includes('Невірний пароль')
-        ) {
-          textPasswordError.value = 'невірний пароль';
-        } else if (response.data.statusCode !== 401) {
-          authStore.getUserData(response.data.user);
-          accessToken.value = response.data.accessToken;
-          userId.value = response.data.user.id;
-          authStore.setRole(response.data.user.role);
-          email.value = emailValidation.value.value;
-          textErrorLogin.value = '';
-          if (bus) {
-            bus.$emit('Modal', { openModal: false });
-          }
-          if (typeof window !== 'undefined') {
-            document.documentElement.style.overflow = '';
-            document.body.style.position = '';
-          }
-        }
-      });
-    } else {
-      res = await $api.post('/registration', payload).then((response) => {
-        if (
-          response.data.status == 400 &&
-          response.data.message.includes('already exist')
-        ) {
-          emailError.value = 'даний email вже зареєстрований';
-        } else {
-          emailError.value = '';
-          bus.$emit('Modal', {
-            openModal: true,
-            showLogin: false,
-            showRegistration: false,
-            textModalMessage:
-              'На зазначену Вами електронну пошту надіслано лист з посиланням, перейдіть по ньому для активації аккаунту.',
-          });
-        }
-      });
-    }
+    const res = await $load(
+      () =>
+        currentTab.value === 0
+          ? $api.auth.signIn(payload)
+          : $api.auth.signUp(payload),
+      errors,
+    );
 
     if (res && [200, 201].includes(res.status)) {
       const data = res.data;
@@ -178,9 +137,7 @@ const handleSubmit = async (event) => {
     }
     console.log(res);
   } catch (error) {
-    if (error) {
-      errors.form = 'Користувача не авторизовано';
-    }
+    errors.form = 'Користувача не авторизовано';
   }
   isLoading.value = false;
 };
@@ -206,7 +163,7 @@ watch(isOpen, (newValue) => {
             <h3
               class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
             >
-              Memory login
+              StarHub login
             </h3>
             <UButton
               color="gray"
@@ -243,17 +200,17 @@ watch(isOpen, (newValue) => {
                   }"
                 >
                   <UInput
-                    v-model="state.email"
                     icon="i-heroicons-envelope"
                     variant="none"
                     color="primary"
+                    v-model="state.email"
+                    @focus="handleFocus('email')"
+                    @blur="handleBlur('email')"
                     :ui="{
                       base: 'border-t-0 border-l-0 border-r-0 border-b-2 focus:ring-0',
                       input: 'bg-transparent',
                       rounded: 'rounded-none',
                     }"
-                    @focus="handleFocus('email')"
-                    @blur="handleBlur('email')"
                   >
                     <label>Email</label>
                   </UInput>
@@ -270,36 +227,36 @@ watch(isOpen, (newValue) => {
                   <div class="password-input-wrapper">
                     <UInput
                       v-if="!togglePasswordVisibility"
-                      v-model="state.password"
                       type="password"
                       icon="i-heroicons-lock-closed"
                       variant="none"
                       color="primary"
+                      v-model="state.password"
+                      @focus="handleFocus('password')"
+                      @blur="handleBlur('password')"
                       :ui="{
                         base: 'border-t-0 border-l-0 border-r-0 border-b-2 focus:ring-0',
                         input: 'bg-transparent',
                         rounded: 'rounded-none',
                       }"
-                      :password-visible="false"
-                      @focus="handleFocus('password')"
-                      @blur="handleBlur('password')"
+                      :passwordVisible="false"
                     >
                       <label>Пароль</label>
                     </UInput>
                     <UInput
                       v-else
-                      v-model="state.password"
                       type="text"
                       icon="i-heroicons-lock-closed"
                       variant="none"
                       color="primary"
+                      v-model="state.password"
+                      @focus="handleFocus('password')"
+                      @blur="handleBlur('password')"
                       :ui="{
                         base: 'border-t-0 border-l-0 border-r-0 border-b-2 focus:ring-0',
                         input: 'bg-transparent',
                         rounded: 'rounded-none',
                       }"
-                      @focus="handleFocus('password')"
-                      @blur="handleBlur('password')"
                     >
                       <label>Пароль</label>
                     </UInput>
@@ -311,8 +268,8 @@ watch(isOpen, (newValue) => {
                           ? 'i-heroicons-eye-slash'
                           : 'i-heroicons-eye'
                       "
-                      class="password-toggle"
                       @click="handleTogglePasswordVisibility"
+                      class="password-toggle"
                     />
                   </div>
                 </UFormGroup>
@@ -329,35 +286,35 @@ watch(isOpen, (newValue) => {
                 <div class="password-input-wrapper">
                   <UInput
                     v-if="!togglePasswordVisibility"
-                    v-model="state.passConfirm"
                     type="password"
                     icon="i-heroicons-lock-closed"
                     variant="none"
                     color="primary"
+                    v-model="state.passConfirm"
+                    @focus="handleFocus('passConfirm')"
+                    @blur="handleBlur('passConfirm')"
                     :ui="{
-                      base: 'border-t-0 border-l-0 border-р-0 border-b-2 focus:ring-0',
+                      base: 'border-t-0 border-l-0 border-r-0 border-b-2 focus:ring-0',
                       input: 'bg-transparent',
                       rounded: 'rounded-none',
                     }"
-                    @focus="handleFocus('passConfirm')"
-                    @blur="handleBlur('passConfirm')"
                   >
                     <label>Повторіть пароль</label>
                   </UInput>
                   <UInput
                     v-else
-                    v-model="state.passConfirm"
                     type="text"
                     icon="i-heroicons-lock-closed"
                     variant="none"
                     color="primary"
+                    v-model="state.passConfirm"
+                    @focus="handleFocus('passConfirm')"
+                    @blur="handleBlur('passConfirm')"
                     :ui="{
-                      base: 'border-t-0 border-l-0 border-р-0 border-b-2 focus:ring-0',
+                      base: 'border-t-0 border-l-0 border-r-0 border-b-2 focus:ring-0',
                       input: 'bg-transparent',
                       rounded: 'rounded-none',
                     }"
-                    @focus="handleFocus('passConfirm')"
-                    @blur="handleBlur('passConfirm')"
                   >
                     <label>Повторіть пароль</label>
                   </UInput>
@@ -369,8 +326,8 @@ watch(isOpen, (newValue) => {
                         ? 'i-heroicons-eye-slash'
                         : 'i-heroicons-eye'
                     "
-                    class="password-toggle"
                     @click="handleTogglePasswordVisibility"
+                    class="password-toggle"
                   />
                 </div>
               </UFormGroup>

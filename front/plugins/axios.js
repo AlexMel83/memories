@@ -1,44 +1,46 @@
 import axios from 'axios';
 import { useAuthStore } from '~/stores/auth.store';
+import apiModule from '../api/index';
 
-const baseURL = 'https://hub-api.intita.com';
+// const baseURL = 'https://hub-api.intita.com';
 // const baseURL = "http://localhost:4041"
 
-let api;
+export default defineNuxtPlugin((nuxtApp) => {
+  const config = useRuntimeConfig();
+  const baseURL = config.public.apiBase || 'https://hub-api.intita.com';
 
-export const initialDataToken = () => {
-  const authStore = useAuthStore();
-  api.defaults.headers.Authorization = `Bearer ${authStore.accessToken}`;
-};
-
-export const refreshToken = async () => {
-  const authStore = useAuthStore();
-  try {
-    const response = await api.get('/refresh');
-    authStore.setAccessToken(response.data.accessToken);
-  } catch (error) {
-    console.error(error);
-    authStore.logOut();
-    if (axios.isCancel(error)) {
-      throw error;
-    }
-  }
-};
-
-export default defineNuxtPlugin(() => {
-  const authStore = useAuthStore();
-
-  api = axios.create({
+  const axiosInstance = axios.create({
     baseURL,
     headers: {
       Authorization: '',
     },
+    withCredentials: true,
   });
 
-  api.defaults.withCredentials = true;
+  const api = apiModule(axiosInstance);
 
-  api.interceptors.request.use(async (config) => {
+  const initialDataToken = () => {
+    const authStore = useAuthStore();
+    axiosInstance.defaults.headers.Authorization = `Bearer ${authStore.accessToken}`;
+  };
+
+  const refreshToken = async () => {
+    const authStore = useAuthStore();
+    try {
+      const response = await api.auth.refresh(authStore.refreshToken);
+      authStore.setAccessToken(response.data.accessToken);
+    } catch (error) {
+      console.error(error);
+      authStore.logOut();
+      if (axios.isCancel(error)) {
+        throw error;
+      }
+    }
+  };
+
+  axiosInstance.interceptors.request.use(async (config) => {
     initialDataToken();
+    const authStore = useAuthStore();
     if (authStore.accessToken) {
       config.headers.Authorization = `Bearer ${authStore.accessToken}`;
     } else {
@@ -47,23 +49,19 @@ export default defineNuxtPlugin(() => {
     return config;
   });
 
-  api.interceptors.response.use(
+  axiosInstance.interceptors.response.use(
     (response) => response,
     async (error) => {
-      if (error.response.status == 401 || error.response.status == 403) {
+      if (error.response?.status === 401 || error.response?.status === 403) {
         await refreshToken();
         initialDataToken();
         const originalRequest = error.config;
-        originalRequest.headers.Authorization = `Bearer ${authStore.accessToken}`;
-        return api(originalRequest);
+        originalRequest.headers.Authorization = `Bearer ${useAuthStore().accessToken}`;
+        return axiosInstance(originalRequest);
       }
       return Promise.reject(error);
     },
   );
 
-  return {
-    provide: {
-      api: api,
-    },
-  };
+  nuxtApp.provide('api', api);
 });

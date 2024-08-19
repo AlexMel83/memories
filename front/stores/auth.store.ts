@@ -2,19 +2,6 @@ import { defineStore } from 'pinia';
 import { useNuxtApp } from '#app';
 import { useLocalStorage } from '@vueuse/core';
 
-interface SocialLink {
-  id: number;
-  title: string;
-  src: string;
-  link: string;
-}
-
-interface BookSpace {
-  id: number;
-  price: string;
-  amount: string;
-}
-
 interface User {
   id: number;
   email: string;
@@ -41,7 +28,6 @@ interface Advantage {
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     accessToken: '',
-    openLoginRegistration: false,
     isLoading: false,
     isAuthed: false,
     isMenuOpen: false,
@@ -49,27 +35,12 @@ export const useAuthStore = defineStore('auth', {
     userData: null,
     authUser: {} as User,
     activeTabAuthUserMenu: '',
-    menuOpen: false,
     manager: {} as User | null,
     allAdvantages: [] as Advantage[],
-    currentBookSpace: {} as BookSpace,
-    social: [
-      { id: 1, title: 'telegram', src: '../telegram.png', link: '' },
-      { id: 2, title: 'viber', src: '../viber.png', link: '' },
-      { id: 3, title: 'instagram', src: '../instagram.png', link: '' },
-      { id: 4, title: 'facebook', src: '../facebook.png', link: '' },
-    ] as SocialLink[],
-    favoriteSpaces: [] as BookSpace[],
     initialEmail: '',
-    userId: useLocalStorage('userId', null),
-    email: useLocalStorage('email', ''),
   }),
 
   actions: {
-    setInitialEmail(email: string) {
-      this.initialEmail = email;
-    },
-
     setName(ob: Partial<typeof this.$state>) {
       Object.assign(this, ob);
       this.isAuthed = true;

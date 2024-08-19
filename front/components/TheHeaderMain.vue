@@ -25,14 +25,8 @@
           </button>
           <template v-if="!isAuthed">
             <button
-              class="hidden md:block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none"
-              @click="openRegistration"
-            >
-              Зареєструватися
-            </button>
-            <button
               class="hidden md:block px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none"
-              @click="openLoginRegistration"
+              @click="openLoginModal"
             >
               Увійти
             </button>
@@ -53,14 +47,12 @@
       </p>
     </div>
   </div>
-  <ModalComponents :initial-email="email" @close-modal="closeModal" />
+  <ModalLoginRegistration ref="loginRegistrationRef" />
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useAuthStore } from '@/stores/auth.store';
-import ModalComponents from '~/components/modal/ModalComponents.vue';
 import Login from '~/components/modal/Login.vue';
 import Registration from '~/components/modal/Registration.vue';
 
@@ -71,14 +63,20 @@ const localStorageEmail = useLocalStorage('email', null);
 const authStore = useAuthStore();
 const route = useRoute();
 
+const loginRegistrationRef = ref(null);
 const menuOpen = ref(false);
 const menuLogin = ref(true);
-const isModalOpen = ref(false);
 const email = ref('');
 const authLink = ref('');
 
 const isAuthed = computed(() => authStore.isAuthed);
 const isHomePage = computed(() => route.path === '/');
+
+const openLoginModal = () => {
+  if (loginRegistrationRef.value) {
+    loginRegistrationRef.value.openModal();
+  }
+};
 
 onMounted(() => {
   const emailRegex = /([\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})/;
@@ -111,38 +109,6 @@ const hideMenu = () => {
 const toggleMenu = () => {
   menuOpen.value = !menuOpen.value;
   authStore.toggleMenu();
-};
-
-const closeModal = () => {
-  isModalOpen.value = false;
-  document.documentElement.style.overflow = '';
-};
-
-const openRegistration = () => {
-  document.documentElement.style.overflow = 'hidden';
-  useNuxtApp().$bus.$emit('Modal', {
-    showRegistration: true,
-    openModal: true,
-  });
-};
-
-const openLogin = () => {
-  if (window.innerWidth > 768) {
-    document.documentElement.style.overflow = 'hidden';
-    useNuxtApp().$bus.$emit('Modal', {
-      showLogin: true,
-      openModal: true,
-    });
-  }
-};
-
-const openLoginRegistration = () => {
-  document.documentElement.style.overflow = 'hidden';
-  useNuxtApp().$bus.$emit('Modal', {
-    showLoginRegistration: true,
-    openModal: true,
-    email: email.value,
-  });
 };
 
 const changeCompenent = () => {
