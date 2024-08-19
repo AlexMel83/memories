@@ -1,6 +1,6 @@
 <template>
   <div class="other-page">
-    <HeaderAuthUsers v-if="store?.authUser?.isactivated" />
+    <HeaderAuthUsers v-if="store?.authUser?.user?.isactivated" />
     <TheHeaderMain v-else />
 
     <NuxtPage />

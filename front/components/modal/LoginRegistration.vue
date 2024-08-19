@@ -131,11 +131,11 @@ const handleSubmit = async (event) => {
 
     if (res && [200, 201].includes(res.status)) {
       const data = res.data;
-      authStore.setUser(data);
+      authStore.setUserData(data);
+      console.log(data);
       isOpen.value = false;
       clearVars();
     }
-    console.log(res);
   } catch (error) {
     if (error) {
       errors.form = 'Користувача не авторизовано';

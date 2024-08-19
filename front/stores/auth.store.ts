@@ -77,13 +77,6 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    getManagerData(data: User) {
-      this.manager = data;
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('managerData', JSON.stringify(data));
-      }
-    },
-
     getUserData(data: User) {
       this.authUser = data;
       this.isAuthed = true;
@@ -96,10 +89,6 @@ export const useAuthStore = defineStore('auth', {
       this.allAdvantages = data;
     },
 
-    setManagerData(data: User) {
-      this.manager = data;
-    },
-
     setUserData(userData: User | string) {
       if (typeof userData === 'string') {
         this.authUser = JSON.parse(userData);
@@ -107,6 +96,7 @@ export const useAuthStore = defineStore('auth', {
       if (typeof userData === 'object') {
         this.authUser = { ...userData };
       }
+      localStorage.setItem('userData', JSON.stringify(userData));
     },
 
     setAllAdvantages(data: Advantage[]) {

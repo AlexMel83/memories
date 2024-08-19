@@ -156,7 +156,6 @@ onMounted(async () => {
 
 watch(searchTerm, async (newValue) => {
   await fetchCoworkings(newValue);
-  console.log('+', spacesDataApi.value);
 });
 
 const fetchCoworkings = async (searchQuery = null) => {
@@ -191,7 +190,7 @@ const fetchCoworkings = async (searchQuery = null) => {
 };
 
 const filteredSpaces = computed(() => {
-  const lowerCaseSearchTerm = searchTerm.value.toLowerCase();
+  const lowerCaseSearchTerm = searchTerm.value?.toLowerCase() || '';
   const startIndex = (page.value - 1) * perPage;
   const endIndex = startIndex + perPage;
   return spacesDataApi.value

@@ -42,8 +42,8 @@ watchEffect(() => {
         ? JSON.parse(authUser.value)
         : authUser.value;
 
-    userName.value = userData.name;
-    userSurname.value = userData.surname;
+    userName.value = userData.user.name;
+    userSurname.value = userData.user.surname;
   }
 });
 
