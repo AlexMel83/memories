@@ -1,3 +1,5 @@
+import type { AxiosInstance } from 'axios';
+
 export interface AuthResponse {
   status: number;
   data: {
@@ -26,13 +28,13 @@ export interface AuthResponse {
 export interface AuthApi {
   signIn(payload: { email: string; password: string }): Promise<AuthResponse>;
   signUp(payload: { email: string; password: string }): Promise<AuthResponse>;
-  logout(): Promise<any>;
+  logout(): Promise<void>;
   socAuth(provider: string): Promise<AuthResponse>;
   getAuthUser(authLink: string): Promise<AuthResponse>;
   refresh(refreshToken: string): Promise<AuthResponse>;
 }
 
-export default function (instance: any): AuthApi {
+export default function (instance: AxiosInstance): AuthApi {
   return {
     signIn(payload: {
       email: string;
@@ -51,7 +53,7 @@ export default function (instance: any): AuthApi {
     },
     socAuth(provider) {
       return instance.get(`/social-login/${provider}`, {
-        credentials: 'include',
+        // credentials: 'include',
       });
     },
     getAuthUser(authLink) {

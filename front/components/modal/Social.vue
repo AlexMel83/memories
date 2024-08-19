@@ -1,7 +1,6 @@
-<script setup lang="ts">
+<script setup>
 import LogosGoogleIcon from './LogosGoogleIcon.vue';
 import LogosFacebook from './LogosFacebook.vue';
-import type { AuthResponse } from '@/api/auth.js';
 
 const { $api, $load } = useNuxtApp();
 
@@ -9,18 +8,17 @@ const errors = reactive({
   textError: '',
 });
 
-const handleSocialLogin = async (provider: 'google' | 'facebook') => {
+const handleSocialLogin = async (provider) => {
   try {
-    const res: AuthResponse = await $load(
-      async () => $api.auth.socAuth(provider),
-      errors,
-    );
+    const res = await $load(async () => $api.auth.socAuth(provider), errors);
     console.log(res);
     if (res.data.url) {
       window.location.href = res.data.url;
     }
   } catch (error) {
-    errors.textError = 'Помилка при авторизації через соціальну мережу';
+    if (error) {
+      errors.textError = 'Помилка при авторизації через соціальну мережу';
+    }
   }
 };
 </script>

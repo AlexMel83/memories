@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
 import { useNuxtApp } from '#app';
-import { useLocalStorage } from '@vueuse/core';
 
 interface User {
   id: number;
@@ -63,7 +62,7 @@ export const useAuthStore = defineStore('auth', {
     async logOut() {
       const { $api } = useNuxtApp();
       try {
-        const response = await $api.post('/logout');
+        const response = await $api.auth.logout();
         if (response && typeof window !== 'undefined') {
           localStorage.clear();
           this.authUser = {} as User;
@@ -119,20 +118,6 @@ export const useAuthStore = defineStore('auth', {
 
     toggleMenu() {
       this.isMenuOpen = !this.isMenuOpen;
-    },
-
-    toggleModalLogReg() {
-      this.openLoginregistration = !this.openLoginregistration;
-    },
-
-    addToFavorites(space: BookSpace) {
-      this.favoriteSpaces.push(space);
-    },
-
-    removeFromFavorites(spaceId: number) {
-      this.favoriteSpaces = this.favoriteSpaces.filter(
-        (space) => space.id !== spaceId,
-      );
     },
     initializeStore() {
       if (process.client) {

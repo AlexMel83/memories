@@ -60,11 +60,9 @@ import {
   LPopup,
 } from '@vue-leaflet/vue-leaflet';
 import { reactive, defineProps, ref, computed, onMounted } from 'vue';
-import { useNuxtApp } from '#app';
-const { $config, $api } = useNuxtApp();
 const config = useRuntimeConfig();
 const baseURL = config.public.apiBase;
-const mapboxApiKey = $config.public.apiKeyMapbox;
+const mapboxApiKey = config.public.apiKeyMapbox;
 const props = defineProps({
   coworkings: {
     type: Array,
