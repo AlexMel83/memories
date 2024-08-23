@@ -6,16 +6,11 @@
     <section class="coworkings-list" :class="{ blurred: authStore.isMenuOpen }">
       <div class="spaces-wrapper">
         <template v-if="filteredSpaces.length > 0 && !isLoading">
-          <v-row>
-            <v-col
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div
               v-for="space in filteredSpaces"
               :key="space.id"
-              cols="12"
-              sm="6"
-              md="6"
-              lg="4"
-              xl="4"
-              class="spaces-col"
+              class="spaces-col p-4 bg-white shadow-md rounded-lg"
             >
               <nuxt-link class="container" :to="'/'">
                 <div class="photo">
@@ -96,8 +91,8 @@
                   </nuxt-link>
                 </div>
               </nuxt-link>
-            </v-col>
-          </v-row>
+            </div>
+          </div>
           <v-pagination
             v-model="page"
             :length="Math.ceil(spacesDataApi.length / perPage)"
