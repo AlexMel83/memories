@@ -132,7 +132,7 @@ provide('isUserDataReady', isUserDataReady);
     opacity 0.3s,
     visibility 0.3s;
   background-color: var(--space-bg);
-  z-index: 4;
+  z-index: 1000;
 }
 
 #scrollToTop.in-footer {
