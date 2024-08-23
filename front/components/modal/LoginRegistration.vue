@@ -121,6 +121,11 @@ const handleSubmit = async (event) => {
   };
 
   try {
+    if (currentTab.value === 1 && state.passConfirm !== state.password) {
+      errors.password = 'Портібно підтвердити пароль';
+      isLoading.value = false;
+      return;
+    }
     const res = await $load(
       () =>
         currentTab.value === 0
@@ -152,6 +157,8 @@ const handleSubmit = async (event) => {
         errors.email = 'даний email не зареєстровано';
       } else if (res.data.message.includes('Помилка при валідації')) {
         errors.email = 'Помилка при валідації';
+      } else if (res.data.message.includes('already exist')) {
+        errors.email = 'Користувач з такою поштою вже існує';
       }
     }
   } catch (error) {
