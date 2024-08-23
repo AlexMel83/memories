@@ -41,9 +41,9 @@
         />
         <Registration v-else @open-login-component="changeCompenent" />
       </div>
-      <p class="mt-6 text-center text-gray-700 text-white">
-        <span class="font-bold">Memory</span> - Пам'ять про міста, що
-        постраждали від військової агресії рф.
+      <p class="mt-6 text-center text-gray-700 text-white header-text">
+        <span class="font-bold">Мапа пам'яті:</span> Відновлення історії та
+        справедливості
       </p>
     </div>
   </div>
