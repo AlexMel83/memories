@@ -33,9 +33,9 @@
         </div>
         <component :is="getMenu()" />
       </div>
-      <p class="mt-6 text-center text-gray-700 text-white">
-        <span class="font-bold">Memory</span> - Пам'ять про міста, що
-        постраждали від військової агресії рф.
+      <p class="mt-6 text-center text-gray-700 text-white header-text">
+        <span class="font-bold">Мапа пам'яті:</span> Відновлення історії та
+        справедливості
       </p>
     </div>
   </div>
@@ -48,12 +48,8 @@ import ManagerMenu from '~/layouts/menuAuthUsers/ManagerMenu.vue';
 import UserMenu from '~/layouts/menuAuthUsers/UserMenu.vue';
 import AdminMenu from '~/layouts/menuAuthUsers/AdminMenu.vue';
 import UserName from '~/layouts/headers/UserName.vue';
-import { useLocalStorage } from '@vueuse/core';
 
-const localStorageAuthUser = useLocalStorage('userData', null);
 const store = useAuthStore();
-const isUserDataReady = ref(false);
-const authUser = ref({});
 
 const route = useRoute();
 const isHomePage = computed(() => route.path === '/');
@@ -80,21 +76,6 @@ const getMenu = () => {
       return null;
   }
 };
-
-const setUserData = () => {
-  if (localStorageAuthUser.value) {
-    store.setUserData(JSON.parse(localStorageAuthUser.value));
-    authUser.value = JSON.parse(localStorageAuthUser.value);
-    isUserDataReady.value = true;
-  }
-};
-
-onMounted(() => {
-  setUserData();
-});
-
-provide('authUser', authUser);
-provide('isUserDataReady', isUserDataReady);
 </script>
 
 <style scoped>

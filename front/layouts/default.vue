@@ -1,6 +1,6 @@
 <template>
   <div class="other-page">
-    <HeaderAuthUsers v-if="role !== 'unknown'" />
+    <HeaderAuthUsers v-if="store?.authUser?.user?.isactivated" />
     <TheHeaderMain v-else />
 
     <NuxtPage />
@@ -51,7 +51,6 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { useAuthStore } from '@/stores/auth.store.ts';
 import TheFooterMain from '../components/TheFooterMain.vue';
 import HeaderAuthUsers from '~/layouts/headers/HeaderAuthUsers.vue';
@@ -62,9 +61,8 @@ const store = useAuthStore();
 const isScrollToTopInFooter = ref(false);
 const showScrollToTop = ref(false);
 const footerRef = ref(null);
+const isUserDataReady = ref(false);
 const authUser = ref({});
-
-const role = computed(() => store.userRole);
 
 const scrollToTop = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -84,22 +82,25 @@ const handleScroll = () => {
   }
 };
 
-const getRole = () => {
-  const userRole = localStorage.getItem('userRole') || '';
-  store.userRole = userRole ? userRole : 'unknown';
+const setUserData = () => {
+  if (localStorageAuthUser.value) {
+    store.setUserData(JSON.parse(localStorageAuthUser.value));
+    authUser.value = JSON.parse(localStorageAuthUser.value);
+    isUserDataReady.value = true;
+  }
 };
 
 onMounted(() => {
-  store.authUser = localStorageAuthUser.value;
-  authUser.value = store.authUser;
-  inject('authUser', authUser);
-  getRole();
+  setUserData();
   window.addEventListener('scroll', handleScroll);
 });
 
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll);
 });
+
+provide('authUser', authUser);
+provide('isUserDataReady', isUserDataReady);
 </script>
 
 <style>

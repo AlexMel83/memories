@@ -1,19 +1,5 @@
 import { defineStore } from 'pinia';
 import { useNuxtApp } from '#app';
-import { useLocalStorage } from '@vueuse/core';
-
-interface SocialLink {
-  id: number;
-  title: string;
-  src: string;
-  link: string;
-}
-
-interface BookSpace {
-  id: number;
-  price: string;
-  amount: string;
-}
 
 interface User {
   id: number;
@@ -37,37 +23,24 @@ interface Advantage {
   description: string;
   icon: string;
 }
+
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     accessToken: '',
     isLoading: false,
     isAuthed: false,
     isMenuOpen: false,
+    menuOpen: false,
     userRole: '',
     userData: null,
     authUser: {} as User,
     activeTabAuthUserMenu: '',
-    menuOpen: false,
     manager: {} as User | null,
     allAdvantages: [] as Advantage[],
-    currentBookSpace: {} as BookSpace,
-    social: [
-      { id: 1, title: 'telegram', src: '../telegram.png', link: '' },
-      { id: 2, title: 'viber', src: '../viber.png', link: '' },
-      { id: 3, title: 'instagram', src: '../instagram.png', link: '' },
-      { id: 4, title: 'facebook', src: '../facebook.png', link: '' },
-    ] as SocialLink[],
-    favoriteSpaces: [] as BookSpace[],
     initialEmail: '',
-    userId: useLocalStorage('userId', null),
-    email: useLocalStorage('email', ''),
   }),
 
   actions: {
-    setInitialEmail(email: string) {
-      this.initialEmail = email;
-    },
-
     setName(ob: Partial<typeof this.$state>) {
       Object.assign(this, ob);
       this.isAuthed = true;
@@ -90,7 +63,7 @@ export const useAuthStore = defineStore('auth', {
     async logOut() {
       const { $api } = useNuxtApp();
       try {
-        const response = await $api.post('/logout');
+        const response = await $api.auth.logout();
         if (response && typeof window !== 'undefined') {
           localStorage.clear();
           this.authUser = {} as User;
@@ -102,13 +75,6 @@ export const useAuthStore = defineStore('auth', {
         }
       } catch (error) {
         console.log(error);
-      }
-    },
-
-    getManagerData(data: User) {
-      this.manager = data;
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('managerData', JSON.stringify(data));
       }
     },
 
@@ -124,10 +90,6 @@ export const useAuthStore = defineStore('auth', {
       this.allAdvantages = data;
     },
 
-    setManagerData(data: User) {
-      this.manager = data;
-    },
-
     setUserData(userData: User | string) {
       if (typeof userData === 'string') {
         this.authUser = JSON.parse(userData);
@@ -135,6 +97,7 @@ export const useAuthStore = defineStore('auth', {
       if (typeof userData === 'object') {
         this.authUser = { ...userData };
       }
+      localStorage.setItem('userData', JSON.stringify(userData));
     },
 
     setAllAdvantages(data: Advantage[]) {
@@ -147,16 +110,6 @@ export const useAuthStore = defineStore('auth', {
     toggleMenu() {
       this.isMenuOpen = !this.isMenuOpen;
     },
-
-    addToFavorites(space: BookSpace) {
-      this.favoriteSpaces.push(space);
-    },
-
-    removeFromFavorites(spaceId: number) {
-      this.favoriteSpaces = this.favoriteSpaces.filter(
-        (space) => space.id !== spaceId,
-      );
-    },
     initializeStore() {
       if (process.client) {
         this.userRole = localStorage.getItem('userRole') || '';
@@ -166,6 +119,17 @@ export const useAuthStore = defineStore('auth', {
           this.isAuthed = true;
         }
       }
+    },
+  },
+});
+
+export const useIsLoadingStore = defineStore('isLoading', {
+  state: () => ({
+    isLoading: true,
+  }),
+  actions: {
+    set(data: boolean) {
+      this.$patch({ isLoading: data });
     },
   },
 });

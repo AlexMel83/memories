@@ -134,7 +134,8 @@ const { $api } = useNuxtApp();
 const isHovered = ref(false);
 const spacesDataApi = ref([]);
 const authStore = useAuthStore();
-const baseURL = $api.defaults.baseURL;
+const config = useRuntimeConfig();
+const baseURL = config.public.apiBase;
 const searchTerm = inject('searchTerm', ref(''));
 const page = ref(1);
 const perPage = 12;
@@ -155,25 +156,18 @@ onMounted(async () => {
 
 watch(searchTerm, async (newValue) => {
   await fetchCoworkings(newValue);
-  console.log('+', spacesDataApi.value);
 });
 
 const fetchCoworkings = async (searchQuery = null) => {
   isLoading.value = true;
   try {
-    let url = '/coworkings';
-    if (searchQuery) {
-      url += `?name=${searchQuery}`;
-    }
-    const response = await $api.get(url);
+    const response = await $api.coworkings.getCoworkings(searchQuery);
     const coworkings = response.data.filter(
       (space) => space.published === true,
     );
 
     for (let coworking of coworkings) {
-      const reviewsResponse = await $api.get(
-        `/reviews?coworkingId=${coworking.id}`,
-      );
+      const reviewsResponse = await $api.coworkings.getReviews(coworking.id);
       let reviews = reviewsResponse.data;
       if (reviews.length === 0) {
         reviews = getFallbackReviews(coworking.id);
@@ -196,7 +190,7 @@ const fetchCoworkings = async (searchQuery = null) => {
 };
 
 const filteredSpaces = computed(() => {
-  const lowerCaseSearchTerm = searchTerm.value.toLowerCase();
+  const lowerCaseSearchTerm = searchTerm.value?.toLowerCase() || '';
   const startIndex = (page.value - 1) * perPage;
   const endIndex = startIndex + perPage;
   return spacesDataApi.value
@@ -208,7 +202,7 @@ const filteredSpaces = computed(() => {
 
 const getAllAdvantages = async () => {
   try {
-    const response = await $api.get('/advantages');
+    const response = await $api.coworkings.getAdvantages();
     authStore.setAllAdvantages(response.data);
   } catch (error) {
     console.error('An error occurred while fetching advantages:', error);

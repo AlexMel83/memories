@@ -4,6 +4,7 @@ import 'dotenv/config';
 export default defineNuxtConfig({
   plugins: [
     '~/plugins/axios',
+    '~/plugins/errorHandler.js',
     '~/plugins/vuetify',
     { src: '~/plugins/leaflet.client.js', mode: 'client' },
   ],
@@ -55,10 +56,14 @@ export default defineNuxtConfig({
       ],
     }
   },
+  colorMode: {
+    preference: 'light'
+  },
 
   runtimeConfig: {
     public: {
       apiKeyMapbox: process.env.APIKEY_MAPBOX,
+      apiBase: process.env.API_BASE || 'http://localhost:3000',
     },
     private: {
       // Значения здесь доступны только на стороне сервера
