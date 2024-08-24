@@ -28,7 +28,7 @@ export default {
     },
     pool: { min: 0, max: 7 },
     seeds: {
-      directory: './seeds/development',
+      directory: './seeds',
     },
   },
 };
