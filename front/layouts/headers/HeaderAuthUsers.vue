@@ -1,6 +1,6 @@
 <template>
   <div :class="{ 'header-main': true, 'home-page': isHomePage }">
-    <div class="header-wrapper">
+    <div class="header-wrapper px-2 pt-2">
       <div class="logo-container">
         <div class="cursor-pointer logo" @click="hideMenu">
           <NuxtLink to="/">
@@ -22,6 +22,7 @@
               <UIcon v-else name="i-heroicons-x-mark" class="icon w-10 h-10" />
             </template>
           </UButton>
+          <ColorMode />
         </div>
       </div>
       <div v-if="isMenuOpen" class="menu">

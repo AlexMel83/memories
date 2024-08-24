@@ -1,6 +1,6 @@
 <template>
   <div :class="{ 'home-page': isHomePage }" class="header-main bg-gray-100">
-    <div class="container mx-auto px-4 py-6">
+    <div class="container mx-auto px-2 pt-2">
       <div class="flex justify-between items-center">
         <div class="flex items-center">
           <div class="cursor-pointer logo" @click="hideMenu">
@@ -31,6 +31,7 @@
               Увійти
             </button>
           </template>
+          <ColorMode />
         </div>
       </div>
       <div v-if="menuOpen" class="mt-4">

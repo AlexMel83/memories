@@ -215,6 +215,7 @@ watch(isOpen, (newValue) => {
               :state="state"
               class="space-y-4"
               @submit="handleSubmit"
+              v-auto-animate
             >
               <div class="space-y-3 mt-5">
                 <UFormGroup

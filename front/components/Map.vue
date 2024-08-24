@@ -61,7 +61,6 @@ import {
   LMarker,
   LPopup,
 } from '@vue-leaflet/vue-leaflet';
-import { reactive, defineProps, ref, computed, onMounted } from 'vue';
 const config = useRuntimeConfig();
 const baseURL = config.public.apiBase;
 const mapboxApiKey = config.public.apiKeyMapbox;
@@ -137,7 +136,7 @@ const markerData = computed(() => {
     const popupContent = `
         <div class="popup-content" style="text-align: center;">
             <a href="/coworking/${coworking.id}" target="_blank" style="word-wrap: break-word; text-decoration: none;">
-                <img src="${photoURL}" alt="${coworking.coworking_name}" style="max-width: 100%; height: auto; display: block; margin: auto;" />
+                <img src="${photoURL}" loading="lazy" alt="${coworking.coworking_name}" style="max-width: 100%; height: auto; display: block; margin: auto;" />
                 <b style="display: block; margin-top: 5px; font-weight: bold; font-size: 130%;">${coworking.coworking_name}</b>
             </a>
             <p style="word-wrap: break-word;">

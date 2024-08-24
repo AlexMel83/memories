@@ -15,11 +15,11 @@ export default defineNuxtConfig({
   ],
 
   modules: [
+    '@formkit/auto-animate/nuxt',
     "@nuxt/ui",
     "@nuxt/image",
     '@nuxtjs/tailwindcss',
-    '@nuxtjs/color-mode',
-    '@formkit/auto-animate/nuxt',
+    '@nuxtjs/color-mode', 
     "@pinia/nuxt",
   ],
   app: {
