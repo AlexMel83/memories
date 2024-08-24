@@ -5,14 +5,14 @@
     </div>
     <div class="item cabinet" :class="{ active: isInCabinet }">
       <a :href="setRout()">
-        <span @click="menuOpen = false" class="flex items-center">
+        <span class="flex items-center" @click="menuOpen = false">
           <UIcon name="i-heroicons-user-solid" class="icon" />Кабінет</span
         >
       </a>
     </div>
     <div class="item exit">
       <nuxt-link href="/">
-        <span @click="goOut" class="flex items-center">
+        <span class="flex items-center" @click="goOut">
           <UIcon
             name="i-heroicons-arrow-right-start-on-rectangle-solid"
             class="icon"

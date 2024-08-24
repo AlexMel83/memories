@@ -15,9 +15,9 @@
             <template #default>
               <UIcon
                 v-if="!isMenuOpen"
+                key="bars"
                 name="i-heroicons-bars-3"
                 class="icon w-10 h-10"
-                key="bars"
               />
               <UIcon v-else name="i-heroicons-x-mark" class="icon w-10 h-10" />
             </template>
