@@ -4,9 +4,12 @@
       <SearchInput />
     </section>
     <section class="coworkings-list" :class="{ blurred: authStore.isMenuOpen }">
-      <div class="spaces-wrapper">
+      <div v-auto-animate class="spaces-wrapper">
         <template v-if="filteredSpaces.length > 0 && !isLoading">
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div
+            v-auto-animate
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
             <div
               v-for="space in filteredSpaces"
               :key="space.id"
@@ -17,29 +20,14 @@
                   <img
                     v-if="space.coworking_photo"
                     :src="`${baseURL}/${space.coworking_photo}`"
+                    loading="lazy"
                   />
-                  <img v-else src="./../public/default-coworking.png" />
-                  <div class="rating">
-                    <div class="stars">
-                      <UIcon
-                        v-for="n in 5"
-                        :key="n"
-                        name="i-heroicons-star-solid"
-                        class="star-icon"
-                        :style="{
-                          backgroundImage: getStarColor(n, space.averageRating),
-                          backgroundClip:
-                            n === fullStars + 1 && rating > fullStars
-                              ? 'text'
-                              : 'initial',
-                          color:
-                            n === fullStars + 1 && rating > fullStars
-                              ? 'transparent'
-                              : getStarColor(n, space.averageRating),
-                        }"
-                      />
-                    </div>
-                  </div>
+                  <img
+                    v-else
+                    src="./../public/default-coworking.png"
+                    loading="lazy"
+                  />
+                  <Rating :rating="+space.averageRating" />
                   <div class="title">
                     <h2 class="space-title">
                       {{ space.coworking_name }}
@@ -53,6 +41,7 @@
                       :key="advantage.name"
                       :title="advantage.description"
                       :src="`${baseURL}/${advantage.icon}`"
+                      loading="lazy"
                     />
                     <UIcon
                       v-if="space.advantages.length > 7"
@@ -71,6 +60,7 @@
                     >
                       <img
                         src="~assets/spaces_images/location-marker.png"
+                        loading="lazy"
                         alt="local"
                       />
                       <span>{{ space.address }}</span>
@@ -83,6 +73,7 @@
                     >
                       <img
                         src="~assets/spaces_images/time.svg"
+                        loading="lazy"
                         alt="time icon"
                       />
                       {{ space.workday_start }} - {{ space.workday_end }}
@@ -104,16 +95,6 @@
           </div>
           <Map :coworkings="spacesDataApi || []" />
         </template>
-        <template v-else>
-          <div v-if="isLoad" class="no-results-message">
-            <h3 class="text-center">На жаль нічого не знайдено...</h3>
-            <br />
-            <h3 class="text-center">
-              Спробуйте змінити запит
-              <UIcon name="i-heroicons-magnifying-glass-20-solid" />
-            </h3>
-          </div>
-        </template>
         <Loader v-if="isLoad" />
       </div>
     </section>
@@ -121,7 +102,6 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch, inject } from 'vue';
 import { useAuthStore } from '@/stores/auth.store.ts';
 import SearchInput from '@/components/SearchInput.vue';
 import useFallbackReviews from '@/mixins/useFallbackReviews';
@@ -136,8 +116,6 @@ const baseURL = config.public.apiBase;
 const searchTerm = inject('searchTerm', ref(''));
 const page = ref(1);
 const perPage = 12;
-const fullStars = ref(0);
-const rating = ref(0);
 const bus = useNuxtApp().$bus;
 
 const { getFallbackReviews } = useFallbackReviews();
@@ -206,21 +184,6 @@ const getAllAdvantages = async () => {
     console.error('An error occurred while fetching advantages:', error);
   }
 };
-
-const getStarColor = (index, rating) => {
-  const fullStars = Math.floor(rating);
-  const percentage = ((rating - fullStars) * 100).toFixed(2); // Процент заполнения для частичной звезды
-
-  if (index <= fullStars) {
-    return '#f5b301'; // Полностью заполненная звезда
-  }
-
-  if (index === fullStars + 1 && rating > fullStars) {
-    return `linear-gradient(to right, #f5b301 ${percentage}%, #d3d3d3 ${100 - percentage}%)`; // Частично заполненная звезда
-  }
-
-  return '#d3d3d3'; // Пустая звезда
-};
 </script>
 
 <style scoped>
@@ -280,18 +243,6 @@ const getStarColor = (index, rating) => {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-.rating {
-  position: absolute;
-  right: 0px;
-  top: 20px;
-  display: flex;
-  padding: 4px 8px;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  backdrop-filter: blur(5px);
 }
 
 .grecaptcha-badge {

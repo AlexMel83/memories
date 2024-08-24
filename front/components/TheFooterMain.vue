@@ -157,12 +157,12 @@ export default {
 .sharing-item.social img {
   border-radius: 50%;
   transition: transform 0.3s;
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
 }
 
 .sharing-item.social:hover img {
-  transform: scale(1.1);
+  transform: scale(1.2);
 }
 
 .sharing-item.social:active img {

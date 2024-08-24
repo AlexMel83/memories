@@ -2,11 +2,8 @@
   <div class="other-page">
     <HeaderAuthUsers v-if="store?.authUser?.user?.isactivated" />
     <TheHeaderMain v-else />
-
     <NuxtPage />
-
     <TheFooterMain ref="footerRef" />
-
     <button
       id="scrollToTop"
       :class="{ 'in-footer': isScrollToTopInFooter, show: showScrollToTop }"

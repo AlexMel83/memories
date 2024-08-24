@@ -211,6 +211,7 @@ watch(isOpen, (newValue) => {
         <UTabs v-model="currentTab" :items="items" :ui="{}">
           <template #item="{ item }">
             <UForm
+              v-auto-animate
               :schema="schema"
               :state="state"
               class="space-y-4"
