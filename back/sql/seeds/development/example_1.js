@@ -253,7 +253,7 @@ export const seed = async (knex) => {
       await trx.commit();
     } catch (error) {
       await trx.rollback();
-      throw Error('Failed migration for fill seed data');
+      throw Error('Failed migration for fill seed data', error);
     }
   }
 };
