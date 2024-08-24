@@ -1,8 +1,8 @@
 <template>
   <div>
-    <p>
-      <span>EduHUB</span>- обирай коворкінг для<br />
-      ефективного навчання та роботи.
+    <p class="mt-6 text-center text-gray-700 text-white header-text">
+      <span class="font-bold">Мапа пам'яті:</span> Відновлення історії та
+      справедливості
     </p>
   </div>
 </template>

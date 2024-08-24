@@ -1,20 +1,22 @@
 <template>
   <div class="container-user-auth-name">
     <div class="item main-user-auth-name">
-      <!-- <img src="~/assets/profile.svg" alt="Profile Icon" /> -->
       <span> {{ userName }}</span> &nbsp;<span>{{ userSurname }}</span>
     </div>
     <div class="item cabinet" :class="{ active: isInCabinet }">
       <a :href="setRout()">
-        <span @click="menuOpen = false"
-          ><v-icon class="icon">mdi-account</v-icon>Кабінет</span
+        <span @click="menuOpen = false" class="flex items-center">
+          <UIcon name="i-heroicons-user-solid" class="icon" />Кабінет</span
         >
       </a>
     </div>
     <div class="item exit">
       <nuxt-link href="/">
-        <span @click="goOut"
-          ><v-icon class="icon">mdi-logout</v-icon>Вихід</span
+        <span @click="goOut" class="flex items-center">
+          <UIcon
+            name="i-heroicons-arrow-right-start-on-rectangle-solid"
+            class="icon"
+          />Вихід</span
         >
       </nuxt-link>
     </div>
@@ -88,6 +90,8 @@ const goOut = () => {
 
 .icon {
   margin-right: 5px;
+  width: 24px;
+  height: 24px;
 }
 
 img {

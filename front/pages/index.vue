@@ -19,19 +19,18 @@
                     :src="`${baseURL}/${space.coworking_photo}`"
                   />
                   <img v-else src="./../public/default-coworking.png" />
-                  <div class="rating">
-                    <v-rating
-                      readonly
-                      :length="5"
-                      half-increments
-                      size="x-small"
-                      density="comfortable"
-                      :model-value="space.averageRating"
-                      color="#AF3800"
-                      background-color="white"
-                      active-color="#AF3800"
-                      class="custom-rating"
-                    />
+                  <div class="rating flex items-center">
+                    <span
+                      v-for="i in 5"
+                      :key="i"
+                      :class="
+                        i <= space.averageRating
+                          ? 'text-yellow-500'
+                          : 'text-gray-300'
+                      "
+                    >
+                      ★
+                    </span>
                   </div>
                   <div class="title">
                     <h2 class="space-title">
@@ -47,13 +46,12 @@
                       :title="advantage.description"
                       :src="`${baseURL}/${advantage.icon}`"
                     />
-                    <v-icon
+                    <UIcon
                       v-if="space.advantages.length > 7"
-                      color="var(--header-bg)"
                       class="dots-icon"
-                    >
-                      mdi-dots-horizontal
-                    </v-icon>
+                      name="i-heroicons-ellipsis-horizontal-20-solid"
+                      :style="{ color: 'var(--header-bg)' }"
+                    />
                   </div>
                   <div v-if="space.address" class="map" @click.stop>
                     <a
@@ -93,13 +91,15 @@
               </nuxt-link>
             </div>
           </div>
-          <v-pagination
-            v-model="page"
-            :length="Math.ceil(spacesDataApi.length / perPage)"
-            rounded="0"
-            color="#1A679A"
-            class="custom-pagination"
-          />
+          <div class="flex justify-center">
+            <UPagination
+              v-model="page"
+              :total="Math.ceil(spacesDataApi.length / perPage)"
+              size="md"
+              rounded
+              class="custom-pagination"
+            />
+          </div>
           <Map :coworkings="spacesDataApi || []" />
         </template>
         <template v-else>
@@ -107,7 +107,8 @@
             <h3 class="text-center">На жаль нічого не знайдено...</h3>
             <br />
             <h3 class="text-center">
-              Спробуйте змінити запит <v-icon>mdi-magnify</v-icon>
+              Спробуйте змінити запит
+              <UIcon name="i-heroicons-magnifying-glass-20-solid" />
             </h3>
           </div>
         </template>

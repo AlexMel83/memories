@@ -1,23 +1,30 @@
 <template>
-  <v-row class="mb-4 search-wrapper">
-    <v-col cols="12">
-      <v-text-field
-        v-model="searchTerm"
-        label="Пошук по назві коворкінга"
-        outlined
-        dense
-        bg-color="white"
-        prepend-inner-icon="mdi-magnify"
-        class="custom-search-input"
-        variant="solo"
-        clearable
-      />
-    </v-col>
-  </v-row>
+  <div class="search-wrapper">
+    <UInput
+      v-model="searchTerm"
+      name="searchTerm"
+      placeholder="Пошук по назві коворкінга"
+      icon="i-heroicons-magnifying-glass-20-solid"
+      autocomplete="off"
+      :ui="{ icon: { trailing: { pointer: '' } } }"
+      class="custom-search-input"
+    >
+      <template #trailing>
+        <UButton
+          v-show="searchTerm !== ''"
+          color="gray"
+          variant="link"
+          icon="i-heroicons-x-mark-20-solid"
+          :padded="false"
+          @click="searchTerm = ''"
+        />
+      </template>
+    </UInput>
+  </div>
 </template>
 
 <script setup>
-import { ref, provide } from 'vue';
+import { ref, provide, watch } from 'vue';
 
 const searchTerm = ref('');
 provide('searchTerm', searchTerm);
@@ -34,9 +41,10 @@ watch(searchTerm, (newValue) => {
 
 .search-wrapper {
   padding: 0 16px;
+  width: 100%;
 }
 
 .custom-search-input {
-  margin-top: 40px;
+  margin: 10px 0;
 }
 </style>
