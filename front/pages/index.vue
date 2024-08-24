@@ -6,16 +6,11 @@
     <section class="coworkings-list" :class="{ blurred: authStore.isMenuOpen }">
       <div class="spaces-wrapper">
         <template v-if="filteredSpaces.length > 0 && !isLoading">
-          <v-row>
-            <v-col
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div
               v-for="space in filteredSpaces"
               :key="space.id"
-              cols="12"
-              sm="6"
-              md="6"
-              lg="4"
-              xl="4"
-              class="spaces-col"
+              class="spaces-col p-4 bg-white shadow-md rounded-lg"
             >
               <nuxt-link class="container" :to="'/'">
                 <div class="photo">
@@ -25,18 +20,25 @@
                   />
                   <img v-else src="./../public/default-coworking.png" />
                   <div class="rating">
-                    <v-rating
-                      readonly
-                      :length="5"
-                      half-increments
-                      size="x-small"
-                      density="comfortable"
-                      :model-value="space.averageRating"
-                      color="#AF3800"
-                      background-color="white"
-                      active-color="#AF3800"
-                      class="custom-rating"
-                    />
+                    <div class="stars">
+                      <UIcon
+                        v-for="n in 5"
+                        :key="n"
+                        name="i-heroicons-star-solid"
+                        class="star-icon"
+                        :style="{
+                          backgroundImage: getStarColor(n, space.averageRating),
+                          backgroundClip:
+                            n === fullStars + 1 && rating > fullStars
+                              ? 'text'
+                              : 'initial',
+                          color:
+                            n === fullStars + 1 && rating > fullStars
+                              ? 'transparent'
+                              : getStarColor(n, space.averageRating),
+                        }"
+                      />
+                    </div>
                   </div>
                   <div class="title">
                     <h2 class="space-title">
@@ -52,13 +54,12 @@
                       :title="advantage.description"
                       :src="`${baseURL}/${advantage.icon}`"
                     />
-                    <v-icon
+                    <UIcon
                       v-if="space.advantages.length > 7"
-                      color="var(--header-bg)"
                       class="dots-icon"
-                    >
-                      mdi-dots-horizontal
-                    </v-icon>
+                      name="i-heroicons-ellipsis-horizontal-20-solid"
+                      :style="{ color: 'var(--header-bg)' }"
+                    />
                   </div>
                   <div v-if="space.address" class="map" @click.stop>
                     <a
@@ -87,24 +88,20 @@
                       {{ space.workday_start }} - {{ space.workday_end }}
                     </div>
                   </div>
-                  <nuxt-link
-                    :to="'/'"
-                    class="btn"
-                    :class="{ visible: isHovered }"
-                  >
-                    Переглянути
-                  </nuxt-link>
+                  <nuxt-link :to="'/'" class="btn"> Переглянути </nuxt-link>
                 </div>
               </nuxt-link>
-            </v-col>
-          </v-row>
-          <v-pagination
-            v-model="page"
-            :length="Math.ceil(spacesDataApi.length / perPage)"
-            rounded="0"
-            color="#1A679A"
-            class="custom-pagination"
-          />
+            </div>
+          </div>
+          <div class="flex justify-center">
+            <UPagination
+              v-model="page"
+              :total="Math.ceil(spacesDataApi.length / perPage)"
+              size="md"
+              rounded
+              class="custom-pagination"
+            />
+          </div>
           <Map :coworkings="spacesDataApi || []" />
         </template>
         <template v-else>
@@ -112,7 +109,8 @@
             <h3 class="text-center">На жаль нічого не знайдено...</h3>
             <br />
             <h3 class="text-center">
-              Спробуйте змінити запит <v-icon>mdi-magnify</v-icon>
+              Спробуйте змінити запит
+              <UIcon name="i-heroicons-magnifying-glass-20-solid" />
             </h3>
           </div>
         </template>
@@ -131,7 +129,6 @@ import useFallbackReviews from '@/mixins/useFallbackReviews';
 const isLoading = ref(false);
 const isLoad = ref(false);
 const { $api } = useNuxtApp();
-const isHovered = ref(false);
 const spacesDataApi = ref([]);
 const authStore = useAuthStore();
 const config = useRuntimeConfig();
@@ -139,8 +136,9 @@ const baseURL = config.public.apiBase;
 const searchTerm = inject('searchTerm', ref(''));
 const page = ref(1);
 const perPage = 12;
+const fullStars = ref(0);
+const rating = ref(0);
 const bus = useNuxtApp().$bus;
-const averageRating = ref(0);
 
 const { getFallbackReviews } = useFallbackReviews();
 
@@ -209,9 +207,20 @@ const getAllAdvantages = async () => {
   }
 };
 
-bus.$on('averageRatingUpdated', (newAverageRating) => {
-  averageRating.value = newAverageRating;
-});
+const getStarColor = (index, rating) => {
+  const fullStars = Math.floor(rating);
+  const percentage = ((rating - fullStars) * 100).toFixed(2); // Процент заполнения для частичной звезды
+
+  if (index <= fullStars) {
+    return '#f5b301'; // Полностью заполненная звезда
+  }
+
+  if (index === fullStars + 1 && rating > fullStars) {
+    return `linear-gradient(to right, #f5b301 ${percentage}%, #d3d3d3 ${100 - percentage}%)`; // Частично заполненная звезда
+  }
+
+  return '#d3d3d3'; // Пустая звезда
+};
 </script>
 
 <style scoped>
@@ -282,8 +291,6 @@ bus.$on('averageRatingUpdated', (newAverageRating) => {
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  border-radius: 20px 0px 0px 20px;
-  background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(5px);
 }
 
@@ -386,6 +393,7 @@ bus.$on('averageRatingUpdated', (newAverageRating) => {
 }
 
 .btn {
+  opacity: 0;
   text-transform: capitalize;
   font-size: 18px;
   line-height: normal;
@@ -427,6 +435,10 @@ a {
   bottom: -30%;
   left: 50%;
   transform: translateX(-50%);
+}
+
+.container:hover .btn {
+  opacity: 1;
 }
 
 @media (min-width: 768px) {
@@ -473,10 +485,6 @@ a {
   .container {
     margin-bottom: 40px;
     width: 95%;
-  }
-
-  .container:hover .btn {
-    opacity: 1;
   }
 
   .info-card {

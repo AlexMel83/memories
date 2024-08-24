@@ -5,7 +5,9 @@
     name="image-map"
     style="height: 400px"
   >
-    <v-btn class="location" @click="getLocation()"> Get your Location </v-btn>
+    <button class="location btn" @click="getLocation()">
+      Get your Location
+    </button>
     <span v-if="userLocationMarker.latLng && userLocationMarker.icon">
       {{ userLocationMarker?.latLng[0] }}, {{ userLocationMarker?.latLng[1] }}
     </span>
@@ -186,14 +188,14 @@ function getLocation() {
 </script>
 
 <style scoped>
-.v-btn {
+.btn {
   color: var(--white-color);
   background-color: var(--header-bg);
   cursor: pointer;
   margin-right: 20px;
 }
 
-.v-btn:hover {
+.btn:hover {
   background-color: var(--btn-border);
 }
 </style>

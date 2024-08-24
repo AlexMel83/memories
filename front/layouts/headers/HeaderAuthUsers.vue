@@ -11,20 +11,17 @@
           <div class="auth-user-name">
             <UserName />
           </div>
-          <v-btn icon class="burger" @click="toggleMenu">
-            <img
-              v-if="!isMenuOpen"
-              src="~/assets/menu.svg"
-              alt="Profile Icon"
-              style="width: 30px"
-            />
-            <img
-              v-else
-              src="~/assets/menu.svg"
-              alt="Profile Icon"
-              style="width: 30px"
-            />
-          </v-btn>
+          <UButton icon class="burger" @click="toggleMenu">
+            <template #default>
+              <UIcon
+                v-if="!isMenuOpen"
+                key="bars"
+                name="i-heroicons-bars-3"
+                class="icon w-10 h-10"
+              />
+              <UIcon v-else name="i-heroicons-x-mark" class="icon w-10 h-10" />
+            </template>
+          </UButton>
         </div>
       </div>
       <div v-if="isMenuOpen" class="menu">

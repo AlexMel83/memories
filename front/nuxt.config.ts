@@ -1,11 +1,9 @@
-import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify';
 import 'dotenv/config';
 
 export default defineNuxtConfig({
   plugins: [
     '~/plugins/axios',
     '~/plugins/errorHandler.js',
-    '~/plugins/vuetify',
     { src: '~/plugins/leaflet.client.js', mode: 'client' },
   ],
 
@@ -13,13 +11,8 @@ export default defineNuxtConfig({
 
   css: [
     '@mdi/font/css/materialdesignicons.min.css',
-    'vuetify/lib/styles/main.sass',
     '~/assets/src/styles.css',
   ],
-
-  build: {
-    transpile: ['vuetify'],
-  },
 
   modules: [
     "@nuxt/ui",
@@ -28,22 +21,7 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     '@formkit/auto-animate/nuxt',
     "@pinia/nuxt",
-    (_options, nuxt) => {
-      nuxt.hooks.hook('vite:extendConfig', (config) => {
-        // @ts-expect-error: Добавление плагина vuetify требует игнорирования ошибки типизации.
-        config.plugins.push(vuetify({ autoImport: true }))
-      })
-    },
   ],
-
-  vite: {
-    vue: {
-      template: {
-        transformAssetUrls,
-      },
-    },
-  },
-
   app: {
     head: {
       title: 'Memories',
