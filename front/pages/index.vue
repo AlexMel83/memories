@@ -19,18 +19,26 @@
                     :src="`${baseURL}/${space.coworking_photo}`"
                   />
                   <img v-else src="./../public/default-coworking.png" />
-                  <div class="rating flex items-center">
-                    <span
-                      v-for="i in 5"
-                      :key="i"
-                      :class="
-                        i <= space.averageRating
-                          ? 'text-yellow-500'
-                          : 'text-gray-300'
-                      "
-                    >
-                      ★
-                    </span>
+                  <div class="rating">
+                    <div class="stars">
+                      <UIcon
+                        v-for="n in 5"
+                        :key="n"
+                        name="i-heroicons-star-solid"
+                        class="star-icon"
+                        :style="{
+                          backgroundImage: getStarColor(n, space.averageRating),
+                          backgroundClip:
+                            n === fullStars + 1 && rating > fullStars
+                              ? 'text'
+                              : 'initial',
+                          color:
+                            n === fullStars + 1 && rating > fullStars
+                              ? 'transparent'
+                              : getStarColor(n, space.averageRating),
+                        }"
+                      />
+                    </div>
                   </div>
                   <div class="title">
                     <h2 class="space-title">
@@ -80,13 +88,7 @@
                       {{ space.workday_start }} - {{ space.workday_end }}
                     </div>
                   </div>
-                  <nuxt-link
-                    :to="'/'"
-                    class="btn"
-                    :class="{ visible: isHovered }"
-                  >
-                    Переглянути
-                  </nuxt-link>
+                  <nuxt-link :to="'/'" class="btn"> Переглянути </nuxt-link>
                 </div>
               </nuxt-link>
             </div>
@@ -127,7 +129,6 @@ import useFallbackReviews from '@/mixins/useFallbackReviews';
 const isLoading = ref(false);
 const isLoad = ref(false);
 const { $api } = useNuxtApp();
-const isHovered = ref(false);
 const spacesDataApi = ref([]);
 const authStore = useAuthStore();
 const config = useRuntimeConfig();
@@ -135,8 +136,9 @@ const baseURL = config.public.apiBase;
 const searchTerm = inject('searchTerm', ref(''));
 const page = ref(1);
 const perPage = 12;
+const fullStars = ref(0);
+const rating = ref(0);
 const bus = useNuxtApp().$bus;
-const averageRating = ref(0);
 
 const { getFallbackReviews } = useFallbackReviews();
 
@@ -205,9 +207,20 @@ const getAllAdvantages = async () => {
   }
 };
 
-bus.$on('averageRatingUpdated', (newAverageRating) => {
-  averageRating.value = newAverageRating;
-});
+const getStarColor = (index, rating) => {
+  const fullStars = Math.floor(rating);
+  const percentage = ((rating - fullStars) * 100).toFixed(2); // Процент заполнения для частичной звезды
+
+  if (index <= fullStars) {
+    return '#f5b301'; // Полностью заполненная звезда
+  }
+
+  if (index === fullStars + 1 && rating > fullStars) {
+    return `linear-gradient(to right, #f5b301 ${percentage}%, #d3d3d3 ${100 - percentage}%)`; // Частично заполненная звезда
+  }
+
+  return '#d3d3d3'; // Пустая звезда
+};
 </script>
 
 <style scoped>
@@ -278,8 +291,6 @@ bus.$on('averageRatingUpdated', (newAverageRating) => {
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  border-radius: 20px 0px 0px 20px;
-  background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(5px);
 }
 
@@ -382,6 +393,7 @@ bus.$on('averageRatingUpdated', (newAverageRating) => {
 }
 
 .btn {
+  opacity: 0;
   text-transform: capitalize;
   font-size: 18px;
   line-height: normal;
@@ -423,6 +435,10 @@ a {
   bottom: -30%;
   left: 50%;
   transform: translateX(-50%);
+}
+
+.container:hover .btn {
+  opacity: 1;
 }
 
 @media (min-width: 768px) {
@@ -469,10 +485,6 @@ a {
   .container {
     margin-bottom: 40px;
     width: 95%;
-  }
-
-  .container:hover .btn {
-    opacity: 1;
   }
 
   .info-card {
