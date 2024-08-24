@@ -4,7 +4,7 @@
       <SearchInput />
     </section>
     <section class="coworkings-list" :class="{ blurred: authStore.isMenuOpen }">
-      <div class="spaces-wrapper" v-auto-animate>
+      <div v-auto-animate class="spaces-wrapper">
         <template v-if="filteredSpaces.length > 0 && !isLoading">
           <div
             v-auto-animate
