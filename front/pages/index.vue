@@ -34,9 +34,11 @@
                     </h2>
                   </div>
                 </div>
-                <div class="info-card" v-auto-animate>
+                <div v-auto-animate class="info-card">
                   <div class="description-container">
-                    <p class="description">{{ memory.description }}</p>
+                    <p class="description">
+                      {{ memory.description }}
+                    </p>
                   </div>
                   <div v-if="memory.address" class="map" @click.stop>
                     <a
