@@ -72,7 +72,7 @@
             height="50"
           />
           <p>
-            Розроблено AlexMel83<br />
+            Розроблено AlexMel83 ©<br />
             всі права захищені 2024
           </p>
         </nuxt-link>
@@ -97,7 +97,7 @@ export default {
 }
 
 .footer {
-  padding: 32px 16px;
+  padding: 12px 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -170,7 +170,6 @@ export default {
 }
 
 .additional-links {
-  margin-top: 24px;
   display: flex;
   flex-direction: column;
 }
@@ -179,7 +178,6 @@ export default {
   color: var(--white-color);
   text-decoration: none;
   font-size: 14px;
-  margin-bottom: 16px;
   transition: color 0.3s;
 }
 
@@ -189,7 +187,6 @@ export default {
 
 .developers-link {
   display: flex;
-  margin-top: 40px;
 }
 
 .developers-link p {
@@ -202,7 +199,7 @@ export default {
 @media (min-width: 768px) {
   .footer {
     justify-content: center;
-    padding: 24px;
+    padding-bottom: 24px;
   }
 
   .contacts-wrapper {
@@ -237,7 +234,7 @@ export default {
 
   .additional-links {
     flex-direction: row;
-    gap: 40px;
+    gap: 10px;
   }
 
   .developers-link {

@@ -3,23 +3,24 @@
     <section class="search">
       <SearchInput />
     </section>
-    <section class="coworkings-list" :class="{ blurred: authStore.isMenuOpen }">
-      <div v-auto-animate class="spaces-wrapper">
-        <template v-if="filteredSpaces.length > 0 && !isLoading">
+    <section class="memories-list" :class="{ blurred: authStore.isMenuOpen }">
+      <Map :memories="filteredMemories || []" />
+      <div v-auto-animate class="memories-wrapper">
+        <template v-if="filteredMemories?.length > 0 && !isLoading">
           <div
             v-auto-animate
-            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
           >
             <div
-              v-for="space in filteredSpaces"
-              :key="space.id"
-              class="spaces-col p-4 bg-white shadow-md rounded-lg"
+              v-for="memory in filteredMemories"
+              :key="memory.id"
+              class="bg-white shadow-md rounded-lg"
             >
               <nuxt-link class="container" :to="'/'">
                 <div class="photo">
                   <img
-                    v-if="space.coworking_photo"
-                    :src="`${baseURL}/${space.coworking_photo}`"
+                    v-if="memory.memory_photos.length"
+                    :src="`${memory.memory_photos[0].url.includes('http') ? '' : baseURL}${memory.memory_photos[0].url}`"
                     loading="lazy"
                   />
                   <img
@@ -27,34 +28,23 @@
                     src="./../public/default-coworking.png"
                     loading="lazy"
                   />
-                  <Rating :rating="+space.averageRating" />
                   <div class="title">
-                    <h2 class="space-title">
-                      {{ space.coworking_name }}
+                    <h2 class="memory-title">
+                      {{ memory.title }}
                     </h2>
                   </div>
                 </div>
-                <div class="info-card">
-                  <div class="icons-container down">
-                    <img
-                      v-for="advantage in space.advantages.slice(0, 7)"
-                      :key="advantage.name"
-                      :title="advantage.description"
-                      :src="`${baseURL}/${advantage.icon}`"
-                      loading="lazy"
-                    />
-                    <UIcon
-                      v-if="space.advantages.length > 7"
-                      class="dots-icon"
-                      name="i-heroicons-ellipsis-horizontal-20-solid"
-                      :style="{ color: 'var(--header-bg)' }"
-                    />
+                <div v-auto-animate class="info-card">
+                  <div class="description-container">
+                    <p class="description">
+                      {{ memory.description }}
+                    </p>
                   </div>
-                  <div v-if="space.address" class="map" @click.stop>
+                  <div v-if="memory.address" class="map" @click.stop>
                     <a
                       :href="
                         'https://maps.google.com/?q=' +
-                        encodeURIComponent(space.address)
+                        encodeURIComponent(memory.address)
                       "
                       target="_blank"
                     >
@@ -63,20 +53,25 @@
                         loading="lazy"
                         alt="local"
                       />
-                      <span>{{ space.address }}</span>
+                      <span>{{ memory.address }}</span>
                     </a>
                   </div>
                   <div class="icons-container up">
-                    <div
-                      v-if="space.workday_start && space.workday_end"
-                      class="time"
-                    >
+                    <div class="time">
                       <img
                         src="~assets/spaces_images/time.svg"
                         loading="lazy"
                         alt="time icon"
                       />
-                      {{ space.workday_start }} - {{ space.workday_end }}
+                      <div flex>
+                        Створено:{{ formatDate(memory.created_at) }}
+                        <div v-if="memory.updated_at !== memory.created_at">
+                          Оновлено: {{ formatDate(memory.updated_at) }}
+                        </div>
+                        <div v-if="memory.date_event">
+                          Дата події: {{ formatDate(memory.date_event) }}
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <nuxt-link :to="'/'" class="btn"> Переглянути </nuxt-link>
@@ -84,16 +79,15 @@
               </nuxt-link>
             </div>
           </div>
-          <div class="flex justify-center">
+          <div class="flex justify-center pagination">
             <UPagination
               v-model="page"
-              :total="Math.ceil(spacesDataApi.length / perPage)"
+              :total="Math.ceil(memoriesDataApi.length / perPage)"
               size="md"
               rounded
               class="custom-pagination"
             />
           </div>
-          <Map :coworkings="spacesDataApi || []" />
         </template>
         <Loader v-if="isLoad" />
       </div>
@@ -104,12 +98,11 @@
 <script setup>
 import { useAuthStore } from '@/stores/auth.store.ts';
 import SearchInput from '@/components/SearchInput.vue';
-import useFallbackReviews from '@/mixins/useFallbackReviews';
 
 const isLoading = ref(false);
 const isLoad = ref(false);
 const { $api } = useNuxtApp();
-const spacesDataApi = ref([]);
+const memoriesDataApi = ref([]);
 const authStore = useAuthStore();
 const config = useRuntimeConfig();
 const baseURL = config.public.apiBase;
@@ -118,77 +111,81 @@ const page = ref(1);
 const perPage = 12;
 const bus = useNuxtApp().$bus;
 
-const { getFallbackReviews } = useFallbackReviews();
+const formatDate = (dateString) => {
+  const options = {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  };
+  return new Date(dateString).toLocaleString('ru-RU', options);
+};
 
 onMounted(async () => {
-  await fetchCoworkings();
-  await getAllAdvantages();
+  await fetchMemories();
 
   bus.$on('searchTermUpdated', (newSearchTerm) => {
     searchTerm.value = newSearchTerm;
-    fetchCoworkings(newSearchTerm);
+    fetchMemories(newSearchTerm);
   });
 });
 
 watch(searchTerm, async (newValue) => {
-  await fetchCoworkings(newValue);
+  await fetchMemories(newValue);
 });
 
-const fetchCoworkings = async (searchQuery = null) => {
+const fetchMemories = async (searchQuery = null) => {
   isLoading.value = true;
   try {
-    const response = await $api.coworkings.getCoworkings(searchQuery);
-    const coworkings = response.data.filter(
-      (space) => space.published === true,
+    const response = await $api.memories.getMemories(searchQuery);
+    const memories = response.data.filter(
+      (memory) => memory.published === true,
     );
 
-    for (let coworking of coworkings) {
-      const reviewsResponse = await $api.coworkings.getReviews(coworking.id);
-      let reviews = reviewsResponse.data;
-      if (reviews.length === 0) {
-        reviews = getFallbackReviews(coworking.id);
-      }
-      coworking.averageRating =
-        reviews.length > 0
-          ? (
-              reviews.reduce((sum, review) => sum + review.rating, 0) /
-              reviews.length
-            ).toFixed(1)
-          : null;
-    }
-
-    spacesDataApi.value = coworkings;
+    memoriesDataApi.value = memories;
   } catch (error) {
-    console.error('Error fetching coworkings data:', error);
+    console.error('Error fetching memories data:', error);
   } finally {
     isLoading.value = false;
   }
 };
 
-const filteredSpaces = computed(() => {
+const filteredMemories = computed(() => {
   const lowerCaseSearchTerm = searchTerm.value?.toLowerCase() || '';
   const startIndex = (page.value - 1) * perPage;
   const endIndex = startIndex + perPage;
-  return spacesDataApi.value
-    .filter((space) =>
-      space.coworking_name.toLowerCase().includes(lowerCaseSearchTerm),
+  return memoriesDataApi.value
+    .filter((memory) =>
+      memory.title.toLowerCase().includes(lowerCaseSearchTerm),
     )
     .slice(startIndex, endIndex);
 });
-
-const getAllAdvantages = async () => {
-  try {
-    const response = await $api.coworkings.getAdvantages();
-    authStore.setAllAdvantages(response.data);
-  } catch (error) {
-    console.error('An error occurred while fetching advantages:', error);
-  }
-};
 </script>
 
 <style scoped>
 @import '../assets/src/styles.css';
 
+.memories-wrapper {
+  padding: 20px 25px 10px 25px;
+  margin-top: 10px;
+}
+
+.description-container {
+  padding: 0 5px;
+  margin-bottom: 10px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-clamp: 3;
+  -webkit-line-clamp: 3; /* Показывает только 3 строки */
+  text-overflow: ellipsis; /* Добавляет "..." в конце */
+  max-height: calc(1.5em * 3); /* Высота для 3 строк текста */
+}
+
+.pagination {
+  margin-top: 10px;
+}
 .blurred {
   filter: blur(5px);
   pointer-events: none;
@@ -201,14 +198,13 @@ const getAllAdvantages = async () => {
   align-items: center;
 }
 
-.coworkings-list {
+.memories-list {
   background-color: var(--space-bg-mob);
 }
 
 .spaces-wrapper {
   margin: 0 auto;
   min-height: 100vh;
-  padding: 24px 0px;
 }
 
 .search-wrapper {
@@ -221,20 +217,20 @@ const getAllAdvantages = async () => {
   justify-content: center;
   border-radius: 20px;
   background: var(--white-color);
-  width: 92%;
-  margin: 0 auto;
-  margin-bottom: 50px;
+  width: 95%;
+  margin: 10px auto;
+  margin-bottom: 30px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s ease-in-out;
 }
 
 .photo {
   width: 100%;
-  height: 230px;
+  max-height: 230px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border-radius: 20px;
+  border-radius: 10px;
   overflow: hidden;
   position: relative;
 }
@@ -249,31 +245,30 @@ const getAllAdvantages = async () => {
   display: none !important;
 }
 
-.space-title {
+.memory-title {
   text-align: center;
-  padding: 5px;
   font-size: 20px;
 }
 
 .title {
   display: flex;
-  width: 92%;
-  max-width: 316px;
-  padding: 4px 24px;
+  max-width: 92%;
+  padding: 0 20px;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
   border-radius: 0px 20px 20px 0px;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(5px);
   position: absolute;
-  left: -1px;
-  bottom: 20px;
+  bottom: 15px;
 }
 
 .info-card {
-  padding: 16px 3px 30px 3px;
+  padding: 10px 3px 20px 3px;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .icons-container.up {
@@ -289,8 +284,7 @@ const getAllAdvantages = async () => {
   margin-right: 7px;
 }
 
-.time,
-.money {
+.time {
   display: flex;
   align-items: center;
 }
@@ -316,7 +310,7 @@ const getAllAdvantages = async () => {
 
 .map {
   display: flex;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
 .map img {
@@ -333,7 +327,7 @@ const getAllAdvantages = async () => {
 .info-item {
   display: flex;
   justify-content: space-between;
-  margin-top: 10px;
+  margin-top: 5px;
 }
 
 .buttons {
@@ -352,7 +346,7 @@ const getAllAdvantages = async () => {
   background-color: var(--header-bg);
   color: var(--white-color);
   display: flex;
-  width: 182px;
+  max-width: 182px;
   padding: 6px 14px;
   justify-content: center;
   align-items: center;
@@ -361,6 +355,10 @@ const getAllAdvantages = async () => {
   bottom: -20px;
   left: 50%;
   transform: translate(-50%, 0%);
+}
+
+.btn:hover {
+  background-color: var(--btn-border);
 }
 
 .btn:active {
@@ -400,25 +398,12 @@ a {
 }
 
 @media (min-width: 1024px) {
-  .spaces-wrapper {
-    padding: 40px;
-  }
-
   .search {
-    padding: 0 40px;
+    padding: 0 10px;
   }
 
   .search-wrapper {
     padding: 0 8px;
-  }
-
-  .spaces-col {
-    padding: 0;
-    margin: 0;
-  }
-
-  .title {
-    width: 75%;
   }
 
   .btn {
@@ -426,23 +411,13 @@ a {
   }
 
   .photo {
-    height: 274px;
-  }
-
-  .btn:hover {
-    background-color: var(--btn-border);
+    max-height: 274px;
   }
 
   .container {
-    margin-bottom: 40px;
+    margin-bottom: 15px;
     width: 95%;
   }
-
-  .info-card {
-    padding: 24px 24px 32px;
-    min-height: 174px;
-  }
-
   .icons-container.down img {
     width: 32px;
     height: 32px;
@@ -451,12 +426,8 @@ a {
 }
 
 @media (min-width: 1440px) {
-  .spaces-wrapper {
-    padding: 40px 65px;
-  }
-
-  .search {
-    padding: 0 65px;
+  .memories-wrapper {
+    padding: 20px 25px;
   }
 }
 </style>

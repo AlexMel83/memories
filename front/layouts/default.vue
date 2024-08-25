@@ -1,9 +1,9 @@
 <template>
   <div class="other-page">
     <HeaderAuthUsers v-if="store?.authUser?.user?.isactivated" />
-    <TheHeaderMain v-else />
+    <HeaderMain v-else />
     <NuxtPage />
-    <TheFooterMain ref="footerRef" />
+    <FooterMain ref="footerRef" />
     <button
       id="scrollToTop"
       :class="{ 'in-footer': isScrollToTopInFooter, show: showScrollToTop }"
@@ -49,8 +49,9 @@
 
 <script setup>
 import { useAuthStore } from '@/stores/auth.store.ts';
-import TheFooterMain from '../components/TheFooterMain.vue';
-import HeaderAuthUsers from '~/layouts/headers/HeaderAuthUsers.vue';
+import FooterMain from './footers/FooterMain.vue';
+import HeaderAuthUsers from '@/layouts/headers/HeaderAuthUsers.vue';
+import HeaderMain from './headers/HeaderMain.vue';
 import { useLocalStorage } from '@vueuse/core';
 
 const localStorageAuthUser = useLocalStorage('userData', null);

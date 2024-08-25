@@ -36,30 +36,30 @@ export interface AuthApi {
 
 export default function (instance: AxiosInstance): AuthApi {
   return {
-    signIn(payload: {
+    async signIn(payload: {
       email: string;
       password: string;
     }): Promise<AuthResponse> {
       return instance.post('/login', payload);
     },
-    signUp(payload: {
+    async signUp(payload: {
       email: string;
       password: string;
     }): Promise<AuthResponse> {
       return instance.post('/registration', payload);
     },
-    logout() {
+    async logout() {
       return instance.post('/logout');
     },
-    socAuth(provider) {
+    async socAuth(provider) {
       return instance.get(`/social-login/${provider}`, {
         // credentials: 'include',
       });
     },
-    getAuthUser(authLink) {
+    async getAuthUser(authLink) {
       return instance.post(`/auth-user/${authLink}`);
     },
-    refresh(refreshToken) {
+    async refresh(refreshToken) {
       return instance.post('/refresh', { refreshToken });
     },
   };

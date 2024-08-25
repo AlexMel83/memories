@@ -1,9 +1,9 @@
 <template>
   <section
-    v-if="coworkings.length > 0"
+    v-if="memories.length > 0"
     class="mapsection"
     name="image-map"
-    style="height: 400px"
+    style="height: 80vh"
   >
     <button class="location btn" @click="getLocation()">
       Get your Location
@@ -16,6 +16,7 @@
       :zoom="zoom"
       :center="center"
       style="width: 100%; height: 100%"
+      :scroll-wheel-zoom="false"
     >
       <l-tile-layer :url="osmUrl" :attribution="osmAttrib" />
       <l-marker
@@ -33,11 +34,11 @@
         </l-popup>
       </l-marker>
       <l-marker
-        v-for="coworking in markerData"
-        :key="coworking.id"
-        :lat-lng="[coworking.latitude, coworking.longitude]"
+        v-for="memory in markerData"
+        :key="memory.id"
+        :lat-lng="[memory.latitude, memory.longitude]"
       >
-        <l-popup :content="coworking.popupContent" />
+        <l-popup :content="memory.popupContent" />
       </l-marker>
       <l-control-layers position="topright" />
       <l-tile-layer
@@ -65,7 +66,7 @@ const config = useRuntimeConfig();
 const baseURL = config.public.apiBase;
 const mapboxApiKey = config.public.apiKeyMapbox;
 const props = defineProps({
-  coworkings: {
+  memories: {
     type: Array,
     default: () => [],
   },
@@ -111,6 +112,7 @@ let isIconLoaded = false;
 
 onMounted(async () => {
   if (process.client) {
+    const L = await import('leaflet');
     import('leaflet').then(() => {
       userIcon = L.icon({
         iconUrl: 'location-icon.ico',
@@ -125,30 +127,28 @@ onMounted(async () => {
 });
 
 const markerData = computed(() => {
-  return props.coworkings.map((coworking) => {
+  return props.memories.map((memory) => {
     const regex = /POINT\(([^ ]+) ([^ ]+)\)/;
-    const match = coworking.location ? coworking.location.match(regex) : null;
+    const match = memory.location ? memory.location.match(regex) : null;
     const longitude = match ? parseFloat(match[1]) : 0;
     const latitude = match ? parseFloat(match[2]) : 0;
-    const photoURL = coworking.coworking_photo
-      ? `${baseURL}/${coworking.coworking_photo}`
+    const photoURL = memory.memory_photos?.[0]?.url
+      ? `${memory.memory_photos[0].url.includes('http') ? '' : baseURL}${memory.memory_photos[0].url}`
       : './default-coworking.png';
     const popupContent = `
-        <div class="popup-content" style="text-align: center;">
-            <a href="/coworking/${coworking.id}" target="_blank" style="word-wrap: break-word; text-decoration: none;">
-                <img src="${photoURL}" loading="lazy" alt="${coworking.coworking_name}" style="max-width: 100%; height: auto; display: block; margin: auto;" />
-                <b style="display: block; margin-top: 5px; font-weight: bold; font-size: 130%;">${coworking.coworking_name}</b>
+        <div class="popup-content" style="text-align: center; margin 0;">
+            <a href="/coworking/${memory.id}" target="_blank" style="word-wrap: break-word; text-decoration: none;">
+                <img src="${photoURL}" loading="lazy" alt="${memory.title}" style="max-width: 100%; height: auto; display: block; margin: auto;" />
+                <b style="display: block; margin-top: 3px; font-weight: bold; font-size: 130%;">${memory.title}</b>
             </a>
             <p style="word-wrap: break-word;">
-                <a href="https://www.google.com/maps?q=${encodeURIComponent(coworking.address)}" target="_blank">${coworking.address}</a>
+                <a href="https://www.google.com/maps?q=${encodeURIComponent(memory.address)}" target="_blank">${memory.address}</a>
             </p>
-            <a href="mailto:${coworking.email}" style="word-wrap: break-word; display: block;">${coworking.email}</a>
-            <a href="tel:${coworking.phone}" style="word-wrap: break-word;">${coworking.phone}</a>
         </div>
         `;
 
     return {
-      id: coworking.id,
+      id: memory.id,
       latitude,
       longitude,
       popupContent,
@@ -192,6 +192,18 @@ function getLocation() {
   background-color: var(--header-bg);
   cursor: pointer;
   margin-right: 20px;
+}
+
+::v-deep .leaflet-popup-content p {
+  margin: 0 !important;
+}
+
+::v-deep .leaflet-popup-content {
+  margin: 0 0 10px 0 !important;
+}
+
+::v-deep .leaflet-popup-content-wrapper {
+  border-radius: 0 !important;
 }
 
 .btn:hover {

@@ -37,6 +37,7 @@ export const up = async (knex) => {
       table.string('address').nullable();
       table.specificType('location', 'geography(POINT, 4326)').nullable();
       table.string('formatted_address').nullable();
+      table.timestamp('date_event').nullable();
       table.text('description').nullable();
       table.boolean('published').defaultTo(false).notNullable();
       table.integer('user_id').nullable();
