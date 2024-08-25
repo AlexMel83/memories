@@ -48,7 +48,6 @@ const store = useAuthStore();
 const route = useRoute();
 const isHomePage = computed(() => route.path === '/');
 const isMenuOpen = computed(() => store.menuOpen);
-const role = computed(() => store.userRole);
 
 const hideMenu = () => {
   store.menuOpen = false;
