@@ -13,15 +13,18 @@
           <span сlass="cursor-pointer font-bold">Ua</span>
           <span>|</span>
           <span>En</span>
+          <ColorMode />
           <button
             class="md:hidden p-2 rounded-full hover:bg-gray-200 focus:outline-none"
             @click="toggleMenu"
           >
-            <img
-              :src="menuOpen ? '~/assets/menu-open.svg' : 'menu.svg'"
-              alt="Menu Icon"
-              class="w-6 h-6"
+            <UIcon
+              v-if="!menuOpen"
+              key="bars"
+              name="i-heroicons-bars-3"
+              class="icon w-10 h-10"
             />
+            <UIcon v-else name="i-heroicons-x-mark" class="icon w-10 h-10" />
           </button>
           <template v-if="!isAuthed">
             <button
@@ -31,7 +34,6 @@
               Увійти
             </button>
           </template>
-          <ColorMode />
         </div>
       </div>
       <div v-if="menuOpen" class="mt-4">
@@ -54,8 +56,8 @@
 <script setup>
 import { useRoute } from 'vue-router';
 import { useAuthStore } from '@/stores/auth.store';
-import Login from '~/components/modal/Login.vue';
-import Registration from '~/components/modal/Registration.vue';
+import Login from '@/components/modal/Login.vue';
+import Registration from '@/components/modal/Registration.vue';
 
 import { useLocalStorage } from '@vueuse/core';
 const localStorageUserId = useLocalStorage('userId', null);

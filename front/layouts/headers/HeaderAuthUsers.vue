@@ -11,6 +11,7 @@
           <div class="auth-user-name">
             <UserName />
           </div>
+          <ColorMode />
           <UButton icon class="burger" @click="toggleMenu">
             <template #default>
               <UIcon
@@ -22,14 +23,12 @@
               <UIcon v-else name="i-heroicons-x-mark" class="icon w-10 h-10" />
             </template>
           </UButton>
-          <ColorMode />
         </div>
       </div>
       <div v-if="isMenuOpen" class="menu">
         <div class="mobile-auth-user-name">
           <UserName />
         </div>
-        <component :is="getMenu()" />
       </div>
       <p class="mt-6 text-center text-gray-700 text-white header-text">
         <span class="font-bold">Мапа пам'яті:</span> Відновлення історії та
@@ -42,9 +41,6 @@
 <script setup>
 import { useRoute } from 'vue-router';
 import { useAuthStore } from '@/stores/auth.store.ts';
-import ManagerMenu from '~/layouts/menuAuthUsers/ManagerMenu.vue';
-import UserMenu from '~/layouts/menuAuthUsers/UserMenu.vue';
-import AdminMenu from '~/layouts/menuAuthUsers/AdminMenu.vue';
 import UserName from '~/layouts/headers/UserName.vue';
 
 const store = useAuthStore();
@@ -60,19 +56,6 @@ const hideMenu = () => {
 
 const toggleMenu = () => {
   store.menuOpen = !store.menuOpen;
-};
-
-const getMenu = () => {
-  switch (role.value) {
-    case 'manager':
-      return ManagerMenu;
-    case 'user':
-      return UserMenu;
-    case 'admin':
-      return AdminMenu;
-    default:
-      return null;
-  }
 };
 </script>
 
