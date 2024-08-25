@@ -4,7 +4,7 @@
       <SearchInput />
     </section>
     <section class="memories-list" :class="{ blurred: authStore.isMenuOpen }">
-      <Map :memories="memoriesDataApi || []" />
+      <Map :memories="filteredMemories || []" />
       <div v-auto-animate class="memories-wrapper">
         <template v-if="filteredMemories?.length > 0 && !isLoading">
           <div
