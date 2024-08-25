@@ -4,16 +4,17 @@
       <SearchInput />
     </section>
     <section class="memories-list" :class="{ blurred: authStore.isMenuOpen }">
+      <Map :memories="memoriesDataApi || []" />
       <div v-auto-animate class="memories-wrapper">
         <template v-if="filteredMemories?.length > 0 && !isLoading">
           <div
             v-auto-animate
-            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
           >
             <div
               v-for="memory in filteredMemories"
               :key="memory.id"
-              class="spaces-col p-4 bg-white shadow-md rounded-lg"
+              class="bg-white shadow-md rounded-lg"
             >
               <nuxt-link class="container" :to="'/'">
                 <div class="photo">
@@ -33,7 +34,10 @@
                     </h2>
                   </div>
                 </div>
-                <div class="info-card">
+                <div class="info-card" v-auto-animate>
+                  <div class="description-container">
+                    <p class="description">{{ memory.description }}</p>
+                  </div>
                   <div v-if="memory.address" class="map" @click.stop>
                     <a
                       :href="
@@ -79,7 +83,6 @@
               class="custom-pagination"
             />
           </div>
-          <Map :memories="memoriesDataApi || []" />
         </template>
         <Loader v-if="isLoad" />
       </div>
@@ -158,6 +161,22 @@ const filteredMemories = computed(() => {
 <style scoped>
 @import '../assets/src/styles.css';
 
+.memories-wrapper {
+  padding: 20px 25px;
+  margin-top: 20px;
+}
+
+.description-container {
+  padding: 0 5px;
+  margin-bottom: 10px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  -webkit-line-clamp: 3; /* Показывает только 3 строки */
+  text-overflow: ellipsis; /* Добавляет "..." в конце */
+  max-height: calc(1.5em * 3); /* Высота для 3 строк текста */
+}
+
 .blurred {
   filter: blur(5px);
   pointer-events: none;
@@ -170,14 +189,13 @@ const filteredMemories = computed(() => {
   align-items: center;
 }
 
-.coworkings-list {
+.memories-list {
   background-color: var(--space-bg-mob);
 }
 
 .spaces-wrapper {
   margin: 0 auto;
   min-height: 100vh;
-  padding: 24px 0px;
 }
 
 .search-wrapper {
@@ -190,20 +208,20 @@ const filteredMemories = computed(() => {
   justify-content: center;
   border-radius: 20px;
   background: var(--white-color);
-  width: 92%;
-  margin: 0 auto;
-  margin-bottom: 50px;
+  width: 95%;
+  margin: 10px auto;
+  margin-bottom: 30px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s ease-in-out;
 }
 
 .photo {
   width: 100%;
-  height: 230px;
+  max-height: 230px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border-radius: 20px;
+  border-radius: 10px;
   overflow: hidden;
   position: relative;
 }
@@ -218,30 +236,26 @@ const filteredMemories = computed(() => {
   display: none !important;
 }
 
-.space-title {
+.memory-title {
   text-align: center;
-  padding: 5px;
   font-size: 20px;
 }
 
 .title {
   display: flex;
-  width: 92%;
-  max-width: 316px;
-  padding: 4px 24px;
+  max-width: 92%;
+  padding: 0 20px;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
   border-radius: 0px 20px 20px 0px;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(5px);
   position: absolute;
-  left: -1px;
-  bottom: 20px;
+  bottom: 15px;
 }
 
 .info-card {
-  padding: 16px 3px 30px 3px;
+  padding: 10px 3px 20px 3px;
   position: relative;
 }
 
@@ -258,8 +272,7 @@ const filteredMemories = computed(() => {
   margin-right: 7px;
 }
 
-.time,
-.money {
+.time {
   display: flex;
   align-items: center;
 }
@@ -285,7 +298,7 @@ const filteredMemories = computed(() => {
 
 .map {
   display: flex;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
 .map img {
@@ -302,7 +315,7 @@ const filteredMemories = computed(() => {
 .info-item {
   display: flex;
   justify-content: space-between;
-  margin-top: 10px;
+  margin-top: 5px;
 }
 
 .buttons {
@@ -321,7 +334,7 @@ const filteredMemories = computed(() => {
   background-color: var(--header-bg);
   color: var(--white-color);
   display: flex;
-  width: 182px;
+  max-width: 182px;
   padding: 6px 14px;
   justify-content: center;
   align-items: center;
@@ -330,6 +343,10 @@ const filteredMemories = computed(() => {
   bottom: -20px;
   left: 50%;
   transform: translate(-50%, 0%);
+}
+
+.btn:hover {
+  background-color: var(--btn-border);
 }
 
 .btn:active {
@@ -369,25 +386,12 @@ a {
 }
 
 @media (min-width: 1024px) {
-  .spaces-wrapper {
-    padding: 40px;
-  }
-
   .search {
-    padding: 0 40px;
+    padding: 0 10px;
   }
 
   .search-wrapper {
     padding: 0 8px;
-  }
-
-  .spaces-col {
-    padding: 0;
-    margin: 0;
-  }
-
-  .title {
-    width: 75%;
   }
 
   .btn {
@@ -395,23 +399,13 @@ a {
   }
 
   .photo {
-    height: 274px;
-  }
-
-  .btn:hover {
-    background-color: var(--btn-border);
+    max-height: 274px;
   }
 
   .container {
-    margin-bottom: 40px;
+    margin-bottom: 15px;
     width: 95%;
   }
-
-  .info-card {
-    padding: 24px 24px 32px;
-    min-height: 174px;
-  }
-
   .icons-container.down img {
     width: 32px;
     height: 32px;
@@ -420,12 +414,8 @@ a {
 }
 
 @media (min-width: 1440px) {
-  .spaces-wrapper {
-    padding: 40px 65px;
-  }
-
-  .search {
-    padding: 0 65px;
+  .memories-wrapper {
+    padding: 20px 25px;
   }
 }
 </style>

@@ -3,7 +3,7 @@
     v-if="memories.length > 0"
     class="mapsection"
     name="image-map"
-    style="height: 400px"
+    style="height: 80vh"
   >
     <button class="location btn" @click="getLocation()">
       Get your Location
@@ -16,6 +16,7 @@
       :zoom="zoom"
       :center="center"
       style="width: 100%; height: 100%"
+      :scroll-wheel-zoom="false"
     >
       <l-tile-layer :url="osmUrl" :attribution="osmAttrib" />
       <l-marker
