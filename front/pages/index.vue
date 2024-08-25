@@ -123,12 +123,16 @@ const formatDate = (dateString) => {
 };
 
 onMounted(async () => {
-  await fetchMemories();
+  try {
+    await fetchMemories();
 
-  bus.$on('searchTermUpdated', (newSearchTerm) => {
-    searchTerm.value = newSearchTerm;
-    fetchMemories(newSearchTerm);
-  });
+    bus.$on('searchTermUpdated', (newSearchTerm) => {
+      searchTerm.value = newSearchTerm;
+      fetchMemories(newSearchTerm);
+    });
+  } catch (error) {
+    console.error('Error in onMounted:', error);
+  }
 });
 
 watch(searchTerm, async (newValue) => {
@@ -136,6 +140,10 @@ watch(searchTerm, async (newValue) => {
 });
 
 const fetchMemories = async (searchQuery = null) => {
+  if (!$api.memories || typeof $api.memories.getMemories !== 'function') {
+    console.error('API not ready');
+    return;
+  }
   isLoading.value = true;
   try {
     const response = await $api.memories.getMemories(searchQuery);
