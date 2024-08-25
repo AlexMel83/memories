@@ -44,9 +44,9 @@
         />
         <Registration v-else @open-login-component="changeCompenent" />
       </div>
-      <p class="mt-6 text-center text-gray-700 text-white header-text">
-        <span class="font-bold">Мапа пам'яті:</span> Відновлення історії та
-        справедливості
+      <p class="mt-6 text-center text-gray-200 header-text">
+        <span class="font-bold">Мапа пам'яті:</span> збереження історії та
+        відновлення справедливості
       </p>
     </div>
   </div>
@@ -244,9 +244,9 @@ const fetchUserData = async (authLinkValue) => {
   .header-main.home-page .header-text {
     display: block;
     text-align: center;
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     max-width: 1092px;
-    margin: 10px auto;
+    margin: 0 auto;
   }
 
   .header-text {

@@ -42,7 +42,8 @@ class UserController {
       trx = await knex.transaction();
       const { email, password } = req.body;
       const userData = await userService.login(email, password, trx);
-      res.cookie('refreshToken', userData.refreshToken, config.rFcookieOptions);
+
+      res.cookie('refreshToken', userData.refreshToken, rFcookieOptions);
       await trx.commit();
       delete userData.refreshToken; // Удаление токена из данных
       return res.json(userData);

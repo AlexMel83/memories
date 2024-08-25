@@ -48,7 +48,11 @@ export default {
     }
     try {
       const memoriesQuery = trx(memoriesTable)
-        .select([...memoriesFields, ...memoryPhotosFields])
+        .select([
+          ...memoriesFields,
+          knex.raw('ST_AsEWKT(location) as location'),
+          ...memoryPhotosFields,
+        ])
         .leftJoin('memory_photos as mp', 'mp.memory_id', 'memories.id');
 
       for (const [key, value] of Object.entries(condition)) {
