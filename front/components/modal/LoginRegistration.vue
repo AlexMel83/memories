@@ -178,7 +178,7 @@ watch(isOpen, (newValue) => {
 
 <template>
   <div>
-    <UModal v-model="isOpen" prevent-close>
+    <UModal v-model="isOpen" prevent-close :ui="{ wrapper: 'z-500' }">
       <UCard
         :ui="{
           ring: '',

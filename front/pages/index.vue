@@ -68,6 +68,9 @@
                         <div v-if="memory.updated_at !== memory.created_at">
                           Оновлено: {{ formatDate(memory.updated_at) }}
                         </div>
+                        <div v-if="memory.date_event">
+                          Дата події: {{ formatDate(memory.date_event) }}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -263,6 +266,9 @@ const filteredMemories = computed(() => {
 .info-card {
   padding: 10px 3px 20px 3px;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .icons-container.up {

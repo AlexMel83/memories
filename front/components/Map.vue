@@ -136,10 +136,10 @@ const markerData = computed(() => {
       ? `${memory.memory_photos[0].url.includes('http') ? '' : baseURL}${memory.memory_photos[0].url}`
       : './default-coworking.png';
     const popupContent = `
-        <div class="popup-content" style="text-align: center;">
+        <div class="popup-content" style="text-align: center; margin 0;">
             <a href="/coworking/${memory.id}" target="_blank" style="word-wrap: break-word; text-decoration: none;">
                 <img src="${photoURL}" loading="lazy" alt="${memory.title}" style="max-width: 100%; height: auto; display: block; margin: auto;" />
-                <b style="display: block; margin-top: 5px; font-weight: bold; font-size: 130%;">${memory.title}</b>
+                <b style="display: block; margin-top: 3px; font-weight: bold; font-size: 130%;">${memory.title}</b>
             </a>
             <p style="word-wrap: break-word;">
                 <a href="https://www.google.com/maps?q=${encodeURIComponent(memory.address)}" target="_blank">${memory.address}</a>
@@ -192,6 +192,18 @@ function getLocation() {
   background-color: var(--header-bg);
   cursor: pointer;
   margin-right: 20px;
+}
+
+::v-deep .leaflet-popup-content p {
+  margin: 0 !important;
+}
+
+::v-deep .leaflet-popup-content {
+  margin: 0 0 10px 0 !important;
+}
+
+::v-deep .leaflet-popup-content-wrapper {
+  border-radius: 0 !important;
 }
 
 .btn:hover {
