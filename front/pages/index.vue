@@ -76,7 +76,7 @@
               </nuxt-link>
             </div>
           </div>
-          <div class="flex justify-center">
+          <div class="flex justify-center pagination">
             <UPagination
               v-model="page"
               :total="Math.ceil(memoriesDataApi.length / perPage)"
@@ -164,8 +164,8 @@ const filteredMemories = computed(() => {
 @import '../assets/src/styles.css';
 
 .memories-wrapper {
-  padding: 20px 25px;
-  margin-top: 20px;
+  padding: 20px 25px 10px 25px;
+  margin-top: 10px;
 }
 
 .description-container {
@@ -174,11 +174,15 @@ const filteredMemories = computed(() => {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  line-clamp: 3;
   -webkit-line-clamp: 3; /* Показывает только 3 строки */
   text-overflow: ellipsis; /* Добавляет "..." в конце */
   max-height: calc(1.5em * 3); /* Высота для 3 строк текста */
 }
 
+.pagination {
+  margin-top: 10px;
+}
 .blurred {
   filter: blur(5px);
   pointer-events: none;
