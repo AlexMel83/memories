@@ -61,6 +61,9 @@ export default {
       }
 
       const result = await memoriesQuery;
+      if (!result.length) {
+        return null;
+      }
 
       const groupedResult = result.reduce((acc, row) => {
         const memoryIndex = acc.findIndex(
