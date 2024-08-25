@@ -3,23 +3,23 @@
     <section class="search">
       <SearchInput />
     </section>
-    <section class="memories-list" :class="{ blurred: authStore.isMenuOpen }">
-      <div v-auto-animate class="memories-wrapper">
-        <template v-if="filteredMemories?.length > 0 && !isLoading">
+    <section class="coworkings-list" :class="{ blurred: authStore.isMenuOpen }">
+      <div v-auto-animate class="spaces-wrapper">
+        <template v-if="filteredSpaces.length > 0 && !isLoading">
           <div
             v-auto-animate
             class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
           >
             <div
-              v-for="memory in filteredMemories"
-              :key="memory.id"
+              v-for="space in filteredSpaces"
+              :key="space.id"
               class="spaces-col p-4 bg-white shadow-md rounded-lg"
             >
               <nuxt-link class="container" :to="'/'">
                 <div class="photo">
                   <img
-                    v-if="memory.memory_photos.length"
-                    :src="`${memory.memory_photos[0].url.includes('http') ? '' : baseURL}${memory.memory_photos[0].url}`"
+                    v-if="space.coworking_photo"
+                    :src="`${baseURL}/${space.coworking_photo}`"
                     loading="lazy"
                   />
                   <img
@@ -27,18 +27,34 @@
                     src="./../public/default-coworking.png"
                     loading="lazy"
                   />
+                  <Rating :rating="+space.averageRating" />
                   <div class="title">
-                    <h2 class="memory-title">
-                      {{ memory.title }}
+                    <h2 class="space-title">
+                      {{ space.coworking_name }}
                     </h2>
                   </div>
                 </div>
                 <div class="info-card">
-                  <div v-if="memory.address" class="map" @click.stop>
+                  <div class="icons-container down">
+                    <img
+                      v-for="advantage in space.advantages.slice(0, 7)"
+                      :key="advantage.name"
+                      :title="advantage.description"
+                      :src="`${baseURL}/${advantage.icon}`"
+                      loading="lazy"
+                    />
+                    <UIcon
+                      v-if="space.advantages.length > 7"
+                      class="dots-icon"
+                      name="i-heroicons-ellipsis-horizontal-20-solid"
+                      :style="{ color: 'var(--header-bg)' }"
+                    />
+                  </div>
+                  <div v-if="space.address" class="map" @click.stop>
                     <a
                       :href="
                         'https://maps.google.com/?q=' +
-                        encodeURIComponent(memory.address)
+                        encodeURIComponent(space.address)
                       "
                       target="_blank"
                     >
@@ -47,22 +63,20 @@
                         loading="lazy"
                         alt="local"
                       />
-                      <span>{{ memory.address }}</span>
+                      <span>{{ space.address }}</span>
                     </a>
                   </div>
                   <div class="icons-container up">
-                    <div class="time">
+                    <div
+                      v-if="space.workday_start && space.workday_end"
+                      class="time"
+                    >
                       <img
                         src="~assets/spaces_images/time.svg"
                         loading="lazy"
                         alt="time icon"
                       />
-                      <div flex>
-                        Створено:{{ formatDate(memory.created_at) }}
-                        <div v-if="memory.updated_at !== memory.created_at">
-                          Оновлено: {{ formatDate(memory.updated_at) }}
-                        </div>
-                      </div>
+                      {{ space.workday_start }} - {{ space.workday_end }}
                     </div>
                   </div>
                   <nuxt-link :to="'/'" class="btn"> Переглянути </nuxt-link>
@@ -73,13 +87,13 @@
           <div class="flex justify-center">
             <UPagination
               v-model="page"
-              :total="Math.ceil(memoriesDataApi.length / perPage)"
+              :total="Math.ceil(spacesDataApi.length / perPage)"
               size="md"
               rounded
               class="custom-pagination"
             />
           </div>
-          <Map :memories="memoriesDataApi || []" />
+          <Map :coworkings="spacesDataApi || []" />
         </template>
         <Loader v-if="isLoad" />
       </div>
@@ -90,11 +104,12 @@
 <script setup>
 import { useAuthStore } from '@/stores/auth.store.ts';
 import SearchInput from '@/components/SearchInput.vue';
+import useFallbackReviews from '@/mixins/useFallbackReviews';
 
 const isLoading = ref(false);
 const isLoad = ref(false);
 const { $api } = useNuxtApp();
-const memoriesDataApi = ref([]);
+const spacesDataApi = ref([]);
 const authStore = useAuthStore();
 const config = useRuntimeConfig();
 const baseURL = config.public.apiBase;
@@ -103,56 +118,72 @@ const page = ref(1);
 const perPage = 12;
 const bus = useNuxtApp().$bus;
 
-const formatDate = (dateString) => {
-  const options = {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  };
-  return new Date(dateString).toLocaleString('ru-RU', options);
-};
+const { getFallbackReviews } = useFallbackReviews();
 
 onMounted(async () => {
-  await fetchMemories();
+  await fetchCoworkings();
+  await getAllAdvantages();
 
   bus.$on('searchTermUpdated', (newSearchTerm) => {
     searchTerm.value = newSearchTerm;
-    fetchMemories(newSearchTerm);
+    fetchCoworkings(newSearchTerm);
   });
 });
 
 watch(searchTerm, async (newValue) => {
-  await fetchMemories(newValue);
+  await fetchCoworkings(newValue);
 });
 
-const fetchMemories = async (searchQuery = null) => {
+const fetchCoworkings = async (searchQuery = null) => {
   isLoading.value = true;
   try {
-    const response = await $api.memories.getMemories(searchQuery);
-    const memories = response.data.filter(
-      (memory) => memory.published === true,
+    const response = await $api.coworkings.getCoworkings(searchQuery);
+    const coworkings = response.data.filter(
+      (space) => space.published === true,
     );
 
-    memoriesDataApi.value = memories;
+    for (let coworking of coworkings) {
+      const reviewsResponse = await $api.coworkings.getReviews(coworking.id);
+      let reviews = reviewsResponse.data;
+      if (reviews.length === 0) {
+        reviews = getFallbackReviews(coworking.id);
+      }
+      coworking.averageRating =
+        reviews.length > 0
+          ? (
+              reviews.reduce((sum, review) => sum + review.rating, 0) /
+              reviews.length
+            ).toFixed(1)
+          : null;
+    }
+
+    spacesDataApi.value = coworkings;
   } catch (error) {
-    console.error('Error fetching memories data:', error);
+    console.error('Error fetching coworkings data:', error);
   } finally {
     isLoading.value = false;
   }
 };
 
-const filteredMemories = computed(() => {
+const filteredSpaces = computed(() => {
   const lowerCaseSearchTerm = searchTerm.value?.toLowerCase() || '';
   const startIndex = (page.value - 1) * perPage;
   const endIndex = startIndex + perPage;
-  return memoriesDataApi.value
-    .filter((memory) =>
-      memory.title.toLowerCase().includes(lowerCaseSearchTerm),
+  return spacesDataApi.value
+    .filter((space) =>
+      space.coworking_name.toLowerCase().includes(lowerCaseSearchTerm),
     )
     .slice(startIndex, endIndex);
 });
+
+const getAllAdvantages = async () => {
+  try {
+    const response = await $api.coworkings.getAdvantages();
+    authStore.setAllAdvantages(response.data);
+  } catch (error) {
+    console.error('An error occurred while fetching advantages:', error);
+  }
+};
 </script>
 
 <style scoped>
