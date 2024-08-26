@@ -124,7 +124,9 @@ const formatDate = (dateString) => {
 
 onMounted(async () => {
   try {
-    await fetchMemories();
+    if (!searchTerm.value) {
+      await fetchMemories(); // Выполняем запрос только если searchTerm пустой
+    }
 
     bus.$on('searchTermUpdated', (newSearchTerm) => {
       searchTerm.value = newSearchTerm;
@@ -135,23 +137,18 @@ onMounted(async () => {
   }
 });
 
-watch(searchTerm, async (newValue) => {
-  await fetchMemories(newValue);
-});
+// watch(searchTerm, async (newValue) => {
+//   await fetchMemories(newValue);
+// });
 
 const fetchMemories = async (searchQuery = null) => {
-  // if (!$api.memories || typeof $api.memories.getMemories !== 'function') {
-  //   console.error('API not ready');
-  //   return;
-  // }
-  console.log($api);
+  console.log($api); //log api
   isLoading.value = true;
   try {
     const response = await $api.memories.getMemories(searchQuery);
     const memories = response.data.filter(
       (memory) => memory.published === true,
     );
-
     memoriesDataApi.value = memories;
   } catch (error) {
     console.error('Error fetching memories data:', error);
