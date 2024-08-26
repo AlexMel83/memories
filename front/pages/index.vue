@@ -140,10 +140,11 @@ watch(searchTerm, async (newValue) => {
 });
 
 const fetchMemories = async (searchQuery = null) => {
-  if (!$api.memories || typeof $api.memories.getMemories !== 'function') {
-    console.error('API not ready');
-    return;
-  }
+  // if (!$api.memories || typeof $api.memories.getMemories !== 'function') {
+  //   console.error('API not ready');
+  //   return;
+  // }
+  console.log($api);
   isLoading.value = true;
   try {
     const response = await $api.memories.getMemories(searchQuery);

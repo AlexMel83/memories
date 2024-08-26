@@ -2,8 +2,8 @@ import 'dotenv/config';
 
 export default defineNuxtConfig({
   plugins: [
-    '~/plugins/axios',
-    '~/plugins/errorHandler.js',
+    '~/plugins/01.axios',
+    '~/plugins/02.errorHandler.js',
     { src: '~/plugins/leaflet.client.js', mode: 'client' },
   ],
 

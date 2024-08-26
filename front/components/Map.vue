@@ -141,7 +141,7 @@ const markerData = computed(() => {
                 <img src="${photoURL}" loading="lazy" alt="${memory.title}" style="max-width: 100%; height: auto; display: block; margin: auto;" />
                 <b style="display: block; margin-top: 3px; font-weight: bold; font-size: 130%;">${memory.title}</b>
             </a>
-            <p style="word-wrap: break-word;">
+            <p class="px-2" style="word-wrap: break-word;">
                 <a href="https://www.google.com/maps?q=${encodeURIComponent(memory.address)}" target="_blank">${memory.address}</a>
             </p>
         </div>
@@ -194,15 +194,15 @@ function getLocation() {
   margin-right: 20px;
 }
 
-::v-deep .leaflet-popup-content p {
+:deep(.leaflet-popup-content p) {
   margin: 0 !important;
 }
 
-::v-deep .leaflet-popup-content {
+:deep(.leaflet-popup-content) {
   margin: 0 0 10px 0 !important;
 }
 
-::v-deep .leaflet-popup-content-wrapper {
+:deep(.leaflet-popup-content-wrapper) {
   border-radius: 0 !important;
 }
 

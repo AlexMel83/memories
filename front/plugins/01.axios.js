@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useAuthStore } from '~/stores/auth.store';
-import apiModule from '../api/index';
+import apiModule from '../api/index.ts';
 
 // const baseURL = 'https://hub-api.intita.com';
 // const baseURL = "http://localhost:4041"
