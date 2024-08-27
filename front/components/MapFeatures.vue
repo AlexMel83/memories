@@ -12,7 +12,7 @@
         name="i-humbleicons:navigation"
         class="text-state-600 text-[30px]"
         :class="{ 'text-white': coords, 'animate-pulse': fetchCoords }"
-      ></UIcon>
+      />
     </div>
   </div>
 </template>

@@ -10,9 +10,9 @@
       @close-geo-error="closeGeoError"
     />
     <map-features
-      @getGeoLocation="getGeoLocation"
       :coords="coords"
-      :fetchCoords="fetchCoords"
+      :fetch-coords="fetchCoords"
+      @get-geo-location="getGeoLocation"
     />
     <button class="location btn" @click="getLocation()">
       Get your Location
@@ -102,7 +102,6 @@ const osmAttrib = ref(
   '&copy; <a href="http://www.openstreetmap.org">OpenStreetMap</a> contributors',
 );
 let userIcon = null;
-let isIconLoaded = false;
 const tileProviders = ref([
   {
     name: 'OpenStreetMap',
