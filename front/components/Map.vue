@@ -5,9 +5,9 @@
     name="image-map"
   >
     <modal-geo-error
-      @closeGeoError="closeGeoError"
       v-if="geoError"
-      :geoErrorMsg="geoErrorMsg"
+      :geo-error-msg="geoErrorMsg"
+      @close-geo-error="closeGeoError"
     />
     <button class="location btn" @click="getLocation()">
       Get your Location

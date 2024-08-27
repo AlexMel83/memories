@@ -11,8 +11,8 @@
         services are enabled
       </p>
       <button
-        @click="$emit('closeGeoError')"
         class="self-start py-2 px-4 bg-red-500 text-white rounded-md text-sm"
+        @click="$emit('closeGeoError')"
       >
         Close
       </button>
