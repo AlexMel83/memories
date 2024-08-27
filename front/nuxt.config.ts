@@ -10,6 +10,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   css: [
+    '~/assets/src/tailwind.css',
     '@mdi/font/css/materialdesignicons.min.css',
     '~/assets/src/styles.css',
   ],
