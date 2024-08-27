@@ -1,10 +1,14 @@
 <template>
   <section
     v-if="memories.length > 0"
-    class="mapsection"
+    class="mapsection h-screen relative"
     name="image-map"
-    style="height: 80vh"
   >
+    <modal-geo-error
+      @closeGeoError="closeGeoError"
+      v-if="geoError"
+      :geoErrorMsg="geoErrorMsg"
+    />
     <button class="location btn" @click="getLocation()">
       Get your Location
     </button>
@@ -13,9 +17,9 @@
     </span>
     <l-map
       ref="map"
+      class="h-full z-[1]"
       :zoom="zoom"
       :center="center"
-      style="width: 100%; height: 100%"
       :scroll-wheel-zoom="false"
     >
       <l-tile-layer :url="osmUrl" :attribution="osmAttrib" />
@@ -55,6 +59,7 @@
 </template>
 
 <script setup>
+import customIconLocationUrl from '@/public/location-icon.ico';
 import {
   LMap,
   LTileLayer,
@@ -62,6 +67,18 @@ import {
   LMarker,
   LPopup,
 } from '@vue-leaflet/vue-leaflet';
+
+const coords = ref(null);
+const fetchCoords = ref(null);
+const geoMarker = ref(null);
+const geoError = ref(true);
+const geoErrorMsg = ref(null);
+
+const closeGeoError = () => {
+  geoError.value = null;
+  geoErrorMsg.value = null;
+};
+
 const config = useRuntimeConfig();
 const baseURL = config.public.apiBase;
 const mapboxApiKey = config.public.apiKeyMapbox;
@@ -79,6 +96,8 @@ const osmUrl = ref('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
 const osmAttrib = ref(
   '&copy; <a href="http://www.openstreetmap.org">OpenStreetMap</a> contributors',
 );
+let userIcon = null;
+let isIconLoaded = false;
 const tileProviders = ref([
   {
     name: 'OpenStreetMap',
@@ -107,10 +126,48 @@ const tileProviders = ref([
       'Map data: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
   },
 ]);
-let userIcon = null;
-let isIconLoaded = false;
 
 onMounted(async () => {
+  const getGeoLocation = () => {
+    if (sessionStorage.getItem('coords')) {
+      coords.value = JSON.parse(sessionStorage.getItem('coords'));
+      plotGeoLocation(coords.value);
+      return;
+    }
+    fetchCoords.value = true;
+    navigator.geolocation.getCurrentPosition(setCoords, getLocError);
+  };
+
+  const setCoords = (position) => {
+    fetchCoords.value = null;
+    const setSessionCoords = {
+      lat: position.coords.latitude,
+      lng: position.coords.longitude,
+    };
+    sessionStorage.setItem('coords', JSON.stringify(setSessionCoords));
+    coords.value = setSessionCoords;
+    plotGeoLocation(coords.value);
+  };
+
+  const getLocError = (error) => {
+    fetchCoords.value = null;
+    geoError.value = true;
+    geoErrorMsg.value = error.message;
+  };
+
+  const plotGeoLocation = (coords) => {
+    const customMarker = L.icon({
+      iconUrl: customIconLocationUrl,
+      iconSize: [35, 35],
+    });
+    if (map.value && map.value.leafletObject) {
+      geoMarker.value = L.marker([coords.lat, coords.lng], {
+        icon: customMarker,
+      }).addTo(map.value.leafletObject); // Используем leafletObject
+      map.value.leafletObject.setView([coords.lat, coords.lng], zoom.value); // Устанавливаем вид на карте
+    }
+  };
+
   if (process.client) {
     const L = await import('leaflet');
     import('leaflet').then(() => {
@@ -122,6 +179,8 @@ onMounted(async () => {
       });
       userLocationMarker.icon = userIcon;
     });
+
+    getGeoLocation();
   }
   isIconLoaded = true;
 });
