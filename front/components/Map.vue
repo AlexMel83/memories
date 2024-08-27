@@ -9,6 +9,11 @@
       :geo-error-msg="geoErrorMsg"
       @close-geo-error="closeGeoError"
     />
+    <map-features
+      @getGeoLocation="getGeoLocation"
+      :coords="coords"
+      :fetchCoords="fetchCoords"
+    />
     <button class="location btn" @click="getLocation()">
       Get your Location
     </button>
@@ -71,7 +76,7 @@ import {
 const coords = ref(null);
 const fetchCoords = ref(null);
 const geoMarker = ref(null);
-const geoError = ref(true);
+const geoError = ref(null);
 const geoErrorMsg = ref(null);
 
 const closeGeoError = () => {
@@ -127,47 +132,55 @@ const tileProviders = ref([
   },
 ]);
 
-onMounted(async () => {
-  const getGeoLocation = () => {
-    if (sessionStorage.getItem('coords')) {
-      coords.value = JSON.parse(sessionStorage.getItem('coords'));
-      plotGeoLocation(coords.value);
-      return;
+const getGeoLocation = () => {
+  if (coords.value) {
+    coords.value = null;
+    sessionStorage.removeItem('coords');
+    if (map.value && map.value.leafletObject && geoMarker.value) {
+      map.value.leafletObject.removeLayer(geoMarker.value);
     }
-    fetchCoords.value = true;
-    navigator.geolocation.getCurrentPosition(setCoords, getLocError);
-  };
-
-  const setCoords = (position) => {
-    fetchCoords.value = null;
-    const setSessionCoords = {
-      lat: position.coords.latitude,
-      lng: position.coords.longitude,
-    };
-    sessionStorage.setItem('coords', JSON.stringify(setSessionCoords));
-    coords.value = setSessionCoords;
+    return;
+  }
+  if (sessionStorage.getItem('coords')) {
+    coords.value = JSON.parse(sessionStorage.getItem('coords'));
     plotGeoLocation(coords.value);
-  };
+    return;
+  }
+  fetchCoords.value = true;
+  navigator.geolocation.getCurrentPosition(setCoords, getLocError);
+};
 
-  const getLocError = (error) => {
-    fetchCoords.value = null;
-    geoError.value = true;
-    geoErrorMsg.value = error.message;
+const setCoords = (position) => {
+  fetchCoords.value = null;
+  const setSessionCoords = {
+    lat: position.coords.latitude,
+    lng: position.coords.longitude,
   };
+  sessionStorage.setItem('coords', JSON.stringify(setSessionCoords));
+  coords.value = setSessionCoords;
+  plotGeoLocation(coords.value);
+};
 
-  const plotGeoLocation = (coords) => {
-    const customMarker = L.icon({
-      iconUrl: customIconLocationUrl,
-      iconSize: [35, 35],
-    });
-    if (map.value && map.value.leafletObject) {
-      geoMarker.value = L.marker([coords.lat, coords.lng], {
-        icon: customMarker,
-      }).addTo(map.value.leafletObject); // Используем leafletObject
-      map.value.leafletObject.setView([coords.lat, coords.lng], zoom.value); // Устанавливаем вид на карте
-    }
-  };
+const getLocError = (error) => {
+  fetchCoords.value = null;
+  geoError.value = true;
+  geoErrorMsg.value = error.message;
+};
 
+const plotGeoLocation = (coords) => {
+  const customMarker = L.icon({
+    iconUrl: customIconLocationUrl,
+    iconSize: [35, 35],
+  });
+  if (map.value && map.value.leafletObject) {
+    geoMarker.value = L.marker([coords.lat, coords.lng], {
+      icon: customMarker,
+    }).addTo(map.value.leafletObject); // Используем leafletObject
+    map.value.leafletObject.setView([coords.lat, coords.lng], zoom.value); // Устанавливаем вид на карте
+  }
+};
+
+onMounted(async () => {
   if (process.client) {
     const L = await import('leaflet');
     import('leaflet').then(() => {
@@ -214,35 +227,6 @@ const markerData = computed(() => {
     };
   });
 });
-
-function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        center.value = [position.coords.latitude, position.coords.longitude];
-        userLocationMarker.latLng = [
-          position.coords.latitude,
-          position.coords.longitude,
-        ];
-        if (map.value && map.value.leafletObject) {
-          map.value.leafletObject.setView(center.value, zoom.value);
-        }
-        if (!userLocationMarker.icon) {
-          if (isIconLoaded) {
-            userLocationMarker.icon = userIcon;
-          }
-        }
-      },
-      (error) => {
-        console.error(`Error getting user's location:`, error);
-        userLocationMarker.latLng = null;
-      },
-    );
-  } else {
-    console.error('Geolocation is not supported by this browser.');
-    userLocationMarker.latLng = null;
-  }
-}
 </script>
 
 <style scoped>
