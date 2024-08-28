@@ -207,13 +207,15 @@ const markerData = computed(() => {
       : './default-coworking.png';
     const popupContent = `
         <div class="popup-content" style="text-align: center; margin 0;">
-            <a href="/coworking/${memory.id}" target="_blank" style="word-wrap: break-word; text-decoration: none;">
-                <img src="${photoURL}" loading="lazy" alt="${memory.title}" style="max-width: 100%; height: auto; display: block; margin: auto;" />
-                <b style="display: block; margin-top: 3px; font-weight: bold; font-size: 130%;">${memory.title}</b>
-            </a>
-            <p class="px-2" style="word-wrap: break-word;">
-                <a href="https://www.google.com/maps?q=${encodeURIComponent(memory.address)}" target="_blank">${memory.address}</a>
-            </p>
+          <a href="/coworking/${memory.id}" target="_blank" style="word-wrap: break-word; text-decoration: none;">
+            <b style="display: block; margin-top: 3px; font-weight: bold; font-size: 130%;">${memory.title}</b>
+          </a>
+          <p class="px-2" style="word-wrap: break-word;">
+              <a href="https://www.google.com/maps?q=${encodeURIComponent(memory.address)}" target="_blank">${memory.address}</a>
+          </p>
+          <a href="/coworking/${memory.id}" target="_blank" style="word-wrap: break-word; text-decoration: none;">
+              <img src="${photoURL}" loading="lazy" alt="${memory.title}" style="max-width: 100%; height: auto; display: block; margin: auto;" />
+          </a>
         </div>
         `;
 
