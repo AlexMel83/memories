@@ -194,7 +194,6 @@ onMounted(async () => {
 
     getGeoLocation();
   }
-  isIconLoaded = true;
 });
 
 const markerData = computed(() => {
