@@ -10,6 +10,7 @@
         placeholder="Пошук"
         v-model="searchQuery"
         @input="search"
+        @focus="$emit('toggleSearchResults')"
       />
       <!--Search icon-->
       <UIcon
@@ -20,7 +21,7 @@
       <div class="absolute mt-2 w-full">
         <!--Result-->
         <div
-          v-if="searchQuery"
+          v-if="searchQuery && searchResults"
           class="max-h-[200px] overflow-y-auto overflow-x-hidden bg-white rounded-md"
         >
           <!--Loading-->
@@ -29,6 +30,7 @@
             <div
               v-for="(result, index) in searchData"
               :key="index"
+              @click="selectResult(result)"
               class="px-4 py-2 flex items-center gap-2 cursor-pointer hover:bg-slate-600 hover:text-white"
             >
               <UIcon name="i-heroicons-map-pin-solid" class="w-6 h-6" />
@@ -58,9 +60,9 @@ import axios from 'axios';
 import { ref } from 'vue';
 import LoadingSpinner from './LoadingSpinner.vue';
 export default {
-  props: ['coords', 'fetchCoords'],
+  props: ['coords', 'fetchCoords', 'searchResults'],
   components: { LoadingSpinner },
-  setup(props) {
+  setup(props, { emit }) {
     const searchQuery = ref(null);
     const searchData = ref(null);
     const querTimeout = ref(null);
@@ -85,7 +87,11 @@ export default {
         }
       }, 750);
     };
-    return { searchQuery, searchData, querTimeout, search };
+
+    const selectResult = (result) => {
+      emit('plotResult', result.geometry);
+    };
+    return { searchQuery, searchData, querTimeout, search, selectResult };
   },
 };
 </script>

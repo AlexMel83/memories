@@ -12,11 +12,11 @@
     <map-features
       :coords="coords"
       :fetch-coords="fetchCoords"
+      :search-results="searchResults"
       @get-geo-location="getGeoLocation"
+      @plotResult="plotResult"
+      @toggleSearchResults="toggleSearchResults"
     />
-    <button class="location btn" @click="getLocation()">
-      Get your Location
-    </button>
     <span v-if="userLocationMarker.latLng && userLocationMarker.icon">
       {{ userLocationMarker?.latLng[0] }}, {{ userLocationMarker?.latLng[1] }}
     </span>
@@ -76,6 +76,8 @@ import {
 const coords = ref(null);
 const fetchCoords = ref(null);
 const geoMarker = ref(null);
+const resultMarker = ref(null);
+const searchResults = ref(null);
 const geoError = ref(null);
 const geoErrorMsg = ref(null);
 
@@ -185,6 +187,37 @@ const plotGeoLocation = (coords) => {
   }
 };
 
+const plotResult = (coords) => {
+  if (resultMarker.value && map.value?.leafletObject) {
+    map.value.leafletObject.removeLayer(resultMarker.value);
+  }
+  const customMarker = L.icon({
+    iconUrl: customIconLocationUrl,
+    iconSize: [35, 35],
+  });
+  if (map.value?.leafletObject) {
+    resultMarker.value = L.marker(
+      [coords.coordinates[1], coords.coordinates[0]],
+      {
+        icon: customMarker,
+      },
+    ).addTo(map.value.leafletObject);
+    map.value.leafletObject.setView(
+      [coords.coordinates[1], coords.coordinates[0]],
+      zoom.value,
+    );
+    closeSearchResults();
+  }
+};
+
+const toggleSearchResults = () => {
+  searchResults.value = !searchResults.value;
+};
+
+const closeSearchResults = () => {
+  searchResults.value = null;
+};
+
 onMounted(async () => {
   if (process.client) {
     const L = await import('leaflet');
@@ -199,6 +232,10 @@ onMounted(async () => {
     });
 
     getGeoLocation();
+
+    if (map.value && map.value.leafletObject) {
+      map.value.leafletObject.on('moveend', closeSearchResults);
+    }
   }
 });
 

@@ -12,13 +12,15 @@ export default function (app) {
         `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?${params}`,
       );
       const data = await result.json();
+
       if (!data.features[0]) {
-        res.status(404).json({ message: 'Not found' });
+        return res.status(404).json({ message: 'Not found' }); // Добавлено return
       }
-      res.status(200).json(data);
+
+      return res.status(200).json(data); // Убедитесь, что в любом случае вы возвращаете ответ
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: error.message });
+      return res.status(500).json({ error: error.message }); // Добавлено return
     }
   });
 }
