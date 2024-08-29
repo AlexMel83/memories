@@ -16,6 +16,7 @@
       @get-geo-location="getGeoLocation"
       @plotResult="plotResult"
       @toggleSearchResults="toggleSearchResults"
+      @removeResult="removeResult"
     />
     <span v-if="userLocationMarker.latLng && userLocationMarker.icon">
       {{ userLocationMarker?.latLng[0] }}, {{ userLocationMarker?.latLng[1] }}
@@ -216,6 +217,12 @@ const toggleSearchResults = () => {
 
 const closeSearchResults = () => {
   searchResults.value = null;
+};
+
+const removeResult = () => {
+  if (resultMarker.value && map.value?.leafletObject) {
+    map.value.leafletObject.removeLayer(resultMarker.value);
+  }
 };
 
 onMounted(async () => {

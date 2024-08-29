@@ -8,19 +8,39 @@ export default function (app) {
         ...url.parse(req.url, true).query,
       });
       const query = req.params.query;
-      const result = await fetch(
+      const response = await fetch(
         `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?${params}`,
       );
-      const data = await result.json();
 
-      if (!data.features[0]) {
-        return res.status(404).json({ message: 'Not found' }); // Добавлено return
+      if (!response.ok) {
+        return res
+          .status(response.status)
+          .json({ message: 'Error fetching data' });
       }
 
-      return res.status(200).json(data); // Убедитесь, что в любом случае вы возвращаете ответ
+      const data = await response.json();
+
+      if (!data.features || data.features.length === 0) {
+        return res.status(404).json({ message: 'Not found' });
+      }
+
+      data.features.forEach((item) => {
+        item.city = null;
+        item.state = null;
+        item.context.forEach((type) => {
+          if (type.id.includes('place')) {
+            item.city = type.text;
+          }
+          if (type.id.includes('region')) {
+            item.state = type.text;
+          }
+        });
+      });
+
+      return res.status(200).json(data);
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ error: error.message }); // Добавлено return
+      return res.status(500).json({ error: error.message });
     }
   });
 }

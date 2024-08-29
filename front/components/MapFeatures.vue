@@ -19,7 +19,7 @@
       />
       <!--Search result-->
       <div class="absolute mt-2 w-full">
-        <!--Result-->
+        <!--Results-->
         <div
           v-if="searchQuery && searchResults"
           class="max-h-[200px] overflow-y-auto overflow-x-hidden bg-white rounded-md"
@@ -37,6 +37,17 @@
               <p class="text-xs">{{ result.place_name_uk }}</p>
             </div>
           </div>
+        </div>
+        <!--Selected Search Result-->
+        <div v-if="selectedResult" class="mt-2 px-3 py-3 bg-white rounded-md">
+          <UIcon
+            @click="removeResult"
+            class="flex justify-end"
+            name="i-heroicons-x-mark-20-solid"
+          />
+          <h1 class="text-lg">{{ selectedResult.text }}</h1>
+          <p class="text-xs mb-1">{{ selectedResult.place_name }},</p>
+          <p class="text-xs">{{ selectedResult.properties.category }}</p>
         </div>
       </div>
     </div>
@@ -65,11 +76,12 @@ export default {
   setup(props, { emit }) {
     const searchQuery = ref(null);
     const searchData = ref(null);
-    const querTimeout = ref(null);
+    const queryTimeout = ref(null);
+    const selectedResult = ref(null);
     const search = () => {
-      clearTimeout(querTimeout.value);
+      clearTimeout(queryTimeout.value);
       searchData.value = null;
-      querTimeout.value = setTimeout(async () => {
+      queryTimeout.value = setTimeout(async () => {
         if (searchQuery.value !== '') {
           const params = new URLSearchParams({
             fuzzyMatch: true,
@@ -89,9 +101,23 @@ export default {
     };
 
     const selectResult = (result) => {
+      selectedResult.value = result;
       emit('plotResult', result.geometry);
     };
-    return { searchQuery, searchData, querTimeout, search, selectResult };
+
+    const removeResult = () => {
+      selectedResult.value = null;
+      emit('removeResult');
+    };
+    return {
+      searchQuery,
+      searchData,
+      queryTimeout,
+      search,
+      selectResult,
+      selectedResult,
+      removeResult,
+    };
   },
 };
 </script>
