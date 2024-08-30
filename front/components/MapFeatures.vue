@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-full md:w-auto absolute md:top-[40px] md:left-[60px] z-[2] flex gap-4 px-6 py-8 md:px-0 md:py-0 bg-transparent"
+    class="w-full w-auto absolute top-[15px] left-[30px] md:left-[60px] z-[2] flex gap-4 px-6 pb-8 md:px-0 md:py-0 bg-transparent"
   >
     <!--Search-->
     <div class="relative flex-1 md:min-w-[350px]">
@@ -33,16 +33,27 @@
               @click="selectResult(result)"
               class="px-4 py-2 flex items-center gap-2 cursor-pointer hover:bg-slate-600 hover:text-white"
             >
-              <UIcon name="i-heroicons-map-pin-solid" class="w-6 h-6" />
+              <UIcon
+                name="i-heroicons-map-pin-solid"
+                style="
+                  width: 1rem;
+                  height: 1rem;
+                  min-width: 1rem;
+                  min-height: 1rem;
+                "
+              />
               <p class="text-xs">{{ result.place_name_uk }}</p>
             </div>
           </div>
         </div>
         <!--Selected Search Result-->
-        <div v-if="selectedResult" class="mt-2 px-3 py-3 bg-white rounded-md">
+        <div
+          v-if="selectedResult"
+          class="mt-2 px-3 py-3 bg-white rounded-md relative"
+        >
           <UIcon
             @click="removeResult"
-            class="flex justify-end"
+            class="absolute top-2 right-2 cursor-pointer"
             name="i-heroicons-x-mark-20-solid"
           />
           <h1 class="text-lg">{{ selectedResult.text }}</h1>
@@ -53,14 +64,18 @@
     </div>
     <!--Geolocation-->
     <div
-      class="px-2 bg-white flex items-center shadow-md rounded-md min-h-[40px]"
+      class="bg-white flex items-center shadow-md rounded-md min-h-[40px]"
       :class="{ 'bg-slate-600': coords }"
       @click="$emit('getGeoLocation')"
     >
       <UIcon
         name="i-humbleicons:navigation"
-        class="text-state-600 text-[30px]"
-        :class="{ 'text-white': coords, 'animate-pulse': fetchCoords }"
+        class="text-state-600 text-[40px]"
+        :class="{
+          'text-white': coords,
+          'bg-slate-400': coords,
+          'animate-pulse': fetchCoords,
+        }"
       />
     </div>
   </div>

@@ -27,6 +27,8 @@
       :zoom="zoom"
       :center="center"
       :scroll-wheel-zoom="false"
+      :fade-animation="false"
+      :marker-zoom-animation="false"
     >
       <l-tile-layer :url="osmUrl" :attribution="osmAttrib" />
       <l-marker
@@ -114,13 +116,19 @@ const tileProviders = ref([
     url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
   },
   {
-    name: 'Satellite',
+    name: 'ArcGIS satellite',
+    visible: false,
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, USGS, NOAA',
+  },
+  {
+    name: 'Mapbox satellite',
     visible: false,
     url: `https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/{z}/{x}/{y}?access_token=${mapboxApiKey}`,
     attribution: '&copy; <a href="https://www.mapbox.com/">Mapbox</a>',
   },
   {
-    name: 'Hybrid',
+    name: 'Mapbox hybrid',
     visible: false,
     url: `https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/tiles/{z}/{x}/{y}?access_token=${mapboxApiKey}`,
     attribution: '&copy; <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -131,12 +139,6 @@ const tileProviders = ref([
     url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
     attribution:
       'Map data: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
-  },
-  {
-    name: 'ESRI ArcGIS Imagery',
-    visible: false,
-    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, USGS, NOAA',
   },
 ]);
 
