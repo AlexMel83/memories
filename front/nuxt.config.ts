@@ -9,6 +9,11 @@ export default defineNuxtConfig({
           target: process.env.API_BASE,
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
+          bypass: (req) => {
+            if (req?.url?.includes('_nuxt_icon')) {
+              return req.url;
+            }
+          },
         },
       },
     },

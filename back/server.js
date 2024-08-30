@@ -45,6 +45,10 @@ routeInit(app, express);
 
 app.use(errorMiddleware);
 
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static('front/build'));
+}
+
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });

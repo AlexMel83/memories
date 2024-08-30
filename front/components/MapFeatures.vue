@@ -74,7 +74,6 @@ export default {
   props: ['coords', 'fetchCoords', 'searchResults'],
   components: { LoadingSpinner },
   setup(props, { emit }) {
-    const config = useRuntimeConfig();
     const searchQuery = ref(null);
     const searchData = ref(null);
     const queryTimeout = ref(null);
