@@ -74,6 +74,7 @@ export default {
   props: ['coords', 'fetchCoords', 'searchResults'],
   components: { LoadingSpinner },
   setup(props, { emit }) {
+    const config = useRuntimeConfig();
     const searchQuery = ref(null);
     const searchData = ref(null);
     const queryTimeout = ref(null);
@@ -92,7 +93,7 @@ export default {
               : '0,0',
           });
           const getData = await axios.get(
-            `http://localhost:4041/geosearch/${searchQuery.value}?${params}`,
+            `${config.public.apiBase}/geosearch/${searchQuery.value}?${params}`,
           );
           searchData.value = getData.data.features;
           console.log(searchData.value);

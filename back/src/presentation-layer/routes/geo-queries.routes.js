@@ -24,17 +24,22 @@ export default function (app) {
         return res.status(404).json({ message: 'Not found' });
       }
 
+      // Обработка каждого элемента features
       data.features.forEach((item) => {
         item.city = null;
         item.state = null;
-        item.context.forEach((type) => {
-          if (type.id.includes('place')) {
-            item.city = type.text;
-          }
-          if (type.id.includes('region')) {
-            item.state = type.text;
-          }
-        });
+
+        // Проверяем наличие context и его тип данных
+        if (Array.isArray(item.context)) {
+          item.context.forEach((type) => {
+            if (type.id.includes('place')) {
+              item.city = type.text;
+            }
+            if (type.id.includes('region')) {
+              item.state = type.text;
+            }
+          });
+        }
       });
 
       return res.status(200).json(data);

@@ -142,7 +142,6 @@ onMounted(async () => {
 // });
 
 const fetchMemories = async (searchQuery = null) => {
-  console.log($api); //log api
   isLoading.value = true;
   try {
     const response = await $api.memories.getMemories(searchQuery);
