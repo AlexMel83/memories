@@ -93,7 +93,7 @@ export default {
               : '0,0',
           });
           const getData = await axios.get(
-            `${config.public.apiBase}/geosearch/${searchQuery.value}?${params}`,
+            `api/geosearch/${searchQuery.value}?${params}`,
           );
           searchData.value = getData.data.features;
           console.log(searchData.value);

@@ -1,6 +1,19 @@
 import 'dotenv/config';
+import path from 'path';
 
 export default defineNuxtConfig({
+  vite: {
+    server: {
+      proxy: {
+        '/api': {
+          target: process.env.API_BASE,
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, ''),
+        },
+      },
+    },
+  },
+  buildDir: path.resolve(__dirname, './build'),
   plugins: [
     '~/plugins/01.axios',
     '~/plugins/02.errorHandler.js',
@@ -42,7 +55,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiKeyMapbox: process.env.APIKEY_MAPBOX,
-      apiBase: process.env.API_BASE || 'http://localhost:3000',
+      apiBase: process.env.API_BASE,
     },
     private: {
       // Значения здесь доступны только на стороне сервера
