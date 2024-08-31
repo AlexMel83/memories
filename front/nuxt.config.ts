@@ -27,9 +27,9 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   css: [
-    '~/assets/src/tailwind.css',
-    '@mdi/font/css/materialdesignicons.min.css',
     'leaflet.markercluster/dist/MarkerCluster.css',
+    '@mdi/font/css/materialdesignicons.min.css',
+    '~/assets/src/tailwind.css',
     '~/assets/src/styles.css',
   ],
 
