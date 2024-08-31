@@ -1,6 +1,7 @@
 /node_modules
 /back/node_modules
 /front/node_modules
+/front/build
 /.vscode
 /back/uploads
 !/back/uploads/public/**
