@@ -31,6 +31,7 @@
       :scroll-wheel-zoom="false"
       :fade-animation="false"
       :marker-zoom-animation="false"
+      @ready="onMapReady"
     >
       <LTileLayer :url="osmUrl" :attribution="osmAttrib" />
       <l-marker
@@ -69,6 +70,58 @@
 </template>
 
 <script setup>
+import L from 'leaflet';
+import 'leaflet.markercluster';
+
+const map = ref(null);
+
+// Create locations data (20 locations around Nantes)
+const locations = [
+  { name: 'Nantes', lat: 47.218371, lng: -1.553621 },
+  { name: 'Saint-Nazaire', lat: 47.273018, lng: -2.213733 },
+  { name: 'La Baule', lat: 47.286835, lng: -2.393108 },
+  { name: 'Pornic', lat: 47.112, lng: -2.102 },
+  { name: 'Guérande', lat: 47.328, lng: -2.429 },
+  { name: 'Clisson', lat: 47.087, lng: -1.276 },
+  { name: 'Ancenis', lat: 47.366, lng: -1.176 },
+  { name: 'Châteaubriant', lat: 47.716, lng: -1.376 },
+  { name: 'Redon', lat: 47.652, lng: -2.084 },
+  { name: 'Pontchâteau', lat: 47.433, lng: -2.117 },
+  { name: 'Savenay', lat: 47.327, lng: -1.952 },
+  { name: 'Rezé', lat: 47.183, lng: -1.55 },
+  { name: 'Vertou', lat: 47.166, lng: -1.466 },
+  { name: 'Carquefou', lat: 47.283, lng: -1.5 },
+  { name: 'Orvault', lat: 47.283, lng: -1.633 },
+  { name: 'Saint-Herblain', lat: 47.216, lng: -1.65 },
+  { name: 'Sainte-Luce-sur-Loire', lat: 47.233, lng: -1.483 },
+  { name: 'Bouguenais', lat: 47.183, lng: -1.583 },
+  { name: 'Saint-Sébastien-sur-Loire', lat: 47.183, lng: -1.483 },
+  { name: 'Basse-Goulaine', lat: 47.2, lng: -1.483 },
+];
+
+function useLMarkerCluster() {
+  const markerClusterGroup = L.markerClusterGroup(); // Создаем группу кластеров
+
+  return markerClusterGroup;
+}
+const markerClusterGroup = useLMarkerCluster();
+locations.forEach((location) => {
+  const marker = L.marker([location.lat, location.lng]);
+  markerClusterGroup.addLayer(marker);
+});
+if (map.value?.leafletObject) {
+  map.value.leafletObject.addLayer(markerClusterGroup);
+}
+// When the map is ready
+const onMapReady = () => {
+  if (map.value && map.value.leafletObject) {
+    useLMarkerCluster({
+      leafletObject: map.value.leafletObject,
+      markers: locations,
+    });
+  }
+};
+
 import customIconLocationUrl from '@/public/location-icon.ico';
 import {
   LMap,
@@ -100,7 +153,7 @@ const props = defineProps({
     default: () => [],
   },
 });
-const map = ref(null);
+// const map = ref(null);
 const zoom = ref(14);
 const center = ref([49.230173, 28.447339]);
 const userLocationMarker = reactive({ latLng: null, icon: null });
@@ -229,26 +282,26 @@ const removeResult = () => {
   }
 };
 
-onMounted(async () => {
-  if (process.client) {
-    const L = await import('leaflet');
-    import('leaflet').then(() => {
-      userIcon = L.icon({
-        iconUrl: 'location-icon.ico',
-        iconSize: [35, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-      });
-      userLocationMarker.icon = userIcon;
-    });
+// onMounted(async () => {
+//   if (process.client) {
+//     const L = await import('leaflet');
+//     import('leaflet').then(() => {
+//       userIcon = L.icon({
+//         iconUrl: 'location-icon.ico',
+//         iconSize: [35, 41],
+//         iconAnchor: [12, 41],
+//         popupAnchor: [1, -34],
+//       });
+//       userLocationMarker.icon = userIcon;
+//     });
 
-    getGeoLocation();
+//     getGeoLocation();
 
-    if (map.value && map.value.leafletObject) {
-      map.value.leafletObject.on('moveend', closeSearchResults);
-    }
-  }
-});
+//     if (map.value && map.value.leafletObject) {
+//       map.value.leafletObject.on('moveend', closeSearchResults);
+//     }
+//   }
+// });
 
 const markerData = computed(() => {
   return props.memories.map((memory) => {
