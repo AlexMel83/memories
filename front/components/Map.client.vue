@@ -1,43 +1,43 @@
 <template>
   <section
-    v-if="memories.length > 0"
     class="mapsection h-screen relative"
+    v-if="memories.length > 0"
     name="image-map"
   >
     <modal-geo-error
-      v-if="geoError"
-      :geo-error-msg="geoErrorMsg"
       @close-geo-error="closeGeoError"
+      :geo-error-msg="geoErrorMsg"
+      v-if="geoError"
     />
     <map-features
-      :coords="coords"
-      :fetch-coords="fetchCoords"
       :search-results="searchResults"
-      @get-geo-location="getGeoLocation"
-      @plotResult="plotResult"
+      :fetch-coords="fetchCoords"
+      :coords="coords"
       @toggleSearchResults="toggleSearchResults"
+      @get-geo-location="getGeoLocation"
       @removeResult="removeResult"
+      @plotResult="plotResult"
     />
     <LMap
       ref="map"
       class="h-full z-[1]"
-      :zoom="zoom"
-      :max-zoom="19"
-      :center="center"
+      :marker-zoom-animation="false"
       :use-global-leaflet="true"
       :scroll-wheel-zoom="false"
       :fade-animation="false"
-      :marker-zoom-animation="false"
+      :center="center"
+      :max-zoom="19"
+      :zoom="zoom"
       @ready="onMapReady"
     >
       <l-control-layers position="topright" />
       <LTileLayer
         v-for="tileProvider in tileProviders"
-        :key="tileProvider.name"
-        :name="tileProvider.name"
-        :visible="tileProvider.visible"
-        :url="tileProvider.url"
         :attribution="tileProvider.attribution"
+        :visible="tileProvider.visible"
+        :name="tileProvider.name"
+        :key="tileProvider.name"
+        :url="tileProvider.url"
         layer-type="base"
       />
     </LMap>
@@ -45,8 +45,8 @@
 </template>
 
 <script setup>
-import L from 'leaflet';
 import 'leaflet.markercluster';
+import L from 'leaflet';
 
 const props = defineProps({
   memories: {
