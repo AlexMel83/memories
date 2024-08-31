@@ -56,6 +56,7 @@ const props = defineProps({
 });
 
 const center = ref([49.230173, 28.447339]);
+let markerCoordinates = { lat: 0, lng: 0 };
 const config = useRuntimeConfig();
 const searchResults = ref(null);
 const resultMarker = ref(null);
@@ -123,19 +124,34 @@ const createSvgIcon = () => `
   </svg>
 `;
 
-const createCustomIcon = () =>
-  L.divIcon({
+const createCustomIcon = (lat, lng) => {
+  const icon = L.divIcon({
     html: createSvgIcon(),
     className: 'custom-div-icon',
     iconAnchor: [17, 35],
     iconSize: [35, 35],
   });
+  const marker = L.marker([lat, lng], { icon, draggable: true });
+  const popupContent = `<div class="px-1 text-center font-bold">Coordinates: <p>Lat: ${lat}, Lng: ${lng}</p></div>`;
+  marker.bindPopup(popupContent, { offset: [0, -14] });
+  markerCoordinates = { lat, lng };
+  marker.on('moveend', (event) => {
+    const newLatLng = event.target.getLatLng();
+    const roundedLat = newLatLng.lat.toFixed(4);
+    const roundedLng = newLatLng.lng.toFixed(4);
+    markerCoordinates = { lat: roundedLat, lng: roundedLng };
+    marker.setPopupContent(
+      `<div class="px-1 text-center font-bold">Coordinates: <p>Lat: ${roundedLat}, Lng: ${roundedLng}</p></div>`,
+    );
+  });
 
+  return marker;
+};
 const plotGeoLocation = (coords) => {
   if (map.value && map.value.leafletObject) {
-    geoMarker.value = L.marker([coords.lat, coords.lng], {
-      icon: createCustomIcon(),
-    }).addTo(map.value.leafletObject);
+    geoMarker.value = createCustomIcon(coords.lat, coords.lng).addTo(
+      map.value.leafletObject,
+    );
     map.value.leafletObject.setView([coords.lat, coords.lng], zoom.value);
   }
 };
@@ -145,11 +161,9 @@ const plotResult = (coords) => {
     map.value.leafletObject.removeLayer(resultMarker.value);
   }
   if (map.value?.leafletObject) {
-    resultMarker.value = L.marker(
-      [coords.coordinates[1], coords.coordinates[0]],
-      {
-        icon: createCustomIcon(),
-      },
+    resultMarker.value = createCustomIcon(
+      coords.coordinates[1],
+      coords.coordinates[0],
     ).addTo(map.value.leafletObject);
     map.value.leafletObject.setView(
       [coords.coordinates[1], coords.coordinates[0]],
