@@ -22,7 +22,6 @@ export default defineNuxtConfig({
   plugins: [
     '~/plugins/01.axios',
     '~/plugins/02.errorHandler.js',
-    { src: '~/plugins/leaflet.client.js', mode: 'client' },
   ],
 
   devtools: { enabled: true },

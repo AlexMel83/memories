@@ -21,16 +21,18 @@
     <span v-if="userLocationMarker.latLng && userLocationMarker.icon">
       {{ userLocationMarker?.latLng[0] }}, {{ userLocationMarker?.latLng[1] }}
     </span>
-    <l-map
+    <LMap
       ref="map"
       class="h-full z-[1]"
       :zoom="zoom"
+      :max-zoom="19"
       :center="center"
+      :use-global-leaflet="true"
       :scroll-wheel-zoom="false"
       :fade-animation="false"
       :marker-zoom-animation="false"
     >
-      <l-tile-layer :url="osmUrl" :attribution="osmAttrib" />
+      <LTileLayer :url="osmUrl" :attribution="osmAttrib" />
       <l-marker
         v-if="userLocationMarker.latLng && userLocationMarker.icon"
         :key="'user'"
@@ -62,7 +64,7 @@
         :attribution="tileProvider.attribution"
         layer-type="base"
       />
-    </l-map>
+    </LMap>
   </section>
 </template>
 
