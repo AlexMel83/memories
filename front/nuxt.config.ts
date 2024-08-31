@@ -34,13 +34,13 @@ export default defineNuxtConfig({
   ],
 
   modules: [
-    '@formkit/auto-animate/nuxt',
     "@nuxt/ui",
-    "@nuxt/image",
+    '@formkit/auto-animate/nuxt',
     '@nuxtjs/tailwindcss',
     '@nuxtjs/color-mode', 
+    '@nuxtjs/leaflet',
+    "@nuxt/image",
     "@pinia/nuxt",
-    '@nuxtjs/leaflet'
   ],
   leaflet: {
     markerCluster: true
