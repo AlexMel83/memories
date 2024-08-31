@@ -30,6 +30,7 @@ export default defineNuxtConfig({
   css: [
     '~/assets/src/tailwind.css',
     '@mdi/font/css/materialdesignicons.min.css',
+    'leaflet.markercluster/dist/MarkerCluster.css',
     '~/assets/src/styles.css',
   ],
 
@@ -40,7 +41,11 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@nuxtjs/color-mode', 
     "@pinia/nuxt",
+    '@nuxtjs/leaflet'
   ],
+  leaflet: {
+    markerCluster: true
+  },
   app: {
     head: {
       title: 'Memories',
