@@ -1,22 +1,30 @@
 <template>
   <div
-    class="w-full w-auto absolute top-[15px] left-[30px] md:left-[60px] z-[2] flex gap-4 px-6 pb-8 md:px-0 md:py-0 bg-transparent"
+    class="w-auto absolute top-[15px] left-[30px] md:left-[60px] z-[2] flex gap-4 px-6 pb-8 md:px-0 md:py-0 bg-transparent"
   >
     <!--Search-->
     <div class="relative flex-1 md:min-w-[350px]">
-      <input
-        class="pl-9 pr-4 py-3 text-sm focus:outline-none w-full shadow-md rounded-md"
+      <UInput
+        :ui="{ icon: { trailing: { pointer: '' } } }"
         type="text"
         placeholder="Пошук"
+        icon="i-heroicons-magnifying-glass-20-solid"
+        autocomplete="off"
         v-model="searchQuery"
         @input="search"
         @focus="$emit('toggleSearchResults')"
-      />
-      <!--Search icon-->
-      <UIcon
-        name="i-heroicons-magnifying-glass-20-solid"
-        class="absolute top-0 left-[8px] h-full flex items-center"
-      />
+      >
+        <template #trailing>
+          <UButton
+            v-show="searchQuery !== ''"
+            color="gray"
+            variant="link"
+            icon="i-heroicons-x-mark-20-solid"
+            :padded="false"
+            @click="searchQuery = ''"
+          />
+        </template>
+      </UInput>
       <!--Search result-->
       <div class="absolute mt-2 w-full">
         <!--Results-->
@@ -64,13 +72,13 @@
     </div>
     <!--Geolocation-->
     <div
-      class="bg-white flex items-center shadow-md rounded-md min-h-[40px]"
+      class="bg-white py-1 px-1 flex items-center shadow-md rounded-md min-h-[32px]"
       :class="{ 'bg-slate-600': coords }"
       @click="$emit('getGeoLocation')"
     >
       <UIcon
-        name="i-humbleicons:navigation"
-        class="text-state-600 text-[40px]"
+        name="i-heroicons-map-pin-solid"
+        class="text-state-600 text-[25px]"
         :class="{
           'text-white': coords,
           'bg-slate-400': coords,
