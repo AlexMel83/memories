@@ -45,8 +45,8 @@
 </template>
 
 <script setup>
-import 'leaflet.markercluster';
 import L from 'leaflet';
+import 'leaflet.markercluster';
 
 const props = defineProps({
   memories: {
