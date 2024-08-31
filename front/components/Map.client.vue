@@ -18,9 +18,6 @@
       @toggleSearchResults="toggleSearchResults"
       @removeResult="removeResult"
     />
-    <span v-if="userLocationMarker.latLng && userLocationMarker.icon">
-      {{ userLocationMarker?.latLng[0] }}, {{ userLocationMarker?.latLng[1] }}
-    </span>
     <LMap
       ref="map"
       class="h-full z-[1]"
@@ -33,30 +30,8 @@
       :marker-zoom-animation="false"
       @ready="onMapReady"
     >
-      <LTileLayer :url="osmUrl" :attribution="osmAttrib" />
-      <l-marker
-        v-if="userLocationMarker.latLng && userLocationMarker.icon"
-        :key="'user'"
-        :lat-lng="userLocationMarker.latLng"
-        :icon="userIcon"
-      >
-        <l-popup v-if="userLocationMarker.latLng">
-          Your location
-          <p>
-            {{ userLocationMarker.latLng[0] }},
-            {{ userLocationMarker.latLng[1] }}
-          </p>
-        </l-popup>
-      </l-marker>
-      <l-marker
-        v-for="memory in markerData"
-        :key="memory.id"
-        :lat-lng="[memory.latitude, memory.longitude]"
-      >
-        <l-popup :content="memory.popupContent" />
-      </l-marker>
       <l-control-layers position="topright" />
-      <l-tile-layer
+      <LTileLayer
         v-for="tileProvider in tileProviders"
         :key="tileProvider.name"
         :name="tileProvider.name"
@@ -73,95 +48,122 @@
 import L from 'leaflet';
 import 'leaflet.markercluster';
 
-const map = ref(null);
-
-// Create locations data (20 locations around Nantes)
-const locations = [
-  { name: 'Nantes', lat: 47.218371, lng: -1.553621 },
-  { name: 'Saint-Nazaire', lat: 47.273018, lng: -2.213733 },
-  { name: 'La Baule', lat: 47.286835, lng: -2.393108 },
-  { name: 'Pornic', lat: 47.112, lng: -2.102 },
-  { name: 'Guérande', lat: 47.328, lng: -2.429 },
-  { name: 'Clisson', lat: 47.087, lng: -1.276 },
-  { name: 'Ancenis', lat: 47.366, lng: -1.176 },
-  { name: 'Châteaubriant', lat: 47.716, lng: -1.376 },
-  { name: 'Redon', lat: 47.652, lng: -2.084 },
-  { name: 'Pontchâteau', lat: 47.433, lng: -2.117 },
-  { name: 'Savenay', lat: 47.327, lng: -1.952 },
-  { name: 'Rezé', lat: 47.183, lng: -1.55 },
-  { name: 'Vertou', lat: 47.166, lng: -1.466 },
-  { name: 'Carquefou', lat: 47.283, lng: -1.5 },
-  { name: 'Orvault', lat: 47.283, lng: -1.633 },
-  { name: 'Saint-Herblain', lat: 47.216, lng: -1.65 },
-  { name: 'Sainte-Luce-sur-Loire', lat: 47.233, lng: -1.483 },
-  { name: 'Bouguenais', lat: 47.183, lng: -1.583 },
-  { name: 'Saint-Sébastien-sur-Loire', lat: 47.183, lng: -1.483 },
-  { name: 'Basse-Goulaine', lat: 47.2, lng: -1.483 },
-];
-
-function useLMarkerCluster() {
-  const markerClusterGroup = L.markerClusterGroup(); // Создаем группу кластеров
-
-  return markerClusterGroup;
-}
-const markerClusterGroup = useLMarkerCluster();
-locations.forEach((location) => {
-  const marker = L.marker([location.lat, location.lng]);
-  markerClusterGroup.addLayer(marker);
-});
-if (map.value?.leafletObject) {
-  map.value.leafletObject.addLayer(markerClusterGroup);
-}
-// When the map is ready
-const onMapReady = () => {
-  if (map.value && map.value.leafletObject) {
-    useLMarkerCluster({
-      leafletObject: map.value.leafletObject,
-      markers: locations,
-    });
-  }
-};
-
-import customIconLocationUrl from '@/public/location-icon.ico';
-import {
-  LMap,
-  LTileLayer,
-  LControlLayers,
-  LMarker,
-  LPopup,
-} from '@vue-leaflet/vue-leaflet';
-
-const coords = ref(null);
-const fetchCoords = ref(null);
-const geoMarker = ref(null);
-const resultMarker = ref(null);
-const searchResults = ref(null);
-const geoError = ref(null);
-const geoErrorMsg = ref(null);
-
-const closeGeoError = () => {
-  geoError.value = null;
-  geoErrorMsg.value = null;
-};
-
-const config = useRuntimeConfig();
-const baseURL = config.public.apiBase;
-const mapboxApiKey = config.public.apiKeyMapbox;
 const props = defineProps({
   memories: {
     type: Array,
     default: () => [],
   },
 });
-// const map = ref(null);
-const zoom = ref(14);
+
 const center = ref([49.230173, 28.447339]);
-const userLocationMarker = reactive({ latLng: null, icon: null });
-const osmUrl = ref('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
-const osmAttrib = ref(
-  '&copy; <a href="http://www.openstreetmap.org">OpenStreetMap</a> contributors',
-);
-let userIcon = null;
+const config = useRuntimeConfig();
+const searchResults = ref(null);
+const resultMarker = ref(null);
+const fetchCoords = ref(null);
+const geoErrorMsg = ref(null);
+const geoMarker = ref(null);
+const geoError = ref(null);
+const coords = ref(null);
+const map = ref(null);
+const zoom = ref(14);
+
+const mapboxApiKey = config.public.apiKeyMapbox;
+const baseURL = config.public.apiBase;
+const markerData = computed(() => {
+  return props.memories.map((memory) => {
+    const regex = /POINT\(([^ ]+) ([^ ]+)\)/;
+    const match = memory.location ? memory.location.match(regex) : null;
+    const longitude = match ? parseFloat(match[1]) : 0;
+    const latitude = match ? parseFloat(match[2]) : 0;
+    const photoURL = memory.memory_photos?.[0]?.url
+      ? `${memory.memory_photos[0].url.includes('http') ? '' : baseURL}${memory.memory_photos[0].url}`
+      : './default-coworking.png';
+    const popupContent = `
+        <div class="popup-content" style="text-align: center; margin 0;">
+          <a href="/coworking/${memory.id}" target="_blank" style="word-wrap: break-word; text-decoration: none;">
+            <b style="display: block; margin-top: 3px; font-weight: bold; font-size: 130%;">${memory.title}</b>
+          </a>
+          <p class="px-2" style="word-wrap: break-word;">
+              <a href="https://www.google.com/maps?q=${encodeURIComponent(memory.address)}" target="_blank">${memory.address}</a>
+          </p>
+          <a href="/coworking/${memory.id}" target="_blank" style="word-wrap: break-word; text-decoration: none;">
+              <img src="${photoURL}" loading="lazy" alt="${memory.title}" style="max-width: 100%; height: auto; display: block; margin: auto;" />
+          </a>
+        </div>
+        `;
+
+    return {
+      id: memory.id,
+      popupContent,
+      latitude,
+      longitude,
+    };
+  });
+});
+
+const onMapReady = () => {
+  const markers = markerData.value.map((memory) => {
+    const marker = L.marker([memory.latitude, memory.longitude]);
+    marker.bindPopup(memory.popupContent);
+    return marker;
+  });
+
+  const markerClusterGroup = L.markerClusterGroup();
+  markerClusterGroup.addLayers(markers);
+  map.value.leafletObject.addLayer(markerClusterGroup);
+};
+
+if (map.value && map.value.leafletObject) {
+  map.value.leafletObject.on('moveend', closeSearchResults);
+}
+
+const createSvgIcon = () => `
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ef4444" class="custom-map-pin">
+    <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+  </svg>
+`;
+
+const createCustomIcon = () =>
+  L.divIcon({
+    html: createSvgIcon(),
+    className: 'custom-div-icon',
+    iconAnchor: [17, 35],
+    iconSize: [35, 35],
+  });
+
+const plotGeoLocation = (coords) => {
+  if (map.value && map.value.leafletObject) {
+    geoMarker.value = L.marker([coords.lat, coords.lng], {
+      icon: createCustomIcon(),
+    }).addTo(map.value.leafletObject);
+    map.value.leafletObject.setView([coords.lat, coords.lng], zoom.value);
+  }
+};
+
+const plotResult = (coords) => {
+  if (resultMarker.value && map.value?.leafletObject) {
+    map.value.leafletObject.removeLayer(resultMarker.value);
+  }
+  if (map.value?.leafletObject) {
+    resultMarker.value = L.marker(
+      [coords.coordinates[1], coords.coordinates[0]],
+      {
+        icon: createCustomIcon(),
+      },
+    ).addTo(map.value.leafletObject);
+    map.value.leafletObject.setView(
+      [coords.coordinates[1], coords.coordinates[0]],
+      zoom.value,
+    );
+    closeSearchResults();
+  }
+};
+
+const closeGeoError = () => {
+  geoErrorMsg.value = null;
+  geoError.value = null;
+};
+
 const tileProviders = ref([
   {
     name: 'OpenStreetMap',
@@ -232,42 +234,6 @@ const getLocError = (error) => {
   geoErrorMsg.value = error.message;
 };
 
-const plotGeoLocation = (coords) => {
-  const customMarker = L.icon({
-    iconUrl: customIconLocationUrl,
-    iconSize: [35, 35],
-  });
-  if (map.value && map.value.leafletObject) {
-    geoMarker.value = L.marker([coords.lat, coords.lng], {
-      icon: customMarker,
-    }).addTo(map.value.leafletObject); // Используем leafletObject
-    map.value.leafletObject.setView([coords.lat, coords.lng], zoom.value); // Устанавливаем вид на карте
-  }
-};
-
-const plotResult = (coords) => {
-  if (resultMarker.value && map.value?.leafletObject) {
-    map.value.leafletObject.removeLayer(resultMarker.value);
-  }
-  const customMarker = L.icon({
-    iconUrl: customIconLocationUrl,
-    iconSize: [35, 35],
-  });
-  if (map.value?.leafletObject) {
-    resultMarker.value = L.marker(
-      [coords.coordinates[1], coords.coordinates[0]],
-      {
-        icon: customMarker,
-      },
-    ).addTo(map.value.leafletObject);
-    map.value.leafletObject.setView(
-      [coords.coordinates[1], coords.coordinates[0]],
-      zoom.value,
-    );
-    closeSearchResults();
-  }
-};
-
 const toggleSearchResults = () => {
   searchResults.value = !searchResults.value;
 };
@@ -281,62 +247,19 @@ const removeResult = () => {
     map.value.leafletObject.removeLayer(resultMarker.value);
   }
 };
-
-// onMounted(async () => {
-//   if (process.client) {
-//     const L = await import('leaflet');
-//     import('leaflet').then(() => {
-//       userIcon = L.icon({
-//         iconUrl: 'location-icon.ico',
-//         iconSize: [35, 41],
-//         iconAnchor: [12, 41],
-//         popupAnchor: [1, -34],
-//       });
-//       userLocationMarker.icon = userIcon;
-//     });
-
-//     getGeoLocation();
-
-//     if (map.value && map.value.leafletObject) {
-//       map.value.leafletObject.on('moveend', closeSearchResults);
-//     }
-//   }
-// });
-
-const markerData = computed(() => {
-  return props.memories.map((memory) => {
-    const regex = /POINT\(([^ ]+) ([^ ]+)\)/;
-    const match = memory.location ? memory.location.match(regex) : null;
-    const longitude = match ? parseFloat(match[1]) : 0;
-    const latitude = match ? parseFloat(match[2]) : 0;
-    const photoURL = memory.memory_photos?.[0]?.url
-      ? `${memory.memory_photos[0].url.includes('http') ? '' : baseURL}${memory.memory_photos[0].url}`
-      : './default-coworking.png';
-    const popupContent = `
-        <div class="popup-content" style="text-align: center; margin 0;">
-          <a href="/coworking/${memory.id}" target="_blank" style="word-wrap: break-word; text-decoration: none;">
-            <b style="display: block; margin-top: 3px; font-weight: bold; font-size: 130%;">${memory.title}</b>
-          </a>
-          <p class="px-2" style="word-wrap: break-word;">
-              <a href="https://www.google.com/maps?q=${encodeURIComponent(memory.address)}" target="_blank">${memory.address}</a>
-          </p>
-          <a href="/coworking/${memory.id}" target="_blank" style="word-wrap: break-word; text-decoration: none;">
-              <img src="${photoURL}" loading="lazy" alt="${memory.title}" style="max-width: 100%; height: auto; display: block; margin: auto;" />
-          </a>
-        </div>
-        `;
-
-    return {
-      id: memory.id,
-      latitude,
-      longitude,
-      popupContent,
-    };
-  });
-});
 </script>
 
 <style scoped>
+.custom-div-icon {
+  background: none;
+  border: none;
+}
+
+.custom-map-pin {
+  width: 35px;
+  height: 35px;
+}
+
 .btn {
   color: var(--white-color);
   background-color: var(--header-bg);
