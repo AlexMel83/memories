@@ -140,7 +140,7 @@ class UserController {
     const user = req.user;
     try {
       let response;
-      if (req?.query?.id) {
+      if (req && req.query && req.query.id) {
         response = await userService.getUser(req.query.id);
         if (user.id === response.id) {
           return res.json(response);
