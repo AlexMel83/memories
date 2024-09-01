@@ -19,23 +19,23 @@ services:
       - ./pgdata:/var/lib/postgresql/data
     restart: always
 
-  # api:
-  #   container_name: memories_api
-  #   build:
-  #     context: ./
-  #   env_file:
-  #     - .env
-  #   volumes:
-  #     - ./:/app
-  #     - /app/node_modules
-  #   expose:
-  #     - ${PORT}
-  #   ports:
-  #     - ${PORT}:4040
-  #   command: sh -c "npm run db:setup && npm run start"
-  #   depends_on:
-  #     - postgres
-  #   restart: always
+  api:
+    container_name: memories_api
+    build:
+      context: ./
+    env_file:
+      - .env
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    expose:
+      - ${PORT}
+    ports:
+      - ${PORT}:4040
+    command: sh -c "npm run db:setup && npm run start"
+    depends_on:
+      - postgres
+    restart: always
 
   # nuxt:
   # container_name: memories_app
