@@ -46,7 +46,7 @@ routeInit(app, express);
 app.use(errorMiddleware);
 
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static('front/build'));
+  app.use(express.static(`${__dirname}/front/build`));
 }
 
 server.listen(PORT, () => {
