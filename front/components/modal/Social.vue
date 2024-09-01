@@ -30,17 +30,27 @@ const handleSocialLogin = async (provider) => {
         <template #text>
           <span class="italic">Увійти через Google</span>
         </template>
-        <div class="login-using-item" @click="handleSocialLogin('google')">
+        <div
+          class="login-using-item"
+          @click="handleSocialLogin('google')"
+        >
           <LogosGoogleIcon />
         </div>
       </UTooltip>
       <UTooltip text="Увійти через Facebook">
-        <div class="login-using-item" @click="handleSocialLogin('facebook')">
+        <div
+          class="login-using-item"
+          @click="handleSocialLogin('facebook')"
+        >
           <LogosFacebook />
         </div>
       </UTooltip>
     </div>
-    <UNotifications v-if="errors.textError" color="red" :timeout="3000">
+    <UNotifications
+      v-if="errors.textError"
+      color="red"
+      :timeout="3000"
+    >
       {{ errors.textError }}
     </UNotifications>
   </div>

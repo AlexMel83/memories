@@ -1,9 +1,18 @@
 <template>
-  <div v-if="allReviews.length > 0" class="reviews-container">
+  <div
+    v-if="allReviews.length > 0"
+    class="reviews-container"
+  >
     <v-container>
       <div class="ratings-distribution">
-        <div v-for="n in [5, 4, 3, 2, 1]" :key="n" class="rating-distribution">
-          <div class="star-box">{{ n }} <i class="mdi mdi-star" /></div>
+        <div
+          v-for="n in [5, 4, 3, 2, 1]"
+          :key="n"
+          class="rating-distribution"
+        >
+          <div class="star-box">
+            {{ n }} <i class="mdi mdi-star" />
+          </div>
           <div class="bar">
             <div
               class="filled"
@@ -44,7 +53,11 @@
         />
       </div>
 
-      <div v-for="review in sortedReviews" :key="review.id" class="review flex">
+      <div
+        v-for="review in sortedReviews"
+        :key="review.id"
+        class="review flex"
+      >
         <p class="review-name">
           {{ review.name }}
         </p>

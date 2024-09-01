@@ -2,9 +2,9 @@
   <div
     class="h-full w-full py-2 gap-2 flex items-center justify-center space-x-2"
   >
-    <span class="loading-bar"></span>
-    <span class="loading-bar"></span>
-    <span class="loading-bar"></span>
+    <span class="loading-bar" />
+    <span class="loading-bar" />
+    <span class="loading-bar" />
   </div>
 </template>
 

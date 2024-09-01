@@ -5,7 +5,9 @@
     <div
       class="flex flex-col bg-white w-[80%] sm:w-[450px] px-6 py-4 rounded-md"
     >
-      <h1 class="text-lg mb-1">Error: {{ geoErrorMsg }}</h1>
+      <h1 class="text-lg mb-1">
+        Error: {{ geoErrorMsg }}
+      </h1>
       <p class="text-sm mb-4">
         To take advantage of this aplications features, please ensure location
         services are enabled
@@ -22,6 +24,12 @@
 
 <script>
 export default {
-  props: ['geoErrorMsg'],
+  props: {
+    geoErrorMsg: {
+      type: String,
+      required: true,
+    },
+  },
+  emits: ['closeGeoError'],
 };
 </script>

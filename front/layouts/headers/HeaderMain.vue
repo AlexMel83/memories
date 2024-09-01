@@ -1,11 +1,21 @@
 <template>
-  <div :class="{ 'home-page': isHomePage }" class="header-main bg-gray-100">
+  <div
+    :class="{ 'home-page': isHomePage }"
+    class="header-main bg-gray-100"
+  >
     <div class="container mx-auto px-2 pt-2">
       <div class="flex justify-between items-center">
         <div class="flex items-center">
-          <div class="cursor-pointer logo" @click="hideMenu">
+          <div
+            class="cursor-pointer logo"
+            @click="hideMenu"
+          >
             <NuxtLink to="/">
-              <img src="~/assets/favicon.ico" alt="logo" class="w-10 h-10" />
+              <img
+                src="~/assets/favicon.ico"
+                alt="logo"
+                class="w-10 h-10"
+              >
             </NuxtLink>
           </div>
         </div>
@@ -24,7 +34,11 @@
               name="i-heroicons-bars-3"
               class="icon w-10 h-10"
             />
-            <UIcon v-else name="i-heroicons-x-mark" class="icon w-10 h-10" />
+            <UIcon
+              v-else
+              name="i-heroicons-x-mark"
+              class="icon w-10 h-10"
+            />
           </button>
           <template v-if="!isAuthed">
             <button
@@ -36,13 +50,19 @@
           </template>
         </div>
       </div>
-      <div v-if="menuOpen" class="mt-4">
+      <div
+        v-if="menuOpen"
+        class="mt-4"
+      >
         <Login
           v-if="menuLogin"
           :initial-email="email"
           @open-reg-component="changeCompenent"
         />
-        <Registration v-else @open-login-component="changeCompenent" />
+        <Registration
+          v-else
+          @open-login-component="changeCompenent"
+        />
       </div>
       <p class="mt-6 text-center text-gray-200 header-text">
         <span class="font-bold">Мапа пам'яті:</span> збереження історії та

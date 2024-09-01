@@ -4,8 +4,16 @@
       <span>Кількість осіб</span>
     </label>
     <div :class="['input-wrapper-icon', { error: isError }]">
-      <input v-model="value" type="text" maxlength="3" @input="onInput" />
-      <img src="~assets/icon_amount.png" alt="icon" />
+      <input
+        v-model="value"
+        type="text"
+        maxlength="3"
+        @input="onInput"
+      >
+      <img
+        src="~assets/icon_amount.png"
+        alt="icon"
+      >
     </div>
   </div>
 </template>

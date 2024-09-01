@@ -1,22 +1,22 @@
 <template>
   <section
-    class="mapsection h-screen relative"
     v-if="memories.length > 0"
+    class="mapsection h-screen relative"
     name="image-map"
   >
     <modal-geo-error
-      @close-geo-error="closeGeoError"
-      :geo-error-msg="geoErrorMsg"
       v-if="geoError"
+      :geo-error-msg="geoErrorMsg"
+      @close-geo-error="closeGeoError"
     />
     <map-features
       :search-results="searchResults"
       :fetch-coords="fetchCoords"
       :coords="coords"
-      @toggleSearchResults="toggleSearchResults"
+      @toggle-search-results="toggleSearchResults"
       @get-geo-location="getGeoLocation"
-      @removeResult="removeResult"
-      @plotResult="plotResult"
+      @remove-result="removeResult"
+      @plot-result="plotResult"
     />
     <LMap
       ref="map"
@@ -33,10 +33,10 @@
       <l-control-layers position="topright" />
       <LTileLayer
         v-for="tileProvider in tileProviders"
+        :key="tileProvider.name"
         :attribution="tileProvider.attribution"
         :visible="tileProvider.visible"
         :name="tileProvider.name"
-        :key="tileProvider.name"
         :url="tileProvider.url"
         layer-type="base"
       />
@@ -56,7 +56,6 @@ const props = defineProps({
 });
 
 const center = ref([49.230173, 28.447339]);
-let markerCoordinates = { lat: 0, lng: 0 };
 const config = useRuntimeConfig();
 const searchResults = ref(null);
 const resultMarker = ref(null);

@@ -3,21 +3,31 @@
     <div class="item main-user-auth-name">
       <span> {{ userName }}</span> &nbsp;<span>{{ userSurname }}</span>
     </div>
-    <div class="item cabinet" :class="{ active: isInCabinet }">
+    <div
+      class="item cabinet"
+      :class="{ active: isInCabinet }"
+    >
       <a :href="setRout()">
-        <span class="flex items-center" @click="menuOpen = false">
-          <UIcon name="i-heroicons-user-solid" class="icon" />Кабінет</span
+        <span
+          class="flex items-center"
+          @click="menuOpen = false"
         >
+          <UIcon
+            name="i-heroicons-user-solid"
+            class="icon"
+          />Кабінет</span>
       </a>
     </div>
     <div class="item exit">
       <nuxt-link href="/">
-        <span class="flex items-center" @click="goOut">
+        <span
+          class="flex items-center"
+          @click="goOut"
+        >
           <UIcon
             name="i-heroicons-arrow-right-start-on-rectangle-solid"
             class="icon"
-          />Вихід</span
-        >
+          />Вихід</span>
       </nuxt-link>
     </div>
   </div>

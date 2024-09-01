@@ -3,7 +3,12 @@
     <TheHeaderMain />
     <NuxtLayout name="404">
       <div>
-        <button class="button" @click="goBack">Повернутися на головну</button>
+        <button
+          class="button"
+          @click="goBack"
+        >
+          Повернутися на головну
+        </button>
       </div>
     </NuxtLayout>
     <TheFooterMain />

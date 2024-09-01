@@ -5,12 +5,12 @@
     <!--Search-->
     <div class="relative flex-1 md:min-w-[350px]">
       <UInput
+        v-model="searchQuery"
         :ui="{ icon: { trailing: { pointer: '' } } }"
         type="text"
         placeholder="Пошук"
         icon="i-heroicons-magnifying-glass-20-solid"
         autocomplete="off"
-        v-model="searchQuery"
         @input="search"
         @focus="$emit('toggleSearchResults')"
       >
@@ -38,8 +38,8 @@
             <div
               v-for="(result, index) in searchData"
               :key="index"
-              @click="selectResult(result)"
               class="px-4 py-2 flex items-center gap-2 cursor-pointer hover:bg-slate-600 hover:text-white"
+              @click="selectResult(result)"
             >
               <UIcon
                 name="i-heroicons-map-pin-solid"
@@ -50,7 +50,9 @@
                   min-height: 1rem;
                 "
               />
-              <p class="text-xs">{{ result.place_name_uk }}</p>
+              <p class="text-xs">
+                {{ result.place_name_uk }}
+              </p>
             </div>
           </div>
         </div>
@@ -60,13 +62,19 @@
           class="mt-2 px-3 py-3 bg-white rounded-md relative"
         >
           <UIcon
-            @click="removeResult"
             class="absolute top-2 right-2 cursor-pointer"
             name="i-heroicons-x-mark-20-solid"
+            @click="removeResult"
           />
-          <h1 class="text-lg">{{ selectedResult.text }}</h1>
-          <p class="text-xs mb-1">{{ selectedResult.place_name }},</p>
-          <p class="text-xs">{{ selectedResult.properties.category }}</p>
+          <h1 class="text-lg">
+            {{ selectedResult.text }}
+          </h1>
+          <p class="text-xs mb-1">
+            {{ selectedResult.place_name }},
+          </p>
+          <p class="text-xs">
+            {{ selectedResult.properties.category }}
+          </p>
         </div>
       </div>
     </div>
@@ -95,8 +103,27 @@ import LoadingSpinner from './LoadingSpinner.vue';
 import { useRuntimeConfig } from '#app';
 
 export default {
-  props: ['coords', 'fetchCoords', 'searchResults'],
   components: { LoadingSpinner },
+  props: {
+    coords: {
+      type: Object,
+      required: true,
+    },
+    fetchCoords: {
+      type: Boolean,
+      required: true,
+    },
+    searchResults: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  emits: [
+    'toggleSearchResults',
+    'getGeoLocation',
+    'plotResult',
+    'removeResult',
+  ],
   setup(props, { emit }) {
     const searchQuery = ref(null);
     const searchData = ref(null);

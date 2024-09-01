@@ -178,7 +178,11 @@ watch(isOpen, (newValue) => {
 
 <template>
   <div>
-    <UModal v-model="isOpen" prevent-close :ui="{ wrapper: 'z-500' }">
+    <UModal
+      v-model="isOpen"
+      prevent-close
+      :ui="{ wrapper: 'z-500' }"
+    >
       <UCard
         :ui="{
           ring: '',
@@ -208,7 +212,11 @@ watch(isOpen, (newValue) => {
           <ModalSocial />
         </template>
 
-        <UTabs v-model="currentTab" :items="items" :ui="{}">
+        <UTabs
+          v-model="currentTab"
+          :items="items"
+          :ui="{}"
+        >
           <template #item="{ item }">
             <UForm
               v-auto-animate
@@ -359,7 +367,11 @@ watch(isOpen, (newValue) => {
                   />
                 </div>
               </UFormGroup>
-              <UButton type="submit" color="black" :loading="isLoading">
+              <UButton
+                type="submit"
+                color="black"
+                :loading="isLoading"
+              >
                 {{ item.key === 0 ? 'Увійти' : 'Зареєструватись' }}
               </UButton>
             </UForm>
