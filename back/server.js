@@ -54,7 +54,7 @@ if (process.env.NODE_ENV === 'production' || true) {
   app.use(express.static(staticPath));
   console.log('Static files are served from:', staticPath);
   app.get('*', (req, res) => {
-    res.sendFile(join(staticPath, 'index.html'));
+    res.sendFile(join(staticPath));
   });
 }
 
