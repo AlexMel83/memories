@@ -24,7 +24,6 @@
 </template>
 
 <script setup>
-import { ref, provide, watch } from 'vue';
 import debounce from 'lodash.debounce';
 
 const searchTerm = ref('');
