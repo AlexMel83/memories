@@ -2,16 +2,9 @@
   <div :class="{ 'header-main': true, 'home-page': isHomePage }">
     <div class="header-wrapper px-2 pt-2">
       <div class="logo-container">
-        <div
-          class="cursor-pointer logo"
-          @click="hideMenu"
-        >
+        <div class="cursor-pointer logo" @click="hideMenu">
           <NuxtLink to="/">
-            <img
-              src="~/assets/favicon.ico"
-              alt="logo"
-              class="w-10 h-10"
-            >
+            <img src="~/assets/favicon.ico" alt="logo" class="w-10 h-10" />
           </NuxtLink>
         </div>
         <div class="header-buttons">
@@ -19,11 +12,7 @@
             <UserName />
           </div>
           <ColorMode />
-          <UButton
-            icon
-            class="burger"
-            @click="toggleMenu"
-          >
+          <UButton icon class="burger" @click="toggleMenu">
             <template #default>
               <UIcon
                 v-if="!isMenuOpen"
@@ -31,19 +20,12 @@
                 name="i-heroicons-bars-3"
                 class="icon w-10 h-10"
               />
-              <UIcon
-                v-else
-                name="i-heroicons-x-mark"
-                class="icon w-10 h-10"
-              />
+              <UIcon v-else name="i-heroicons-x-mark" class="icon w-10 h-10" />
             </template>
           </UButton>
         </div>
       </div>
-      <div
-        v-if="isMenuOpen"
-        class="menu"
-      >
+      <div v-if="isMenuOpen" class="menu">
         <div class="mobile-auth-user-name">
           <UserName />
         </div>

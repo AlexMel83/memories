@@ -6,7 +6,7 @@
         :class="['input', { error: isError }]"
         type="text"
         @input="onInput"
-      >
+      />
       <p>{{ textPhoneError }}</p>
     </div>
   </div>

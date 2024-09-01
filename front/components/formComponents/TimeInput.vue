@@ -2,19 +2,11 @@
   <div class="input-wrapper-time">
     <div class="input-wrapper-time-first">
       <span>Час з</span>
-      <input
-        v-model="firstTime"
-        class="time-date"
-        type="time"
-      >
+      <input v-model="firstTime" class="time-date" type="time" />
     </div>
     <div class="input-wrapper-time-second">
       <span>до</span>
-      <input
-        v-model="secondTime"
-        class="time-date"
-        type="time"
-      >
+      <input v-model="secondTime" class="time-date" type="time" />
     </div>
   </div>
 </template>

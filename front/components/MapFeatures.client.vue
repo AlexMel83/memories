@@ -69,9 +69,7 @@
           <h1 class="text-lg">
             {{ selectedResult.text }}
           </h1>
-          <p class="text-xs mb-1">
-            {{ selectedResult.place_name }},
-          </p>
+          <p class="text-xs mb-1">{{ selectedResult.place_name }},</p>
           <p class="text-xs">
             {{ selectedResult.properties.category }}
           </p>

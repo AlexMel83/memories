@@ -3,15 +3,9 @@
     <section class="search">
       <SearchInput />
     </section>
-    <section
-      class="memories-list"
-      :class="{ blurred: authStore.isMenuOpen }"
-    >
+    <section class="memories-list" :class="{ blurred: authStore.isMenuOpen }">
       <Map :memories="filteredMemories || []" />
-      <div
-        v-auto-animate
-        class="memories-wrapper"
-      >
+      <div v-auto-animate class="memories-wrapper">
         <template v-if="filteredMemories?.length > 0 && !isLoading">
           <div
             v-auto-animate
@@ -22,45 +16,35 @@
               :key="memory.id"
               class="bg-white shadow-md rounded-lg"
             >
-              <nuxt-link
-                class="container"
-                :to="'/'"
-              >
+              <nuxt-link class="container" :to="'/'">
                 <div class="photo">
                   <img
                     v-if="memory.memory_photos.length"
                     :src="`${memory.memory_photos[0].url.includes('http') ? '' : baseURL}${memory.memory_photos[0].url}`"
                     loading="lazy"
-                  >
+                  />
                   <img
                     v-else
                     src="./../public/default-coworking.png"
                     loading="lazy"
-                  >
+                  />
                   <div class="title">
                     <h2 class="memory-title">
                       {{ memory.title }}
                     </h2>
                   </div>
                 </div>
-                <div
-                  v-auto-animate
-                  class="info-card"
-                >
+                <div v-auto-animate class="info-card">
                   <div class="description-container">
                     <p class="description">
                       {{ memory.description }}
                     </p>
                   </div>
-                  <div
-                    v-if="memory.address"
-                    class="map"
-                    @click.stop
-                  >
+                  <div v-if="memory.address" class="map" @click.stop>
                     <a
                       :href="
                         'https://maps.google.com/?q=' +
-                          encodeURIComponent(memory.address)
+                        encodeURIComponent(memory.address)
                       "
                       target="_blank"
                     >
@@ -68,7 +52,7 @@
                         src="~assets/spaces_images/location-marker.png"
                         loading="lazy"
                         alt="local"
-                      >
+                      />
                       <span>{{ memory.address }}</span>
                     </a>
                   </div>
@@ -78,7 +62,7 @@
                         src="~assets/spaces_images/time.svg"
                         loading="lazy"
                         alt="time icon"
-                      >
+                      />
                       <div flex>
                         Створено:{{ formatDate(memory.created_at) }}
                         <div v-if="memory.updated_at !== memory.created_at">
@@ -90,12 +74,7 @@
                       </div>
                     </div>
                   </div>
-                  <nuxt-link
-                    :to="'/'"
-                    class="btn"
-                  >
-                    Переглянути
-                  </nuxt-link>
+                  <nuxt-link :to="'/'" class="btn"> Переглянути </nuxt-link>
                 </div>
               </nuxt-link>
             </div>

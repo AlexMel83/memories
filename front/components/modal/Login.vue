@@ -1,8 +1,5 @@
 <template>
-  <form
-    class="wrapper"
-    @submit="onSubmit"
-  >
+  <form class="wrapper" @submit="onSubmit">
     <Social />
     <h1>Або увійти через логін</h1>
     <div class="input-wrapper indent">
@@ -16,7 +13,7 @@
           maxlength="30"
           v-bind="emailValidation"
           @input="textErrorLogin = ''"
-        >
+        />
         <input
           v-else
           name="email"
@@ -25,7 +22,7 @@
           maxlength="30"
           v-bind="emailValidation"
           @input="textErrorLogin = ''"
-        >
+        />
         <div class="error-text">
           {{ errors.emailValidation }}
           {{ textErrorLogin }}
@@ -45,20 +42,20 @@
             maxlength="30"
             v-bind="passwordValidation"
             @input="textPasswordError = ''"
-          >
+          />
           <div class="show-password">
             <img
               v-if="showPassword"
               src="~assets/icon_show_password.png"
               alt="show"
               @click="isShow"
-            >
+            />
             <img
               v-else
               src="~assets/icon_close_password.png"
               alt="close"
               @click="isShow"
-            >
+            />
           </div>
         </div>
         <div class="error-text">
@@ -76,15 +73,11 @@
             textPasswordError || textErrorLogin ? 'var(--btn-border)' : 'grey',
         }"
         @click="openResetPassword"
-      >Забули свій пароль?</span>
+        >Забули свій пароль?</span
+      >
     </div>
     <RegLoginButton text-content="Увійти" />
-    <button
-      class="link-btn"
-      @click="openReg"
-    >
-      Зареєструватися
-    </button>
+    <button class="link-btn" @click="openReg">Зареєструватися</button>
   </form>
 </template>
 
