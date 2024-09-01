@@ -1,6 +1,7 @@
 import uploadsRouteInit from './uploads.routes.js';
 import authRouteInit from './auth.routes.js';
 import memoriesRouteInit from './memories.routes.js';
+import geoQueriesRouteInit from './geo-queries.routes.js';
 
 const routeInit = (app, express) => {
   app.use(express.urlencoded({ extended: true }));
@@ -8,6 +9,7 @@ const routeInit = (app, express) => {
   authRouteInit(app);
   memoriesRouteInit(app);
   uploadsRouteInit(app);
+  geoQueriesRouteInit(app);
 };
 
 export default routeInit;
