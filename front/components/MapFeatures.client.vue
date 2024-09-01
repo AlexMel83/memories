@@ -72,16 +72,15 @@
     </div>
     <!--Geolocation-->
     <div
-      class="bg-white py-1 px-1 flex items-center shadow-md rounded-md min-h-[32px]"
-      :class="{ 'bg-slate-600': coords }"
+      class="py-1 px-1 flex items-center shadow-md rounded-md min-h-[32px]"
+      :class="{ 'bg-slate-600': coords, 'bg-white': !coords }"
       @click="$emit('getGeoLocation')"
     >
       <UIcon
         name="i-heroicons-map-pin-solid"
         class="text-state-600 text-[25px]"
         :class="{
-          'text-white': coords,
-          'bg-slate-400': coords,
+          'bg-white': coords,
           'animate-pulse': fetchCoords,
         }"
       />
