@@ -92,6 +92,8 @@
 import axios from 'axios';
 import { ref } from 'vue';
 import LoadingSpinner from './LoadingSpinner.vue';
+import { useRuntimeConfig } from '#app';
+
 export default {
   props: ['coords', 'fetchCoords', 'searchResults'],
   components: { LoadingSpinner },
@@ -100,6 +102,8 @@ export default {
     const searchData = ref(null);
     const queryTimeout = ref(null);
     const selectedResult = ref(null);
+    const config = useRuntimeConfig();
+    const apiBase = config.public.apiBase || 'http://localhost:4040';
     const search = () => {
       clearTimeout(queryTimeout.value);
       searchData.value = null;
@@ -114,10 +118,9 @@ export default {
               : '0,0',
           });
           const getData = await axios.get(
-            `api/geosearch/${searchQuery.value}?${params}`,
+            `${apiBase}/geosearch/${searchQuery.value}?${params}`,
           );
           searchData.value = getData.data.features;
-          console.log(searchData.value);
         }
       }, 750);
     };

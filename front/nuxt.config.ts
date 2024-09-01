@@ -1,23 +1,7 @@
 import 'dotenv/config';
-import path from 'path';
+import * as path from 'path';
 
 export default defineNuxtConfig({
-  vite: {
-    server: {
-      proxy: {
-        '/api': {
-          target: process.env.API_BASE || 'http://api:4040',
-          changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, ''),
-          bypass: (req) => {
-            if (req?.url?.includes('_nuxt_icon')) {
-              return req.url;
-            }
-          },
-        },
-      },
-    },
-  },
   buildDir: path.resolve(__dirname, './build'),
   plugins: [
     '~/plugins/01.axios',
