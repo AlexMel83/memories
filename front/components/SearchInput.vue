@@ -24,16 +24,19 @@
 </template>
 
 <script setup>
-import { ref, provide, watch } from 'vue';
+import debounce from 'lodash.debounce';
 
 const searchTerm = ref('');
 provide('searchTerm', searchTerm);
 
 const bus = useNuxtApp().$bus;
 
-watch(searchTerm, (newValue) => {
-  bus.$emit('searchTermUpdated', newValue);
-});
+watch(
+  searchTerm,
+  debounce((newValue) => {
+    bus.$emit('searchTermUpdated', newValue);
+  }, 500),
+);
 </script>
 
 <style scoped>

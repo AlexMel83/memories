@@ -1,27 +1,34 @@
 import 'dotenv/config';
+import * as path from 'path';
 
 export default defineNuxtConfig({
+  buildDir: path.resolve(__dirname, './build'),
   plugins: [
-    '~/plugins/axios',
-    '~/plugins/errorHandler.js',
-    { src: '~/plugins/leaflet.client.js', mode: 'client' },
+    '~/plugins/01.axios',
+    '~/plugins/02.errorHandler.js',
   ],
 
   devtools: { enabled: true },
 
   css: [
+    'leaflet.markercluster/dist/MarkerCluster.css',
     '@mdi/font/css/materialdesignicons.min.css',
+    '~/assets/src/tailwind.css',
     '~/assets/src/styles.css',
   ],
 
   modules: [
-    '@formkit/auto-animate/nuxt',
     "@nuxt/ui",
-    "@nuxt/image",
+    '@formkit/auto-animate/nuxt',
     '@nuxtjs/tailwindcss',
     '@nuxtjs/color-mode', 
+    '@nuxtjs/leaflet',
+    "@nuxt/image",
     "@pinia/nuxt",
   ],
+  leaflet: {
+    markerCluster: true
+  },
   app: {
     head: {
       title: 'Memories',
@@ -41,7 +48,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiKeyMapbox: process.env.APIKEY_MAPBOX,
-      apiBase: process.env.API_BASE || 'http://localhost:3000',
+      apiBase: process.env.API_BASE || 'http://api:4040',
     },
     private: {
       // Значения здесь доступны только на стороне сервера

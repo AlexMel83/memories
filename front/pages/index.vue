@@ -123,17 +123,23 @@ const formatDate = (dateString) => {
 };
 
 onMounted(async () => {
-  await fetchMemories();
+  try {
+    if (!searchTerm.value) {
+      await fetchMemories(); // Выполняем запрос только если searchTerm пустой
+    }
 
-  bus.$on('searchTermUpdated', (newSearchTerm) => {
-    searchTerm.value = newSearchTerm;
-    fetchMemories(newSearchTerm);
-  });
+    bus.$on('searchTermUpdated', (newSearchTerm) => {
+      searchTerm.value = newSearchTerm;
+      fetchMemories(newSearchTerm);
+    });
+  } catch (error) {
+    console.error('Error in onMounted:', error);
+  }
 });
 
-watch(searchTerm, async (newValue) => {
-  await fetchMemories(newValue);
-});
+// watch(searchTerm, async (newValue) => {
+//   await fetchMemories(newValue);
+// });
 
 const fetchMemories = async (searchQuery = null) => {
   isLoading.value = true;
@@ -142,7 +148,6 @@ const fetchMemories = async (searchQuery = null) => {
     const memories = response.data.filter(
       (memory) => memory.published === true,
     );
-
     memoriesDataApi.value = memories;
   } catch (error) {
     console.error('Error fetching memories data:', error);
