@@ -1,6 +1,6 @@
 import errorMiddleware from './src/middlewares/error-middleware.js';
 import routeInit from './src/presentation-layer/routes/index.js';
-import { dirname } from 'path';
+import { dirname, join } from 'path';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import { fileURLToPath } from 'url';
@@ -24,8 +24,8 @@ app.use(
   cors({
     credentials: true,
     origin: [
-      CLIENT_URL | 'http://localhost:3000',
-      PAYMENT_DOMEN | 'https://www.liqpay.ua',
+      CLIENT_URL || 'http://localhost:3000',
+      PAYMENT_DOMEN || 'https://www.liqpay.ua',
       'http://localhost:3000',
     ],
     exposedHeaders: ['Access-Control-Allow-Credentials'],
@@ -35,7 +35,7 @@ app.use('/uploads', express.static('uploads'));
 app.use(cookieParser());
 app.use(
   session({
-    secret: JWT_AC_SECRET | 'secret',
+    secret: JWT_AC_SECRET || 'secret',
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -49,8 +49,13 @@ routeInit(app, express);
 
 app.use(errorMiddleware);
 
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(`${__dirname}/front/build`));
+if (process.env.NODE_ENV === 'production' || true) {
+  const staticPath = join(__dirname, '/../front/build');
+  app.use(express.static(staticPath));
+  console.log('Static files are served from:', staticPath);
+  app.get('*', (req, res) => {
+    res.sendFile(join(staticPath, 'index.html'));
+  });
 }
 
 server.listen(PORT | 4040, () => {
