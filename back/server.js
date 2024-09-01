@@ -16,14 +16,18 @@ dotenv.config({
 });
 const { PORT, CLIENT_URL, PAYMENT_DOMEN, JWT_AC_SECRET, JWT_RF_MA } =
   process.env;
-const sessionMaxAge = parseInt(JWT_RF_MA, 10);
+const sessionMaxAge = parseInt(JWT_RF_MA | 2592000000, 10);
 const app = express();
 const server = http.createServer(app);
 
 app.use(
   cors({
     credentials: true,
-    origin: [CLIENT_URL, PAYMENT_DOMEN, 'http://localhost:3000'],
+    origin: [
+      CLIENT_URL | 'http://localhost:3000',
+      PAYMENT_DOMEN | 'https://www.liqpay.ua',
+      'http://localhost:3000',
+    ],
     exposedHeaders: ['Access-Control-Allow-Credentials'],
   }),
 );
@@ -31,7 +35,7 @@ app.use('/uploads', express.static('uploads'));
 app.use(cookieParser());
 app.use(
   session({
-    secret: JWT_AC_SECRET,
+    secret: JWT_AC_SECRET | 'secret',
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -49,6 +53,6 @@ if (process.env.NODE_ENV === 'production') {
   app.use(express.static(`${__dirname}/front/build`));
 }
 
-server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
+server.listen(PORT | 4040, () => {
+  console.log(`Server is running on port ${PORT | 4040}.`);
 });

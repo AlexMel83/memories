@@ -6,7 +6,7 @@ export default defineNuxtConfig({
     server: {
       proxy: {
         '/api': {
-          target: process.env.API_BASE,
+          target: process.env.API_BASE || 'http://localhost:4040',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
           bypass: (req) => {
@@ -64,7 +64,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiKeyMapbox: process.env.APIKEY_MAPBOX,
-      apiBase: process.env.API_BASE,
+      apiBase: process.env.API_BASE || 'http://localhost:4040',
     },
     private: {
       // Значения здесь доступны только на стороне сервера
