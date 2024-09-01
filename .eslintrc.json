@@ -20,5 +20,5 @@
   "rules": {
     "vue/multi-word-component-names": "off"
   },
-  "ignorePatterns": [".nuxt/**", "front/.nuxt/**", "dist/**"]
+  "ignorePatterns": [".nuxt/**", "front/.nuxt/**", "front/build/**", "dist/**"]
 }
