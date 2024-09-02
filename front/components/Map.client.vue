@@ -10,9 +10,9 @@
       @close-geo-error="closeGeoError"
     />
     <map-features
-      :search-results="searchResults"
-      :fetch-coords="fetchCoords"
-      :coords="coords"
+      :search-results="searchResults || false"
+      :fetch-coords="fetchCoords || false"
+      :coords="coords || {}"
       @toggle-search-results="toggleSearchResults"
       @get-geo-location="getGeoLocation"
       @remove-result="removeResult"
@@ -57,6 +57,7 @@ const props = defineProps({
 
 const center = ref([49.230173, 28.447339]);
 const config = useRuntimeConfig();
+const markerCoordinates = ref({ lat: null, lng: null });
 const searchResults = ref(null);
 const resultMarker = ref(null);
 const fetchCoords = ref(null);
@@ -133,7 +134,7 @@ const createCustomIcon = (lat, lng) => {
   const marker = L.marker([lat, lng], { icon, draggable: true });
   const popupContent = `<div class="px-1 text-center font-bold">Coordinates: <p>Lat: ${lat}, Lng: ${lng}</p></div>`;
   marker.bindPopup(popupContent, { offset: [0, -14] });
-  markerCoordinates = { lat, lng };
+  markerCoordinates.value = { lat, lng };
   marker.on('moveend', (event) => {
     const newLatLng = event.target.getLatLng();
     const roundedLat = newLatLng.lat.toFixed(4);

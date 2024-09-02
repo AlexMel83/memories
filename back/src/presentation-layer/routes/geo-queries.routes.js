@@ -3,10 +3,20 @@ import url from 'url';
 export default function (app) {
   app.get('/geosearch/:query', async (req, res) => {
     try {
+      const queryParams = url.parse(req.url, true).query;
+
+      if (
+        !queryParams.proximity ||
+        queryParams.proximity === 'undefined,undefined'
+      ) {
+        delete queryParams.proximity;
+      }
+
       const params = new URLSearchParams({
         access_token: process.env.APIKEY_MAPBOX,
-        ...url.parse(req.url, true).query,
+        ...queryParams,
       });
+
       const query = req.params.query;
       const response = await fetch(
         `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?${params}`,
@@ -29,7 +39,6 @@ export default function (app) {
         item.city = null;
         item.state = null;
 
-        // Проверяем наличие context и его тип данных
         if (Array.isArray(item.context)) {
           item.context.forEach((type) => {
             if (type.id.includes('place')) {
