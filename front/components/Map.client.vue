@@ -139,7 +139,7 @@ const createCustomIcon = (lat, lng) => {
     const newLatLng = event.target.getLatLng();
     const roundedLat = newLatLng.lat.toFixed(4);
     const roundedLng = newLatLng.lng.toFixed(4);
-    markerCoordinates = { lat: roundedLat, lng: roundedLng };
+    markerCoordinates.value = { lat: roundedLat, lng: roundedLng };
     marker.setPopupContent(
       `<div class="px-1 text-center font-bold">Coordinates: <p>Lat: ${roundedLat}, Lng: ${roundedLng}</p></div>`,
     );
