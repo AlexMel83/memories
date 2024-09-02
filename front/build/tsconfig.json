@@ -96,7 +96,7 @@
         "../node_modules/@nuxt/ui/dist/runtime/*"
       ],
       "#ui-colors": [
-        "./ui.colors"
+        "./ui.colors.mjs"
       ],
       "#color-mode-options": [
         "./color-mode-options.mjs"
@@ -119,11 +119,8 @@
       "#tailwind-config": [
         "./tailwind.config"
       ],
-      "#tailwind-config/*": [
-        "./tailwind.config/*"
-      ],
       "#app-manifest": [
-        "./manifest/meta/dev"
+        "./manifest/meta/77535527-d418-4d89-8d00-16a91ae5f5e0.json"
       ],
       "#build": [
         "."
