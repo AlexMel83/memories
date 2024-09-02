@@ -54,6 +54,10 @@ export default defineNuxtConfig({
       // Значения здесь доступны только на стороне сервера
     },
   },
+  devServer: {
+    port: parseInt(process.env.NUXT_PORT as string, 10) || 3000,
+    host: process.env.NUXT_HOST || '0.0.0.0',
+  },
 
   compatibilityDate: '2024-08-13',
 });

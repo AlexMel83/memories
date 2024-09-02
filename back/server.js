@@ -49,14 +49,14 @@ routeInit(app, express);
 
 app.use(errorMiddleware);
 
-if (process.env.NODE_ENV === 'production' || true) {
-  const staticPath = join(__dirname, '/../front/build');
-  app.use(express.static(staticPath));
-  console.log('Static files are served from:', staticPath);
-  app.get('*', (req, res) => {
-    res.sendFile(join(staticPath));
-  });
-}
+// if (process.env.NODE_ENV === 'production' || true) {
+//   const staticPath = join(__dirname, '/../front/build');
+//   app.use(express.static(staticPath));
+//   console.log('Static files are served from:', staticPath);
+//   app.get('*', (req, res) => {
+//     res.sendFile(join(staticPath));
+//   });
+// }
 
 server.listen(PORT | 4040, () => {
   console.log(`Server is running on port ${PORT | 4040}.`);
