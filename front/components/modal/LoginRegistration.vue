@@ -1,6 +1,6 @@
 <script setup>
 import { useAuthStore } from '~/stores/auth.store';
-import { object, string, ref as yupRef } from 'yup';
+// import { object, string, ref as yupRef } from 'yup';
 import { defineShortcuts } from '#imports';
 
 const { $api, $load } = useNuxtApp();
@@ -8,7 +8,6 @@ const authStore = useAuthStore();
 
 const minPwd = 4;
 const isOpen = ref(false);
-const currentTab = ref(0);
 const isLoading = ref(false);
 const emailActive = ref(false);
 const passwordActive = ref(false);
@@ -30,18 +29,6 @@ const errors = reactive({
   password: '',
   form: '',
 });
-const items = [
-  {
-    key: 0,
-    label: 'Акаунт',
-    description: '',
-  },
-  {
-    key: 1,
-    label: 'Реєстрація',
-    description: '',
-  },
-];
 
 const clearErrors = () => {
   errors.email = '';
@@ -58,25 +45,23 @@ const clearVars = () => {
 const handleTogglePasswordVisibility = async () => {
   togglePasswordVisibility.value = !togglePasswordVisibility.value;
 };
-const schema = computed(() =>
-  currentTab.value === 0 ? loginSchema : registrationSchema,
-);
+const schema = computed(() => loginSchema);
 const loginSchema = object({
   email: string().email('Невірний email').required('Потрібен Email'),
   password: string()
     .min(minPwd, `Пароль має бути не менше ${minPwd} симовлів`)
     .required('Потрібен пароль'),
 });
-const registrationSchema = object({
-  email: string().email('Невірний email').required('Потрібен Email'),
-  password: string()
-    .min(minPwd, `Пароль не менше ${minPwd} символів`)
-    .required('Потрібен пароль'),
-  passConfirm: string().oneOf(
-    [yupRef('password'), ''],
-    'Паролі не співпадають',
-  ),
-});
+// const registrationSchema = object({
+//   email: string().email('Невірний email').required('Потрібен Email'),
+//   password: string()
+//     .min(minPwd, `Пароль не менше ${minPwd} символів`)
+//     .required('Потрібен пароль'),
+//   passConfirm: string().oneOf(
+//     [yupRef('password'), ''],
+//     'Паролі не співпадають',
+//   ),
+// });
 
 const openModal = () => {
   isOpen.value = true;
@@ -117,22 +102,16 @@ const handleSubmit = async (event) => {
   const payload = {
     email: state.email,
     password: state.password,
-    role: currentTab.value === 1 ? 'user' : '',
+    role: 'user',
   };
 
   try {
-    if (currentTab.value === 1 && state.passConfirm !== state.password) {
+    if (state.passConfirm !== state.password) {
       errors.password = 'Портібно підтвердити пароль';
       isLoading.value = false;
       return;
     }
-    const res = await $load(
-      () =>
-        currentTab.value === 0
-          ? $api.auth.signIn(payload)
-          : $api.auth.signUp(payload),
-      errors,
-    );
+    const res = await $load(() => $api.auth.signIn(payload), errors);
 
     if (
       res &&
@@ -187,7 +166,7 @@ watch(isOpen, (newValue) => {
       >
         <div class="flex items-center">
           <h3
-            class="flex-grow text-base font-semibold leading-6 text-gray-900 dark:text-white text-center"
+            class="flex-grow text-base font-semibold leading-6 text-gray-900 dark:text-[#999] text-center"
           >
             Увійти до мапи пам'яті
           </h3>
@@ -206,7 +185,7 @@ watch(isOpen, (newValue) => {
         </div>
         <ModalSocial />
         <h3
-          class="text-base font-semibold leading-6 text-gray-900 dark:text-white text-center"
+          class="text-base font-semibold leading-6 text-gray-900 dark:text-[#999] text-center"
         >
           Або введіть вашу електронну пошту
         </h3>
@@ -225,6 +204,7 @@ watch(isOpen, (newValue) => {
                 'has-value': state.email !== '' || emailActive,
                 'form-group': true,
                 'text-right': true,
+                'dark:text-[#999]': true,
               }"
             >
               <UInput
@@ -409,7 +389,5 @@ watch(isOpen, (newValue) => {
 .form-group input:focus + label {
   top: 3px;
   left: 0;
-  /* font-size: 0.75rem; */
-  /* color: #333; */
 }
 </style>
