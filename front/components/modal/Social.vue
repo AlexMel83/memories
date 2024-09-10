@@ -25,7 +25,7 @@ const handleSocialLogin = async (provider) => {
 
 <template>
   <div class="wrapper-login-using">
-    <div class="login-using mt-2">
+    <div class="login-using m-2">
       <div class="login-using-item" @click="handleSocialLogin('google')">
         <LogosGoogleIcon class="social-icon" />
         <span class="login-text">За допомогою<br />Google</span>
