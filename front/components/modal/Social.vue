@@ -25,20 +25,15 @@ const handleSocialLogin = async (provider) => {
 
 <template>
   <div class="wrapper-login-using">
-    <div class="login-using mt-5 mb-4">
-      <UTooltip text="Увійти через Google">
-        <template #text>
-          <span class="italic">Увійти через Google</span>
-        </template>
-        <div class="login-using-item" @click="handleSocialLogin('google')">
-          <LogosGoogleIcon />
-        </div>
-      </UTooltip>
-      <UTooltip text="Увійти через Facebook">
-        <div class="login-using-item" @click="handleSocialLogin('facebook')">
-          <LogosFacebook />
-        </div>
-      </UTooltip>
+    <div class="login-using mt-2">
+      <div class="login-using-item" @click="handleSocialLogin('google')">
+        <LogosGoogleIcon class="social-icon" />
+        <span class="login-text">За допомогою<br />Google</span>
+      </div>
+      <div class="login-using-item" @click="handleSocialLogin('facebook')">
+        <LogosFacebook class="social-icon" />
+        <span class="login-text">За допомогою<br />Facebook</span>
+      </div>
     </div>
     <UNotifications v-if="errors.textError" color="red" :timeout="3000">
       {{ errors.textError }}
@@ -55,29 +50,36 @@ const handleSocialLogin = async (provider) => {
 }
 
 .login-using {
-  width: 166px;
-  height: 40px;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  gap: 15px;
 }
 
 .login-using .login-using-item {
-  height: 100%;
-  width: 60px;
-  /* border: 1px solid var(--border-color); */
-  border-radius: 50%;
+  width: 100%;
   display: flex;
-  flex-direction: row;
-  justify-content: center;
   align-items: center;
+  justify-content: flex-start;
+  padding: 5px 10px;
+  border-radius: 10px;
+  background-color: #f1f1f1;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .login-using .login-using-item:hover {
   transform: scale(1.05);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.social-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px; /* отступ между иконкой и текстом */
+}
+
+.login-text {
+  font-size: 14px;
+  color: #333;
 }
 </style>

@@ -188,9 +188,9 @@ watch(isOpen, (newValue) => {
         <template #header>
           <div class="flex items-center justify-between">
             <h3
-              class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
+              class="text-base font-semibold leading-6 text-gray-900 dark:text-white text-center"
             >
-              Memory login
+              Увійти до мапи пам'яті
             </h3>
             <UButton
               color="gray"
@@ -207,7 +207,7 @@ watch(isOpen, (newValue) => {
           </div>
           <ModalSocial />
         </template>
-
+        Або введіть вашу електронну пошту
         <UTabs v-model="currentTab" :items="items" :ui="{}">
           <template #item="{ item }">
             <UForm
@@ -244,6 +244,7 @@ watch(isOpen, (newValue) => {
                   </UInput>
                 </UFormGroup>
                 <UFormGroup
+                  v-if="state.email"
                   name="password"
                   :error="errors.password"
                   :class="{
@@ -359,7 +360,12 @@ watch(isOpen, (newValue) => {
                   />
                 </div>
               </UFormGroup>
-              <UButton type="submit" color="black" :loading="isLoading">
+              <UButton
+                v-if="state.email"
+                type="submit"
+                color="black"
+                :loading="isLoading"
+              >
                 {{ item.key === 0 ? 'Увійти' : 'Зареєструватись' }}
               </UButton>
             </UForm>
