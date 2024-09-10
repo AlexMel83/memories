@@ -1,6 +1,10 @@
 <script setup>
 import { useAuthStore } from '~/stores/auth.store';
-// import { object, string, ref as yupRef } from 'yup';
+import {
+  object,
+  string,
+  // ref as yupRef
+} from 'yup';
 import { defineShortcuts } from '#imports';
 
 const { $api, $load } = useNuxtApp();
