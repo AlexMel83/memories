@@ -20,17 +20,27 @@ const sessionMaxAge = parseInt(JWT_RF_MA | 2592000000, 10);
 const app = express();
 const server = http.createServer(app);
 
-app.use(
-  cors({
-    credentials: true,
-    origin: [
-      CLIENT_URL || 'http://localhost:3000',
-      PAYMENT_DOMEN || 'https://www.liqpay.ua',
-      'http://localhost:3000',
-    ],
-    exposedHeaders: ['Access-Control-Allow-Credentials'],
-  }),
-);
+const allowedOrigins = [
+  ...(CLIENT_URL.split(',') || 'http://localhost:3000'),
+  'https://memory.pp.ua',
+  PAYMENT_DOMEN || 'https://www.liqpay.ua',
+  'http://localhost:3000',
+];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  exposedHeaders: ['Access-Control-Allow-Credentials'],
+};
+
+app.use(cors(corsOptions));
+
 app.use('/uploads', express.static('uploads'));
 app.use(cookieParser());
 app.use(
@@ -48,6 +58,11 @@ app.use(
 routeInit(app, express);
 
 app.use(errorMiddleware);
+
+app.use((req, res, next) => {
+  console.log(`${req.method} request to ${req.url}`);
+  next();
+});
 
 server.listen(PORT | 4040, () => {
   console.log(`Server is running on port ${PORT | 4040}.`);

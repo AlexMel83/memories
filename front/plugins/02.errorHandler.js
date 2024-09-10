@@ -24,6 +24,8 @@ export default defineNuxtPlugin((nuxtApp) => {
             errHandler.email = message;
           }
         } else if (error.request) {
+          console.log('Error', error);
+          alert('Error: ' + JSON.stringify(error));
           errHandler.textError = errHandler.email =
             'Server is not responding. Please try again later.';
         } else {

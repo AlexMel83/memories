@@ -2,12 +2,18 @@ import axios from 'axios';
 import { useAuthStore } from '~/stores/auth.store';
 import apiModule from '../api/index.ts';
 
-// const baseURL = 'https://hub-api.intita.com';
-// const baseURL = "http://localhost:4041"
-
 export default defineNuxtPlugin((nuxtApp) => {
   const config = useRuntimeConfig();
-  const baseURL = config.public.apiBase || 'https://hub-api.intita.com';
+  let baseURL;
+  if (process.client) {
+    if (window.location.hostname === 'memory.pp.ua') {
+      baseURL = 'https://api.' + window.location.hostname;
+    } else {
+      baseURL = config.public.apiBase || 'http://localhost:4040';
+    }
+  } else {
+    baseURL = config.public.apiBase || 'http://localhost:4040';
+  }
 
   const axiosInstance = axios.create({
     baseURL,

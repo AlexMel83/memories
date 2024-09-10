@@ -128,7 +128,16 @@ export default {
     const queryTimeout = ref(null);
     const selectedResult = ref(null);
     const config = useRuntimeConfig();
-    const apiBase = config.public.apiBase || 'http://localhost:4040';
+    let apiBase;
+    if (process.client) {
+      if (window.location.hostname === 'memory.pp.ua') {
+        apiBase = 'https://api.' + window.location.hostname;
+      } else {
+        apiBase = config.public.apiBase || 'http://localhost:4040';
+      }
+    } else {
+      apiBase = config.public.apiBase || 'http://localhost:4040';
+    }
     const search = () => {
       clearTimeout(queryTimeout.value);
       searchData.value = null;

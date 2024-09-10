@@ -48,7 +48,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiKeyMapbox: process.env.APIKEY_MAPBOX,
-      apiBase: process.env.API_BASE || 'http://api:4040',
+      apiBase: process.env.API_BASE || 'https://memory.pp.ua/api',
     },
     private: {
       // Значения здесь доступны только на стороне сервера
@@ -58,6 +58,13 @@ export default defineNuxtConfig({
     port: parseInt(process.env.NUXT_PORT as string, 10) || 3000,
     host: process.env.NUXT_HOST || '0.0.0.0',
   },
-
+  vite: {
+    server: {
+      hmr: {
+        protocol: 'wss', // WebSocket через WSS
+        host: 'memory.pp.ua',
+      },
+    },
+  },
   compatibilityDate: '2024-08-13',
 });
