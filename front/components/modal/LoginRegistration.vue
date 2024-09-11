@@ -1,10 +1,6 @@
 <script setup>
 import { useAuthStore } from '~/stores/auth.store';
-import {
-  object,
-  string,
-  // ref as yupRef
-} from 'yup';
+import { object, string, ref as yupRef } from 'yup';
 import { defineShortcuts } from '#imports';
 
 const { $api, $load } = useNuxtApp();
@@ -18,22 +14,19 @@ const passwordActive = ref(false);
 const passConfirmActive = ref(false);
 const togglePasswordVisibility = ref(false);
 
-const formData = reactive({
+const state = reactive({
   email: '',
   password: '',
   passConfirm: '',
 });
-const state = reactive({
-  email: formData.email,
-  password: formData.password,
-  passConfirm: formData.passConfirm,
-});
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const isEmailValid = computed(() => emailRegex.test(state.email));
+const userIsNotRegistered = ref(false);
 const errors = reactive({
   email: '',
   password: '',
   form: '',
 });
-
 const clearErrors = () => {
   errors.email = '';
   errors.password = '';
@@ -46,32 +39,35 @@ const clearVars = () => {
   state.password = '';
   state.passConfirm = '';
 };
+
 const handleTogglePasswordVisibility = async () => {
   togglePasswordVisibility.value = !togglePasswordVisibility.value;
 };
-const schema = computed(() => loginSchema);
+
 const loginSchema = object({
   email: string().email('Невірний email').required('Потрібен Email'),
   password: string()
     .min(minPwd, `Пароль має бути не менше ${minPwd} симовлів`)
     .required('Потрібен пароль'),
 });
-// const registrationSchema = object({
-//   email: string().email('Невірний email').required('Потрібен Email'),
-//   password: string()
-//     .min(minPwd, `Пароль не менше ${minPwd} символів`)
-//     .required('Потрібен пароль'),
-//   passConfirm: string().oneOf(
-//     [yupRef('password'), ''],
-//     'Паролі не співпадають',
-//   ),
-// });
+const registrationSchema = object({
+  email: string().email('Невірний email').required('Потрібен Email'),
+  password: string()
+    .min(minPwd, `Пароль не менше ${minPwd} символів`)
+    .required('Потрібен пароль'),
+  passConfirm: string().oneOf(
+    [yupRef('password'), ''],
+    'Паролі не співпадають',
+  ),
+});
+const schema = computed(() =>
+  userIsNotRegistered.value ? registrationSchema : loginSchema,
+);
 
 const openModal = () => {
   isOpen.value = true;
 };
 defineExpose({ openModal });
-
 defineShortcuts({
   escape: {
     usingInput: true,
@@ -90,9 +86,9 @@ const handleFocus = (field) => {
   if (field === 'passConfirm') passConfirmActive.value = true;
 };
 const handleBlur = (field) => {
-  if (field === 'email' && !formData.email) emailActive.value = false;
-  if (field === 'password' && !formData.password) passwordActive.value = false;
-  if (field === 'passConfirm' && !formData.passConfirm)
+  if (field === 'email' && !state.email) emailActive.value = false;
+  if (field === 'password' && !state.password) passwordActive.value = false;
+  if (field === 'passConfirm' && !state.passConfirm)
     passConfirmActive.value = false;
 };
 
@@ -110,12 +106,19 @@ const handleSubmit = async (event) => {
   };
 
   try {
-    if (state.passConfirm !== state.password) {
+    if (userIsNotRegistered.value && state.passConfirm !== state.password) {
       errors.password = 'Портібно підтвердити пароль';
+      if (state.passConfirm) errors.passConfirm = 'Паролі не співпадають';
       isLoading.value = false;
       return;
     }
-    const res = await $load(() => $api.auth.signIn(payload), errors);
+    const res = await $load(
+      () =>
+        userIsNotRegistered.value
+          ? $api.auth.signUp(payload)
+          : $api.auth.signIn(payload),
+      errors,
+    );
 
     if (
       res &&
@@ -125,24 +128,15 @@ const handleSubmit = async (event) => {
       const data = res.data;
       authStore.setUserData(data);
       console.log(data);
+      isLoading.value = false;
       isOpen.value = false;
       clearVars();
     }
-    if (res.data && res.data.message) {
-      if (res.data.message.includes('Невірний пароль')) {
-        errors.password = 'Невірний пароль';
-      } else if (res.data.message.includes('mail-server')) {
-        errors.email =
-          'mail server is not responding, activation-email was not sent';
-      } else if (res.data.message.includes('вже існує')) {
-        errors.email = 'Ця пошта вже зареєстрована';
-      } else if (res.data.message.includes('не знайдений')) {
-        errors.email = 'даний email не зареєстровано';
-      } else if (res.data.message.includes('Помилка при валідації')) {
-        errors.email = 'Помилка при валідації';
-      } else if (res.data.message.includes('already exist')) {
-        errors.email = 'Користувач з такою поштою вже існує';
+    if (errors) {
+      if (errors.email.includes('Цей email не зареєстровано')) {
+        userIsNotRegistered.value = true;
       }
+      console.log(errors);
     }
   } catch (error) {
     if (error) {
@@ -228,13 +222,14 @@ watch(isOpen, (newValue) => {
               </UInput>
             </UFormGroup>
             <UFormGroup
-              v-if="state.email"
+              v-if="isEmailValid"
               name="password"
               :error="errors.password"
               :class="{
                 'has-value': state.password !== '' || passwordActive,
                 'form-group': true,
                 'text-right': true,
+                'dark:text-[#999]': true,
               }"
             >
               <div class="password-input-wrapper">
@@ -288,12 +283,14 @@ watch(isOpen, (newValue) => {
             </UFormGroup>
           </div>
           <UFormGroup
-            v-if="errors.email"
+            v-if="userIsNotRegistered && isEmailValid"
             name="passConfirm"
+            :error="errors.passConfirm"
             :class="{
               'has-value': state.passConfirm !== '' || passConfirmActive,
               'form-group': true,
               'text-right': true,
+              'dark:text-[#999]': true,
             }"
           >
             <div class="password-input-wrapper">
@@ -301,6 +298,7 @@ watch(isOpen, (newValue) => {
                 v-if="!togglePasswordVisibility"
                 v-model="state.passConfirm"
                 type="password"
+                :error="errors.passConfirm"
                 icon="i-heroicons-lock-closed"
                 variant="none"
                 color="primary"
@@ -345,12 +343,14 @@ watch(isOpen, (newValue) => {
             </div>
           </UFormGroup>
           <UButton
-            v-if="state.email"
+            v-if="isEmailValid && state.password.length >= minPwd"
             type="submit"
             color="black"
             :loading="isLoading"
           >
-            {{ 'Увійти' }}
+            {{
+              isEmailValid && userIsNotRegistered ? 'Зареєструватись' : 'Увійти'
+            }}
           </UButton>
         </UForm>
       </UCard>
