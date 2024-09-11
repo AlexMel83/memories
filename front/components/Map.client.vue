@@ -261,6 +261,51 @@ const removeResult = () => {
     map.value.leafletObject.removeLayer(resultMarker.value);
   }
 };
+
+watch(
+  () => props.memories,
+  (newMemories) => {
+    if (map.value && map.value.leafletObject) {
+      map.value.leafletObject.eachLayer((layer) => {
+        if (
+          layer instanceof L.MarkerClusterGroup ||
+          layer instanceof L.Marker
+        ) {
+          map.value.leafletObject.removeLayer(layer);
+        }
+      });
+      const markers = newMemories.map((memory) => {
+        const regex = /POINT\(([^ ]+) ([^ ]+)\)/;
+        const match = memory.location ? memory.location.match(regex) : null;
+        const longitude = match ? parseFloat(match[1]) : 0;
+        const latitude = match ? parseFloat(match[2]) : 0;
+        const photoURL = memory.memory_photos?.[0]?.url
+          ? `${memory.memory_photos[0].url.includes('http') ? '' : baseURL}${memory.memory_photos[0].url}`
+          : './default-coworking.png';
+        const popupContent = `
+        <div class="popup-content" style="text-align: center; margin 0;">
+          <a href="/coworking/${memory.id}" target="_blank" style="word-wrap: break-word; text-decoration: none;">
+            <b style="display: block; margin-top: 3px; font-weight: bold; font-size: 130%;">${memory.title}</b>
+          </a>
+          <p class="px-2" style="word-wrap: break-word;">
+              <a href="https://www.google.com/maps?q=${encodeURIComponent(memory.address)}" target="_blank">${memory.address}</a>
+          </p>
+          <a href="/coworking/${memory.id}" target="_blank" style="word-wrap: break-word; text-decoration: none;">
+              <img src="${photoURL}" loading="lazy" alt="${memory.title}" style="max-width: 100%; height: auto; display: block; margin: auto;" />
+          </a>
+        </div>
+        `;
+        const marker = L.marker([latitude, longitude]);
+        marker.bindPopup(popupContent);
+        return marker;
+      });
+      const markerClusterGroup = L.markerClusterGroup();
+      markerClusterGroup.addLayers(markers);
+      map.value.leafletObject.addLayer(markerClusterGroup);
+    }
+  },
+  { deep: true },
+);
 </script>
 
 <style scoped>

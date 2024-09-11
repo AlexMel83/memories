@@ -54,26 +54,26 @@
 </template>
 
 <script setup>
-import { useRoute } from 'vue-router';
+import Registration from '@/components/modal/Registration.vue';
 import { useAuthStore } from '@/stores/auth.store';
 import Login from '@/components/modal/Login.vue';
-import Registration from '@/components/modal/Registration.vue';
-
 import { useLocalStorage } from '@vueuse/core';
+import { useRoute } from 'vue-router';
+
 const localStorageUserId = useLocalStorage('userId', null);
 const localStorageEmail = useLocalStorage('email', null);
-
-const authStore = useAuthStore();
-const route = useRoute();
-
 const loginRegistrationRef = ref(null);
+const authStore = useAuthStore();
+const { $api } = useNuxtApp();
 const menuOpen = ref(false);
 const menuLogin = ref(true);
-const email = ref('');
+const router = useRouter();
+const route = useRoute();
 const authLink = ref('');
+const email = ref('');
 
-const isAuthed = computed(() => authStore.isAuthed);
 const isHomePage = computed(() => route.path === '/');
+const isAuthed = computed(() => authStore.isAuthed);
 
 const openLoginModal = () => {
   if (loginRegistrationRef.value) {
@@ -103,6 +103,15 @@ onMounted(() => {
       fetchUserData(authLink.value);
     }
   }
+
+  const activateLinkRegex = /\/activate\/([0-9a-fA-F-]{36})$/;
+  if (activateLinkRegex.test(route.path)) {
+    const match = route.path.match(activateLinkRegex);
+    const uuid = match[1];
+    if (uuid) {
+      activateAccount(uuid);
+    }
+  }
 });
 
 const hideMenu = () => {
@@ -120,7 +129,6 @@ const changeCompenent = () => {
 
 const fetchUserData = async (authLinkValue) => {
   try {
-    const { $api } = useNuxtApp();
     const response = await $api.post(`/auth-user/${authLinkValue}`);
     if (response.data) {
       const userDataValue = response.data;
@@ -135,6 +143,19 @@ const fetchUserData = async (authLinkValue) => {
     }
   } catch (error) {
     console.error('Error fetching user data:', error);
+  }
+};
+
+const activateAccount = async (uuid) => {
+  try {
+    const response = await $api.post(`/activate/${uuid}`);
+    if (response.status === 200) {
+      console.log('Account activated successfully!');
+      // Например, можно перенаправить пользователя на страницу логина
+      router.push('/login');
+    }
+  } catch (error) {
+    console.error('Error activating account:', error);
   }
 };
 </script>

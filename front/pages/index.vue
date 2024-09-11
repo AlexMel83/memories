@@ -137,10 +137,6 @@ onMounted(async () => {
   }
 });
 
-// watch(searchTerm, async (newValue) => {
-//   await fetchMemories(newValue);
-// });
-
 const fetchMemories = async (searchQuery = null) => {
   isLoading.value = true;
   try {
