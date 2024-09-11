@@ -3,8 +3,8 @@ import { useAuthStore } from '~/stores/auth.store';
 import { object, string, ref as yupRef } from 'yup';
 import { defineShortcuts } from '#imports';
 
-const { $api, $load } = useNuxtApp();
 const authStore = useAuthStore();
+const { $api, $load } = useNuxtApp();
 
 const minPwd = 4;
 const isOpen = ref(false);
@@ -24,23 +24,23 @@ const state = reactive({
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const isEmailValid = computed(() => emailRegex.test(state.email));
 const errors = reactive({
+  form: '',
   email: '',
   password: '',
-  form: '',
 });
 const clearErrors = () => {
+  errors.form = '';
   errors.email = '';
   errors.password = '';
-  errors.form = '';
 };
 const clearVars = () => {
-  togglePasswordVisibility.value = false;
-  userIsNotRegistered.value = false;
-  sendActivationEmail.value = false;
-  isLoading.value = false;
   state.email = '';
   state.password = '';
   state.passConfirm = '';
+  isLoading.value = false;
+  userIsNotRegistered.value = false;
+  sendActivationEmail.value = false;
+  togglePasswordVisibility.value = false;
 };
 
 const handleTogglePasswordVisibility = async () => {
@@ -147,7 +147,7 @@ const handleSubmit = async (event) => {
     }
   } catch (error) {
     if (error) {
-      errors.form = 'Користувача не авторизовано';
+      errors.email = 'Користувача не авторизовано';
     }
   }
   isLoading.value = false;
@@ -391,7 +391,7 @@ watch(isOpen, (newValue) => {
         <h3
           class="text-base font-semibold leading-6 text-gray-900 dark:text-[#999] text-center"
         >
-          Лист активації надіслано на вашу електронну пошту.
+          Лист активації надіслано на зазначену електронну пошту.
         </h3>
       </UCard>
     </UModal>

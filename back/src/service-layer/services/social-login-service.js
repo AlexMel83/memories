@@ -11,7 +11,7 @@ const uuidRegex =
 const emailRegex = /\(email\)=\(([^)]+)\)/;
 const {
   CLIENT_URL,
-  API_URL,
+  API_BASE,
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
   FACEBOOK_CLIENT_ID,
@@ -31,14 +31,14 @@ class SocialLoginService {
             this.strategies[provider] = new GoogleStrategy(
               GOOGLE_CLIENT_ID,
               GOOGLE_CLIENT_SECRET,
-              `${API_URL}/social-login/google/callback`,
+              `${API_BASE}/social-login/google/callback`,
             );
             break;
           case 'facebook':
             this.strategies[provider] = new FacebookStrategy(
               FACEBOOK_CLIENT_ID,
               FACEBOOK_CLIENT_SECRET,
-              `${API_URL}/social-login/facebook/callback`,
+              `${API_BASE}/social-login/facebook/callback`,
             );
             break;
           default:

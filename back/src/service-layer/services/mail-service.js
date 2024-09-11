@@ -21,13 +21,14 @@ class MailService {
       await this.transporter.sendMail({
         from: SMTP_USER,
         to,
-        subject: `Активація аккаунту на ${CLIENT_URL}`,
+        subject: `Активація аккаунту на ${CLIENT_URL.startsWith('https://') ? CLIENT_URL.replace('https://', '') : CLIENT_URL}`,
         text: '',
         html: `<div>
-                          <h1>Вітаємо Вас з успішною реєстрацією!</h1>
-                          Для активації аккаунту на платформі ${CLIENT_URL} перейдить за цим посиланням:
-                          <a href="${link}">${link}</a>
-                      </div>`,
+            <h1>Вітаємо Вас з успішною реєстрацією!</h1>
+            Для активації аккаунту на платформі ${CLIENT_URL} перейдіть за посиланням нижче:
+            <p><a href="${link}">${link}</a></p>
+            Якщо Ви не реєструвалися на цій платформі, просто ігноруйте цей лист.
+        </div>`,
       });
     } catch (error) {
       console.error(error);

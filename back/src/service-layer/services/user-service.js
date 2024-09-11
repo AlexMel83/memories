@@ -6,7 +6,7 @@ import mailService from './mail-service.js';
 import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
 
-const { API_URL } = process.env;
+const { API_BASE } = process.env;
 
 class UserService {
   async registration(email, password, role, trx) {
@@ -26,12 +26,12 @@ class UserService {
     if (process.env.NODE_ENV === 'development') {
       await mailService.sendActivationMail(
         email,
-        `${API_URL}/activate/${activationLink}`,
+        `${API_BASE}/activate/${activationLink}`,
       );
     } else {
       await mailService.sendActivationMail(
         email,
-        `${API_URL}/activate/${activationLink}`,
+        `${API_BASE}/activate/${activationLink}`,
       );
     }
     const userDto = new UserDto(user[0]);

@@ -61,8 +61,8 @@ export default defineNuxtConfig({
   vite: {
     server: {
       hmr: {
-        protocol: process.env.NODE_ENV === 'production' ? 'wss' : 'ws',
-        host: process.env.NODE_ENV === 'production' ? 'memory.pp.ua' : 'localhost',
+        protocol: 'wss',
+        host: 'memory.pp.ua',
         port: parseInt(process.env.NUXT_PORT as string, 10) || 3000,
       },
     },
