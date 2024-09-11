@@ -17,6 +17,14 @@ export default defineNuxtPlugin((nuxtApp) => {
           } else if (message.includes('не знайдений')) {
             errHandler.email =
               'Цей email не зареєстровано, будь ласка зареєструйтесь';
+          } else if (message.includes('Validation error')) {
+            errHandler.email = 'Перевірте правильність введених даних.';
+          } else if (message.includes('535 Incorrect authentication data')) {
+            errHandler.email =
+              'Помилка відправки листа активації. Зверніться до адміністратора';
+          } else if (message.includes('не активовано')) {
+            errHandler.email =
+              'Обліковий запис не активовано. Перевірте пошту або зверніться до адміністратора.';
           } else {
             errHandler.form = message;
           }

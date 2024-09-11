@@ -12,6 +12,8 @@ const isLoading = ref(false);
 const emailActive = ref(false);
 const passwordActive = ref(false);
 const passConfirmActive = ref(false);
+const userIsNotRegistered = ref(false);
+const sendActivationEmail = ref(false);
 const togglePasswordVisibility = ref(false);
 
 const state = reactive({
@@ -21,7 +23,6 @@ const state = reactive({
 });
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const isEmailValid = computed(() => emailRegex.test(state.email));
-const userIsNotRegistered = ref(false);
 const errors = reactive({
   email: '',
   password: '',
@@ -34,6 +35,8 @@ const clearErrors = () => {
 };
 const clearVars = () => {
   togglePasswordVisibility.value = false;
+  userIsNotRegistered.value = false;
+  sendActivationEmail.value = false;
   isLoading.value = false;
   state.email = '';
   state.password = '';
@@ -128,9 +131,13 @@ const handleSubmit = async (event) => {
       const data = res.data;
       authStore.setUserData(data);
       console.log(data);
+      if (data.user[0].isactivated === false) {
+        sendActivationEmail.value = true;
+      } else {
+        isOpen.value = false;
+        clearVars();
+      }
       isLoading.value = false;
-      isOpen.value = false;
-      clearVars();
     }
     if (errors) {
       if (errors.email.includes('Цей email не зареєстровано')) {
@@ -157,6 +164,7 @@ watch(isOpen, (newValue) => {
   <div>
     <UModal v-model="isOpen" prevent-close :ui="{ wrapper: 'z-500' }">
       <UCard
+        v-if="!sendActivationEmail"
         :ui="{
           ring: '',
           divide: 'divide-y divide-gray-100 dark:divide-gray-800',
@@ -353,6 +361,38 @@ watch(isOpen, (newValue) => {
             }}
           </UButton>
         </UForm>
+      </UCard>
+      <UCard
+        v-else
+        :ui="{
+          ring: '',
+          divide: 'divide-y divide-gray-100 dark:divide-gray-800',
+        }"
+      >
+        <div class="flex items-center">
+          <h3
+            class="flex-grow text-base font-semibold leading-6 text-gray-900 dark:text-[#999] text-center"
+          >
+            Вітаємо з успішною реєстрацією!
+          </h3>
+          <UButton
+            color="gray"
+            variant="ghost"
+            icon="i-heroicons-x-mark-20-solid"
+            class="flex items-center justify-center w-8 h-8 ml-2"
+            @click="
+              () => {
+                isOpen = false;
+                clearVars();
+              }
+            "
+          />
+        </div>
+        <h3
+          class="text-base font-semibold leading-6 text-gray-900 dark:text-[#999] text-center"
+        >
+          Лист активації надіслано на вашу електронну пошту.
+        </h3>
       </UCard>
     </UModal>
   </div>
