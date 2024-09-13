@@ -28,6 +28,7 @@ export interface AuthResponse {
 export interface AuthApi {
   signIn(payload: { email: string; password: string }): Promise<AuthResponse>;
   signUp(payload: { email: string; password: string }): Promise<AuthResponse>;
+  activate(activationLink: string): Promise<string>;
   logout(): Promise<void>;
   socAuth(provider: string): Promise<AuthResponse>;
   getAuthUser(authLink: string): Promise<AuthResponse>;
@@ -47,6 +48,9 @@ export default function (instance: AxiosInstance): AuthApi {
       password: string;
     }): Promise<AuthResponse> {
       return instance.post('/registration', payload);
+    },
+    async activate(activationlink) {
+      return instance.post('/activate/', { activationlink });
     },
     async logout() {
       return instance.post('/logout');

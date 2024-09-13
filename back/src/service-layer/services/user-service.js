@@ -6,7 +6,7 @@ import mailService from './mail-service.js';
 import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
 
-const { API_BASE } = process.env;
+const { CLIENT_URL } = process.env;
 
 class UserService {
   async registration(email, password, role, trx) {
@@ -17,52 +17,33 @@ class UserService {
     if (role != 'user' && role != 'manager' && role != 'admin') {
       throw ApiError.BadRequest(`роль ${role} не знайдена`);
     }
-    const activationLink = uuidv4();
+    const activationlink = uuidv4();
     const hashPassword = await this.hashPassword(password);
     const user = await UserModel.insertUser(
-      { email, password: hashPassword, role, activationlink: activationLink },
+      { email, password: hashPassword, role, activationlink },
       trx,
     );
-    if (process.env.NODE_ENV === 'development') {
-      await mailService.sendActivationMail(
-        email,
-        `${API_BASE}/activate/${activationLink}`,
-      );
-    } else {
-      await mailService.sendActivationMail(
-        email,
-        `${API_BASE}/activate/${activationLink}`,
-      );
-    }
+    await mailService.sendActivationMail(
+      email,
+      `${CLIENT_URL}/activate/${activationlink}`,
+    );
     const userDto = new UserDto(user[0]);
-    const tokens = tokenService.generateTokens({ ...userDto });
-    await tokenService.saveToken(
-      user[0].id,
-      tokens.refreshToken,
-      tokens.expRfToken,
-      trx,
-    );
     return {
-      ...tokens,
-      user: user,
+      user: userDto,
     };
   }
 
-  async activate(activationLink, trx) {
-    const user = await UserModel.findUserByActivationLink(activationLink, trx);
-    if (!user) {
-      throw ApiError.BadRequest('Wrong activation link');
+  async activate(activationlink, trx) {
+    const user = await UserModel.findUserByActivationLink(activationlink, trx);
+    if (user && !user.isactivated) {
+      const userData = {
+        email: user.email,
+        isactivated: true,
+      };
+      const activatedUser = await UserModel.activateUser(userData, trx);
+      return activatedUser;
     }
-    if (user.isactivated) {
-      throw ApiError.BadRequest('User already activated');
-    }
-    user.isactivated = true;
-    const userData = {
-      email: user.email,
-      isactivated: user.isactivated,
-    };
-    await UserModel.activateUser(userData, trx);
-    return userData.email;
+    return user;
   }
 
   async login(email, password, trx) {

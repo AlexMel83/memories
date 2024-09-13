@@ -33,8 +33,8 @@ const clearErrors = () => {
   errors.email = '';
   errors.password = '';
 };
-const clearVars = () => {
-  state.email = '';
+const clearVars = (email) => {
+  email ? (state.email = email) : (state.email = '');
   state.password = '';
   state.passConfirm = '';
   isLoading.value = false;
@@ -131,11 +131,11 @@ const handleSubmit = async (event) => {
       const data = res.data;
       authStore.setUserData(data);
       console.log(data);
-      if (data.user[0].isactivated === false) {
+      if (data.user.isactivated === false) {
         sendActivationEmail.value = true;
       } else {
         isOpen.value = false;
-        clearVars();
+        clearVars(userIsNotRegistered.value ? state.email : '');
       }
       isLoading.value = false;
     }
@@ -218,6 +218,7 @@ watch(isOpen, (newValue) => {
                 icon="i-heroicons-envelope"
                 variant="none"
                 color="primary"
+                autocomplete="new-email"
                 :ui="{
                   base: 'border-t-0 border-l-0 border-r-0 border-b-2 focus:ring-0',
                   input: 'bg-transparent',
@@ -391,7 +392,7 @@ watch(isOpen, (newValue) => {
         <h3
           class="text-base font-semibold leading-6 text-gray-900 dark:text-[#999] text-center"
         >
-          Лист активації надіслано на зазначену електронну пошту.
+          Лист активації надіслано на {{ state.email }}
         </h3>
       </UCard>
     </UModal>

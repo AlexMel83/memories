@@ -81,39 +81,6 @@ const openLoginModal = () => {
   }
 };
 
-onMounted(() => {
-  const emailRegex = /([\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})/;
-  const uuidRegex =
-    /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
-
-  if (route.query.email) {
-    email.value = route.query.email;
-    const match = email.value.match(emailRegex);
-    if (match) {
-      email.value = match[0];
-      openLogin();
-    } else {
-      email.value = '';
-    }
-  }
-
-  if (route.query.authLink) {
-    authLink.value = route.query.authLink;
-    if (uuidRegex.test(authLink.value)) {
-      fetchUserData(authLink.value);
-    }
-  }
-
-  const activateLinkRegex = /\/activate\/([0-9a-fA-F-]{36})$/;
-  if (activateLinkRegex.test(route.path)) {
-    const match = route.path.match(activateLinkRegex);
-    const uuid = match[1];
-    if (uuid) {
-      activateAccount(uuid);
-    }
-  }
-});
-
 const hideMenu = () => {
   menuOpen.value = false;
 };
@@ -143,19 +110,6 @@ const fetchUserData = async (authLinkValue) => {
     }
   } catch (error) {
     console.error('Error fetching user data:', error);
-  }
-};
-
-const activateAccount = async (uuid) => {
-  try {
-    const response = await $api.post(`/activate/${uuid}`);
-    if (response.status === 200) {
-      console.log('Account activated successfully!');
-      // Например, можно перенаправить пользователя на страницу логина
-      router.push('/login');
-    }
-  } catch (error) {
-    console.error('Error activating account:', error);
   }
 };
 </script>

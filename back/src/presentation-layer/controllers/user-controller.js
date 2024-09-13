@@ -1,9 +1,10 @@
 import userService from '../../service-layer/services/user-service.js';
 import ApiError from '../../middlewares/exceptions/api-errors.js';
 import userModel from '../../data-layer/models/user-model.js';
-import knex from './../../../config/knex.config.js';
 import { rFcookieOptions } from '../../../config/config.js';
-const { CLIENT_URL } = process.env;
+import UserDto from '../../data-layer/dtos/user-dto.js';
+import knex from './../../../config/knex.config.js';
+import tokenService from './../../service-layer/services/token-service.js';
 
 class UserController {
   async registration(req, res, next) {
@@ -17,9 +18,7 @@ class UserController {
         role,
         trx,
       );
-      res.cookie('refreshToken', userData.refreshToken, rFcookieOptions);
       await trx.commit();
-      delete userData.refreshToken;
       return res.json(userData);
     } catch (error) {
       await trx.rollback();
@@ -89,22 +88,36 @@ class UserController {
     }
   }
 
-  async activate(req, res) {
+  async activate(req, res, next) {
     let trx;
     try {
       trx = await knex.transaction();
-      const activationLink = req.params.link;
-      const email = await userService.activate(activationLink, trx);
-      trx.commit();
-      return res.redirect(`${CLIENT_URL}/?email=${email}`);
-    } catch (error) {
-      trx.rollback();
-      console.error(error);
-      if (error.status === 400) {
-        return res.json(ApiError.BadRequest(error));
-      } else {
-        return res.json(ApiError.IntServError(error));
+      const activationlink = req.body.activationlink;
+      const user = await userService.activate(activationlink, trx);
+      if (!user) {
+        return next(ApiError.BadRequest('Activation link was not found'));
+      } else if (user.isactivated) {
+        // return next(ApiError.BadRequest('User already activated'));
       }
+      const userDto = new UserDto(user);
+      const tokens = tokenService.generateTokens({ ...userDto });
+      await tokenService.saveToken(
+        res,
+        userDto.id,
+        tokens.refreshToken,
+        tokens.expRfToken,
+        trx,
+      );
+      const userData = {
+        user,
+        tokens,
+      };
+      await trx.commit();
+      return res.json(userData);
+    } catch (error) {
+      await trx.rollback();
+      console.error(error);
+      return next(ApiError.IntServError(error));
     }
   }
 

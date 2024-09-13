@@ -45,7 +45,15 @@ export default function (app) {
   app.post('/login', validateUser, validateMiddleware, userController.login);
 
   app.post('/logout', userController.logout);
-  app.get('/activate/:link', userController.activate);
+  app.post(
+    '/activate/',
+    body('activationlink')
+      .notEmpty()
+      .isUUID()
+      .withMessage('Поле "activationlink" має бути UUID'),
+    validateMiddleware,
+    userController.activate,
+  );
   app.get('/refresh', userController.refresh);
   app.get(
     '/users',

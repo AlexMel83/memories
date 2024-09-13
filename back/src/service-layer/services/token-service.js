@@ -1,6 +1,7 @@
 import ApiError from '../../middlewares/exceptions/api-errors.js';
 import tokenModel from '../../data-layer/models/token-model.js';
 import userModel from '../../data-layer/models/user-model.js';
+import { rFcookieOptions } from '../../../config/config.js';
 import knex from '../../../config/knex.config.js';
 import moment from 'moment-timezone';
 import jwt from 'jsonwebtoken';
@@ -37,18 +38,15 @@ class TokenService {
     };
   }
 
-  async saveToken(userId, refreshToken, expToken, trx = knex) {
+  async saveToken(res, userId, refreshToken, expToken, trx = knex) {
     try {
-      const tokenData = await tokenModel.getUserToken({ userId }, trx);
-      if (tokenData.length) {
-        tokenData.refreshToken = refreshToken;
-      }
       const token = await tokenModel.saveToken(
         userId,
         refreshToken,
         expToken,
         trx,
       );
+      res.cookie('refreshToken', refreshToken, rFcookieOptions);
       return token;
     } catch (error) {
       console.error(error);
@@ -67,16 +65,13 @@ class TokenService {
           ApiError.NotFound(`email: ${userData.email} was not found`),
         );
       }
-      const isactivated_token = userDataBase.isactivated;
-      if (!isactivated_token) {
+      if (!userDataBase.isactivated) {
         return next(ApiError.AccessDeniedForRole('User not activated'));
       }
-      const { role } = userDataBase;
-      if (allowedRoles.includes(role)) {
-        return userDataBase;
-      } else {
+      if (!allowedRoles.includes(userDataBase.role)) {
         return next(ApiError.AccessDeniedForRole('Wrong role'));
       }
+      return userDataBase;
     } catch (error) {
       console.error(error);
       return null;
