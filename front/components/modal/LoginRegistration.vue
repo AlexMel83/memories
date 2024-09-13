@@ -34,7 +34,7 @@ const clearErrors = () => {
   errors.password = '';
 };
 const clearVars = (email) => {
-  email ? (state.email = email) : (state.email = '');
+  state.email = email || '';
   state.password = '';
   state.passConfirm = '';
   isLoading.value = false;

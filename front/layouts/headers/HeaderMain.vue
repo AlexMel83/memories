@@ -57,19 +57,13 @@
 import Registration from '@/components/modal/Registration.vue';
 import { useAuthStore } from '@/stores/auth.store';
 import Login from '@/components/modal/Login.vue';
-import { useLocalStorage } from '@vueuse/core';
 import { useRoute } from 'vue-router';
 
-const localStorageUserId = useLocalStorage('userId', null);
-const localStorageEmail = useLocalStorage('email', null);
 const loginRegistrationRef = ref(null);
 const authStore = useAuthStore();
-const { $api } = useNuxtApp();
 const menuOpen = ref(false);
 const menuLogin = ref(true);
-const router = useRouter();
 const route = useRoute();
-const authLink = ref('');
 const email = ref('');
 
 const isHomePage = computed(() => route.path === '/');
@@ -92,25 +86,6 @@ const toggleMenu = () => {
 
 const changeCompenent = () => {
   menuLogin.value = !menuLogin.value;
-};
-
-const fetchUserData = async (authLinkValue) => {
-  try {
-    const response = await $api.post(`/auth-user/${authLinkValue}`);
-    if (response.data) {
-      const userDataValue = response.data;
-      localStorageUserId.value = userDataValue.id;
-      authStore.setRole(userDataValue.role);
-      localStorageEmail.value = userDataValue.email;
-      authStore.getUserData(userDataValue);
-      useNuxtApp().$bus.$emit('Modal', {
-        openModal: false,
-      });
-      document.body.style.position = '';
-    }
-  } catch (error) {
-    console.error('Error fetching user data:', error);
-  }
 };
 </script>
 

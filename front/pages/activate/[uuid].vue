@@ -2,13 +2,15 @@
   <div>
     <h1>Активація аккаунту</h1>
     <p v-if="loading">Активація...</p>
-    <p v-if="error">{{ error }}</p>
+    <p v-if="error">
+      {{ error }}
+    </p>
     <p v-if="success">Ваш аккаунт успішно активовано!</p>
   </div>
 </template>
 
 <script setup>
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { ref, onMounted } from 'vue';
 import { useNuxtApp } from '#app';
 
@@ -29,7 +31,7 @@ onMounted(async () => {
       error.value = 'Помилка активації.';
     }
   } catch (err) {
-    error.value = 'Помилка активації.';
+    error.value = 'Помилка активації: ' + err;
   } finally {
     loading.value = false;
   }
