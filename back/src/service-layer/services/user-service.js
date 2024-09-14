@@ -34,16 +34,20 @@ class UserService {
   }
 
   async activate(activationlink, trx) {
-    const user = await UserModel.findUserByActivationLink(activationlink, trx);
-    if (user && !user.isactivated) {
-      const userData = {
-        email: user.email,
-        isactivated: true,
-      };
-      const activatedUser = await UserModel.activateUser(userData, trx);
+    const user = await UserModel.getUsersByConditions({
+      activationlink,
+    });
+    if (user?.length && ![user].isactivated) {
+      const [activatedUser] = await UserModel.activateUser([user].email, trx);
+      if (!activatedUser) {
+        throw ApiError.BadRequest('Помилка активації');
+      }
       return activatedUser;
+    } else if ([user].isactivated) {
+      throw ApiError.BadRequest('Користувач вже активований');
+    } else {
+      throw ApiError.NotFound('Код активації недійсний');
     }
-    return user;
   }
 
   async login(email, password, trx) {

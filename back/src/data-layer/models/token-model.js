@@ -34,7 +34,7 @@ export default {
         .merge({
           refreshtoken,
           exp_token,
-          updated_at: knex.fn.now(),
+          updated_at: trx.fn.now(),
         })
         .returning(tokenFields);
       if (!tokenData.length) {

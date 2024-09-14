@@ -1,121 +1,96 @@
 import knex from './../../../config/knex.config.js';
 
-const UsersTable = 'users';
+const usersTable = 'users';
 const userFields = [
-  'id',
-  'email',
-  'name',
-  'surname',
-  'phone',
-  'role',
-  'activationlink',
-  'isactivated',
-  'social_login',
-  'facebook_id',
-  'google_id',
-  'picture',
-  'created_at',
-  'updated_at',
+  'users.id',
+  'users.email',
+  'users.name',
+  'users.surname',
+  'users.phone',
+  'users.role',
+  'users.activationlink',
+  'users.isactivated',
+  'users.social_login',
+  'users.facebook_id',
+  'users.google_id',
+  'users.picture',
+  'users.created_at',
+  'users.updated_at',
 ];
 
+const conditionHandlers = {
+  id: (usersQuery, value) => usersQuery.where('users.id', value),
+  email: (usersQuery, value) => usersQuery.where('users.email', value),
+  facebook_id: (usersQuery, value) =>
+    usersQuery.where('users.facebook_id', value),
+  google_id: (usersQuery, value) => usersQuery.where('users.google_id', value),
+  name: (usersQuery, value) =>
+    usersQuery.where('users.name', 'ilike', `%${value}%`),
+  surname: (usersQuery, value) =>
+    usersQuery.where('users.surname', 'ilike', `%${value}%`),
+  sort_field: (usersQuery, value, sort) => {
+    if (sort === 'down') {
+      usersQuery.orderBy(value, 'desc');
+    } else {
+      usersQuery.orderBy(value, 'asc');
+    }
+  },
+};
+
 export default {
+  async getUsersByConditions(condition = {}, trx = knex) {
+    let sort;
+    if ('sortDirection' in condition) {
+      sort = condition.sortDirection;
+      delete condition.sortDirection;
+    }
+    try {
+      const usersQuery = trx(usersTable).select(userFields);
+
+      for (const [key, value] of Object.entries(condition)) {
+        const handler = conditionHandlers[key];
+        if (handler) {
+          handler(usersQuery, value, sort);
+        } else {
+          usersQuery.where(key, value);
+        }
+      }
+
+      const result = await usersQuery;
+      if (!result.length) {
+        return null;
+      }
+
+      return result;
+    } catch (error) {
+      console.error('Error fetching memories by condition:', error.message);
+      throw error;
+    }
+  },
+
   async insertUser(userData, trx = knex) {
     try {
-      return await trx(UsersTable).insert(userData).returning(userFields);
+      return await trx(usersTable).insert(userData).returning(userFields);
     } catch (error) {
       console.error(error);
       throw error;
     }
   },
 
-  async activateUser(userData, trx) {
-    return await trx(UsersTable)
-      .where({ email: userData.email })
-      .update({ isactivated: userData.isactivated })
+  async activateUser(email, trx) {
+    const result = await trx(usersTable)
+      .where({ email })
+      .update({ isactivated: true })
       .returning(userFields);
-  },
-
-  async findUserByEmail(email) {
-    try {
-      const candidate = await knex(UsersTable)
-        .select(userFields)
-        .where('email', '=', email)
-        .first();
-      return candidate ? candidate : null;
-    } catch (error) {
-      console.error(error);
-      throw error;
+    if (!result.length) {
+      return null;
     }
+    return [result];
   },
 
-  async findUserByFacebookId(facebookId) {
+  async editUser(payload, trx = knex) {
     try {
-      const candidate = await knex(UsersTable)
-        .select(userFields)
-        .where('facebook_id', '=', facebookId)
-        .first();
-      return candidate ? candidate : null;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  },
-
-  async findUserByGoogleId(googleId) {
-    try {
-      const candidate = await knex(UsersTable)
-        .select(userFields)
-        .where('google_id', '=', googleId)
-        .first();
-      return candidate ? candidate : null;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  },
-
-  async findUserByEmailWithHash(email) {
-    const userFieldsWithHash = userFields;
-    userFieldsWithHash.splice(2, 0, 'password');
-    try {
-      const candidate = await knex(UsersTable)
-        .select(userFields)
-        .where('email', '=', email)
-        .first();
-      return candidate ? candidate : null;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  },
-
-  async findUserById(userId) {
-    try {
-      const candidate = await knex(UsersTable)
-        .select(userFields)
-        .where('id', '=', userId)
-        .first();
-      return candidate ? candidate : null;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  },
-
-  async findUserByActivationLink(activationLink, trx = knex) {
-    return await trx(UsersTable)
-      .select(userFields)
-      .where('activationlink', '=', activationLink)
-      .first();
-  },
-
-  async find() {
-    return await knex(UsersTable).select(userFields);
-  },
-
-  async editUser(payload) {
-    try {
-      const result = await knex(UsersTable)
+      const result = await trx(usersTable)
         .where({ id: payload.id })
         .update(payload)
         .returning(userFields);
@@ -126,9 +101,9 @@ export default {
     }
   },
 
-  async deleteUser(userId) {
+  async deleteUser(userId, trx = knex) {
     try {
-      await knex(UsersTable).where({ id: userId }).del();
+      await trx(usersTable).where({ id: userId }).del();
       return { id: userId };
     } catch (error) {
       console.error(error);

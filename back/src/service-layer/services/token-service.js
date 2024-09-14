@@ -38,7 +38,7 @@ class TokenService {
     };
   }
 
-  async saveToken(res, userId, refreshToken, expToken, trx = knex) {
+  async saveToken(res, userId, refreshToken, expToken, trx) {
     try {
       const token = await tokenModel.saveToken(
         userId,

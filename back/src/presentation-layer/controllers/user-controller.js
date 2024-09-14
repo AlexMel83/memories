@@ -93,17 +93,17 @@ class UserController {
     try {
       trx = await knex.transaction();
       const activationlink = req.body.activationlink;
-      const user = await userService.activate(activationlink, trx);
+      const [user] = await userService.activate(activationlink, trx);
       if (!user) {
         return next(ApiError.BadRequest('Activation link was not found'));
       } else if (user.isactivated) {
-        // return next(ApiError.BadRequest('User already activated'));
+        return next(ApiError.BadRequest('User already activated'));
       }
-      const userDto = new UserDto(user);
-      const tokens = tokenService.generateTokens({ ...userDto });
+      const tokens = tokenService.generateTokens({ ...user });
+      console.log('user1', user);
       await tokenService.saveToken(
         res,
-        userDto.id,
+        user.id,
         tokens.refreshToken,
         tokens.expRfToken,
         trx,
@@ -116,8 +116,14 @@ class UserController {
       return res.json(userData);
     } catch (error) {
       await trx.rollback();
-      console.error(error);
-      return next(ApiError.IntServError(error));
+      if (error.status === 400) {
+        return next(ApiError.BadRequest(error));
+      } else if (error.status === 404) {
+        return next(ApiError.NotFound(error));
+      } else {
+        console.error(error);
+        return next(ApiError.IntServError(error));
+      }
     }
   }
 
