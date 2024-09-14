@@ -1,6 +1,5 @@
 import ApiError from '../../middlewares/exceptions/api-errors.js';
 import UserModel from '../../data-layer/models/user-model.js';
-import UserDto from '../../data-layer/dtos/user-dto.js';
 import tokenService from './token-service.js';
 import mailService from './mail-service.js';
 import bcrypt from 'bcryptjs';

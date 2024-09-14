@@ -2,7 +2,6 @@ import FacebookStrategy from '../strategies/facebook-strategy.js';
 import ApiError from '../../middlewares/exceptions/api-errors.js';
 import UserModel from '../../data-layer/models/user-model.js';
 import GoogleStrategy from '../strategies/google-strategy.js';
-import UserDto from '../../data-layer/dtos/user-dto.js';
 import { rFcookieOptions } from '../../../config/config.js';
 import tokenService from './token-service.js';
 
@@ -66,8 +65,7 @@ class SocialLoginService {
     try {
       const strategy = this.getStrategy(provider);
       const user = await strategy.handleCallback(code, codeVerifier);
-      const userDto = new UserDto(user);
-      const tokens = tokenService.generateTokens({ ...userDto });
+      const tokens = tokenService.generateTokens({ ...user });
       await tokenService.saveToken(
         user.id,
         tokens.refreshToken,
