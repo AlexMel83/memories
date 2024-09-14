@@ -9,17 +9,38 @@ import { v4 as uuidv4 } from 'uuid';
 const { CLIENT_URL } = process.env;
 
 class UserService {
+  async login(email, password, trx) {
+    const user = await UserModel.getUsersByConditions({ email });
+    if (!user?.length) {
+      throw ApiError.NotFound(`Користувач з email: ${email} не знайдений`);
+    }
+    if (![user].isactivated) {
+      throw ApiError.BadRequest(`Обліковий запис: ${email} не активовано`);
+    }
+    const isPassEquals = await bcrypt.compare(password, [user].password);
+    if (!isPassEquals) {
+      throw ApiError.BadRequest('Невірний пароль');
+    }
+    const tokens = tokenService.generateTokens({ ...[user] });
+    await tokenService.saveToken(
+      [user].id,
+      tokens.refreshToken,
+      tokens.expRfToken,
+      trx,
+    );
+    return { ...tokens, user: [user] };
+  }
   async registration(email, password, role, trx) {
-    const candidate = await UserModel.findUserByEmail(email);
-    if (candidate) {
+    const candidate = await UserModel.getUsersByConditions({ email }, trx);
+    if (candidate?.length) {
       throw ApiError.ConflictRequest(`Обліковий запис ${email} вже існує`);
     }
     if (role != 'user' && role != 'manager' && role != 'admin') {
-      throw ApiError.BadRequest(`роль ${role} не знайдена`);
+      throw ApiError.BadRequest(`роль ${role} не дійсна`);
     }
     const activationlink = uuidv4();
     const hashPassword = await this.hashPassword(password);
-    const user = await UserModel.insertUser(
+    const [user] = await UserModel.createOrUpdateUser(
       { email, password: hashPassword, role, activationlink },
       trx,
     );
@@ -27,9 +48,8 @@ class UserService {
       email,
       `${CLIENT_URL}/activate/${activationlink}`,
     );
-    const userDto = new UserDto(user[0]);
     return {
-      user: userDto,
+      user: user,
     };
   }
 
@@ -48,29 +68,6 @@ class UserService {
     } else {
       throw ApiError.NotFound('Код активації недійсний');
     }
-  }
-
-  async login(email, password, trx) {
-    const user = await UserModel.findUserByEmailWithHash(email);
-    if (!user) {
-      throw ApiError.NotFound(`Користувач з email: ${email} не знайдений`);
-    }
-    if (!user.isactivated) {
-      throw ApiError.BadRequest(`Обліковий запис: ${email} не активовано`);
-    }
-    const isPassEquals = await bcrypt.compare(password, user.password);
-    if (!isPassEquals) {
-      throw ApiError.BadRequest('Невірний пароль');
-    }
-    const userDto = new UserDto(user);
-    const tokens = tokenService.generateTokens({ ...userDto });
-    await tokenService.saveToken(
-      userDto.id,
-      tokens.refreshToken,
-      tokens.expRfToken,
-      trx,
-    );
-    return { ...tokens, user: userDto };
   }
 
   async logout(refreshToken, trx) {

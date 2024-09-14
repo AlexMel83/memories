@@ -46,7 +46,6 @@ export default {
     }
     try {
       const usersQuery = trx(usersTable).select(userFields);
-
       for (const [key, value] of Object.entries(condition)) {
         const handler = conditionHandlers[key];
         if (handler) {
@@ -55,12 +54,10 @@ export default {
           usersQuery.where(key, value);
         }
       }
-
       const result = await usersQuery;
       if (!result.length) {
         return null;
       }
-
       return result;
     } catch (error) {
       console.error('Error fetching memories by condition:', error.message);
@@ -71,6 +68,23 @@ export default {
   async insertUser(userData, trx = knex) {
     try {
       return await trx(usersTable).insert(userData).returning(userFields);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+
+  async createOrUpdateUser(userData, trx = knex) {
+    try {
+      const result = await trx(usersTable)
+        .insert(userData)
+        .onConflict('id')
+        .merge(userData)
+        .returning(userFields);
+      if (!result.length) {
+        return null;
+      }
+      return result;
     } catch (error) {
       console.error(error);
       throw error;

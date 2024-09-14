@@ -6,34 +6,6 @@ import knex from './../../../config/knex.config.js';
 import tokenService from './../../service-layer/services/token-service.js';
 
 class UserController {
-  async registration(req, res, next) {
-    let trx;
-    try {
-      trx = await knex.transaction();
-      const { email, password, role } = req.body;
-      const userData = await userService.registration(
-        email,
-        password,
-        role,
-        trx,
-      );
-      await trx.commit();
-      return res.json(userData);
-    } catch (error) {
-      await trx.rollback();
-      console.error(error);
-      if (error.status === 400) {
-        return next(ApiError.BadRequest(error));
-      } else if (error.code === 'ESOCKET') {
-        return next(ApiError.IntServError('mail-server error'));
-      } else if (error.status === 409) {
-        return next(error);
-      } else {
-        return next(ApiError.IntServError(error));
-      }
-    }
-  }
-
   async login(req, res, next) {
     let trx;
     try {
@@ -58,6 +30,35 @@ class UserController {
         return next(ApiError.NotFound(error.message));
       } else {
         return next(ApiError.IntServError(error.message));
+      }
+    }
+  }
+
+  async registration(req, res, next) {
+    let trx;
+    try {
+      trx = await knex.transaction();
+      const { email, password, role } = req.body;
+      const userData = await userService.registration(
+        email,
+        password,
+        role,
+        trx,
+      );
+      await trx.commit();
+      console.log(userData);
+      return res.json(userData);
+    } catch (error) {
+      await trx.rollback();
+      console.error(error);
+      if (error.status === 400) {
+        return next(ApiError.BadRequest(error));
+      } else if (error.code === 'ESOCKET') {
+        return next(ApiError.IntServError('mail-server error'));
+      } else if (error.status === 409) {
+        return next(error);
+      } else {
+        return next(ApiError.IntServError(error));
       }
     }
   }
