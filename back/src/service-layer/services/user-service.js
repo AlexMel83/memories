@@ -65,16 +65,15 @@ class UserService {
       }
       return activatedUser;
     } else if (user[0].isactivated) {
-      // throw ApiError.BadRequest('Користувач вже активований');
-      return user;
+      throw ApiError.BadRequest('Користувач вже активований');
     } else {
       throw ApiError.NotFound('Код активації недійсний');
     }
   }
 
   async logout(refreshToken, trx) {
-    const token = await tokenService.removeToken(refreshToken, trx);
-    return token;
+    const result = await tokenService.removeToken(refreshToken, trx);
+    return result;
   }
 
   async refresh(refreshToken, trx) {
@@ -86,29 +85,18 @@ class UserService {
     if (!userData || !tokenFromDb) {
       throw ApiError.UnauthorizedError();
     }
-    const user = await UserModel.findUserByEmail(userData.email, trx);
-    const userDto = new UserDto(user);
-    const tokens = tokenService.generateTokens({ ...userDto });
+    const user = await UserModel.getUsersByConditions(
+      { email: userData.email },
+      trx,
+    );
+    const tokens = tokenService.generateTokens({ ...user[0] });
     await tokenService.saveToken(
-      userDto.id,
+      user[0].id,
       tokens.refreshToken,
       tokens.expRfToken,
       trx,
     );
-    return { ...tokens, user: userDto };
-  }
-
-  async getAllUsers() {
-    const users = await UserModel.find();
-    return users;
-  }
-
-  async getUser(id) {
-    const user = await UserModel.findUserById(id);
-    if (!user) {
-      throw ApiError.NotFound(`id: ${id} was not found`);
-    }
-    return user;
+    return { ...tokens, user: user[0] };
   }
 
   async hashPassword(password) {

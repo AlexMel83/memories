@@ -5,6 +5,18 @@ import { rFcookieOptions } from '../../../config/config.js';
 import knex from './../../../config/knex.config.js';
 import tokenService from './../../service-layer/services/token-service.js';
 
+const queryMappings = {
+  id: 'id',
+  email: 'email',
+  name: 'name',
+  surname: 'surname',
+  phone: 'phone',
+  role: 'role',
+  activationlink: 'activationlink',
+  facebook_id: 'facebook_id',
+  google_id: 'google_id',
+};
+
 class UserController {
   async login(req, res, next) {
     const trx = await knex.transaction();
@@ -91,9 +103,8 @@ class UserController {
   }
 
   async logout(req, res) {
-    let trx;
+    const trx = await knex.transaction();
     try {
-      trx = await knex.transaction();
       let { refreshToken } = req.cookies;
       const token = await userService.logout(refreshToken, trx);
       res.clearCookie('refreshToken');
@@ -116,9 +127,8 @@ class UserController {
   }
 
   async refresh(req, res) {
-    let trx;
+    const trx = await knex.transaction();
     try {
-      trx = await knex.transaction();
       const { refreshToken } = req.cookies;
       if (!refreshToken) {
         return res.json(
@@ -145,15 +155,29 @@ class UserController {
 
   async getUser(req, res) {
     const user = req.user;
+    let conditions = {};
     try {
+      const queryParams = req.query;
+      for (const key in queryParams) {
+        const mappedKey = queryMappings[key];
+        if (mappedKey) {
+          conditions[mappedKey] = queryParams[key];
+        }
+      }
       let response;
-      if (req && req.query && req.query.id) {
-        response = await userService.getUser(req.query.id);
-        if (user.id === response.id) {
+      if (req?.query?.id) {
+        response = await userModel.getUsersByConditions({ id: req.query.id });
+        if (user.id === response[0].id) {
           return res.json(response);
         } else {
           return res.send(ApiError.AccessDeniedForRole('User not owner'));
         }
+      } else if (req.user.role === 'admin') {
+        response = await userModel.getUsersByConditions(conditions);
+        if (!response) {
+          return res.json(ApiError.NotFound('Memories not found'));
+        }
+        return res.json(response);
       } else {
         return res.json(ApiError.BadRequest('parametr not found'));
       }
@@ -171,7 +195,10 @@ class UserController {
 
   async editUser(req, res) {
     const fields = req.body;
-    const userDataBase = await userModel.findUserByEmailWithHash(fields.email);
+    const userData = req.user;
+    const userDataBase = await userModel.getUsersByConditions({
+      email: fields.email,
+    });
     if (!userDataBase) {
       return res.json(
         ApiError.NotFound(`user with email: ${fields.email} was not found`),
@@ -191,24 +218,30 @@ class UserController {
       role: fields?.role ?? userDataBase.role,
       activationlink: fields?.activationlink ?? userDataBase.activationlink,
       isactivated: fields?.isactivated ?? userDataBase.isactivated,
+      social_login: fields?.social_login ?? userDataBase.social_login,
+      facebook_id: fields?.facebook_id ?? userDataBase.facebook_id,
+      google_id: fields?.google_id ?? userDataBase.google_id,
+      picture: fields?.picture ?? userDataBase.picture,
       updated_at: new Date().toISOString(),
     };
-
-    const userData = req.user;
+    const trx = await knex.transaction();
     try {
       if (userData.role === 'admin') {
-        updatedUser = await userModel.editUser(payload);
+        updatedUser = await userModel.createOrUpdateUser(payload, trx);
         return res.status(200).json(updatedUser);
       } else if (userData.id === userDataBase.id) {
         payload.role = userDataBase.role;
         payload.activationlink = userDataBase.activationlink;
         payload.isactivated = userDataBase.isactivated;
         updatedUser = await userModel.editUser(payload);
+        await trx.commit();
         return res.status(200).json(updatedUser);
       } else {
+        await trx.rollback();
         return res.json(ApiError.AccessDeniedForRole('User not owner'));
       }
     } catch (error) {
+      await trx.rollback();
       console.error(error);
       if (error.status === 400) {
         return res.json(ApiError.BadRequest(error));
@@ -219,12 +252,12 @@ class UserController {
   }
 
   async deleteUser(req, res) {
-    const userId = req.params.user_id;
+    const user_id = req.params.user_id;
 
-    const userDataBase = await userModel.findUserById(userId);
+    const userDataBase = await userModel.getUsersByConditions({ user_id });
     if (!userDataBase) {
       return res.json(
-        ApiError.NotFound(`user with email: ${userId} was not found`),
+        ApiError.NotFound(`user with email: ${user_id} was not found`),
       );
     }
 
@@ -232,7 +265,7 @@ class UserController {
     try {
       const role = req.user.role;
       if (role === 'admin') {
-        response = await userModel.deleteUser(userId);
+        response = await userModel.deleteUser(user_id);
         return res.status(200).json(response);
       } else {
         return res.json(ApiError.AccessDeniedForRole('User not owner'));
