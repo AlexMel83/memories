@@ -9,26 +9,27 @@ import { v4 as uuidv4 } from 'uuid';
 const { CLIENT_URL } = process.env;
 
 class UserService {
-  async login(email, password, trx) {
-    const user = await UserModel.getUsersByConditions({ email });
+  async login(email, password, trx, res) {
+    const user = await UserModel.getUsersByConditions({ email, password });
     if (!user?.length) {
       throw ApiError.NotFound(`Користувач з email: ${email} не знайдений`);
     }
-    if (![user].isactivated) {
+    if (!user[0].isactivated) {
       throw ApiError.BadRequest(`Обліковий запис: ${email} не активовано`);
     }
-    const isPassEquals = await bcrypt.compare(password, [user].password);
+    const isPassEquals = await bcrypt.compare(password, user[0].password);
     if (!isPassEquals) {
       throw ApiError.BadRequest('Невірний пароль');
     }
-    const tokens = tokenService.generateTokens({ ...[user] });
+    const tokens = tokenService.generateTokens({ ...user[0] });
     await tokenService.saveToken(
-      [user].id,
+      user[0].id,
       tokens.refreshToken,
       tokens.expRfToken,
       trx,
+      res,
     );
-    return { ...tokens, user: [user] };
+    return { user: user[0], tokens };
   }
   async registration(email, password, role, trx) {
     const candidate = await UserModel.getUsersByConditions({ email }, trx);
@@ -57,14 +58,15 @@ class UserService {
     const user = await UserModel.getUsersByConditions({
       activationlink,
     });
-    if (user?.length && ![user].isactivated) {
-      const [activatedUser] = await UserModel.activateUser([user].email, trx);
+    if (user?.length && !user[0].isactivated) {
+      const [activatedUser] = await UserModel.activateUser(user[0].email, trx);
       if (!activatedUser) {
         throw ApiError.BadRequest('Помилка активації');
       }
       return activatedUser;
-    } else if ([user].isactivated) {
-      throw ApiError.BadRequest('Користувач вже активований');
+    } else if (user[0].isactivated) {
+      // throw ApiError.BadRequest('Користувач вже активований');
+      return user;
     } else {
       throw ApiError.NotFound('Код активації недійсний');
     }

@@ -7,20 +7,15 @@ import tokenService from './../../service-layer/services/token-service.js';
 
 class UserController {
   async login(req, res, next) {
-    let trx;
+    const trx = await knex.transaction();
     try {
-      trx = await knex.transaction();
       const { email, password } = req.body;
-      const userData = await userService.login(email, password, trx);
-
+      const userData = await userService.login(email, password, trx, res);
       res.cookie('refreshToken', userData.refreshToken, rFcookieOptions);
       await trx.commit();
-      delete userData.refreshToken; // Удаление токена из данных
       return res.json(userData);
     } catch (error) {
-      if (trx) {
-        await trx.rollback();
-      }
+      await trx.rollback();
       if (error.code === 'ECONNREFUSED') {
         return next(ApiError.IntServError('Connection refused'));
       }
@@ -46,7 +41,6 @@ class UserController {
         trx,
       );
       await trx.commit();
-      console.log(userData);
       return res.json(userData);
     } catch (error) {
       await trx.rollback();
@@ -58,6 +52,39 @@ class UserController {
       } else if (error.status === 409) {
         return next(error);
       } else {
+        return next(ApiError.IntServError(error));
+      }
+    }
+  }
+
+  async activate(req, res, next) {
+    let trx;
+    try {
+      trx = await knex.transaction();
+      const activationlink = req.body.activationlink;
+      const user = await userService.activate(activationlink, trx);
+      const tokens = tokenService.generateTokens({ ...user[0] });
+      await tokenService.saveToken(
+        user[0].id,
+        tokens.refreshToken,
+        tokens.expRfToken,
+        trx,
+        res,
+      );
+      const userData = {
+        user: user[0],
+        tokens,
+      };
+      await trx.commit();
+      return res.json(userData);
+    } catch (error) {
+      await trx.rollback();
+      if (error.status === 400) {
+        return next(ApiError.BadRequest(error));
+      } else if (error.status === 404) {
+        return next(ApiError.NotFound(error));
+      } else {
+        console.error(error);
         return next(ApiError.IntServError(error));
       }
     }
@@ -84,45 +111,6 @@ class UserController {
         return res.json(ApiError.BadRequest(error));
       } else {
         return res.json(ApiError.IntServError(error));
-      }
-    }
-  }
-
-  async activate(req, res, next) {
-    let trx;
-    try {
-      trx = await knex.transaction();
-      const activationlink = req.body.activationlink;
-      const [user] = await userService.activate(activationlink, trx);
-      if (!user) {
-        return next(ApiError.BadRequest('Activation link was not found'));
-      } else if (user.isactivated) {
-        return next(ApiError.BadRequest('User already activated'));
-      }
-      const tokens = tokenService.generateTokens({ ...user });
-      console.log('user1', user);
-      await tokenService.saveToken(
-        res,
-        user.id,
-        tokens.refreshToken,
-        tokens.expRfToken,
-        trx,
-      );
-      const userData = {
-        user,
-        tokens,
-      };
-      await trx.commit();
-      return res.json(userData);
-    } catch (error) {
-      await trx.rollback();
-      if (error.status === 400) {
-        return next(ApiError.BadRequest(error));
-      } else if (error.status === 404) {
-        return next(ApiError.NotFound(error));
-      } else {
-        console.error(error);
-        return next(ApiError.IntServError(error));
       }
     }
   }

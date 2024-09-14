@@ -44,6 +44,10 @@ export default {
       sort = condition.sortDirection;
       delete condition.sortDirection;
     }
+    if ('password' in condition) {
+      userFields.push('users.password');
+      delete condition.password;
+    }
     try {
       const usersQuery = trx(usersTable).select(userFields);
       for (const [key, value] of Object.entries(condition)) {
@@ -61,15 +65,6 @@ export default {
       return result;
     } catch (error) {
       console.error('Error fetching memories by condition:', error.message);
-      throw error;
-    }
-  },
-
-  async insertUser(userData, trx = knex) {
-    try {
-      return await trx(usersTable).insert(userData).returning(userFields);
-    } catch (error) {
-      console.error(error);
       throw error;
     }
   },
@@ -100,19 +95,6 @@ export default {
       return null;
     }
     return [result];
-  },
-
-  async editUser(payload, trx = knex) {
-    try {
-      const result = await trx(usersTable)
-        .where({ id: payload.id })
-        .update(payload)
-        .returning(userFields);
-      return result[0];
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
   },
 
   async deleteUser(userId, trx = knex) {

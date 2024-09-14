@@ -37,7 +37,7 @@ class TokenService {
     };
   }
 
-  async saveToken(res, userId, refreshToken, expToken, trx) {
+  async saveToken(userId, refreshToken, expToken, trx, res) {
     try {
       const token = await tokenModel.saveToken(
         userId,
