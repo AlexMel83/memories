@@ -2,7 +2,6 @@ import userService from '../../service-layer/services/user-service.js';
 import ApiError from '../../middlewares/exceptions/api-errors.js';
 import userModel from '../../data-layer/models/user-model.js';
 import { rFcookieOptions } from '../../../config/config.js';
-import UserDto from '../../data-layer/dtos/user-dto.js';
 import knex from './../../../config/knex.config.js';
 import tokenService from './../../service-layer/services/token-service.js';
 
