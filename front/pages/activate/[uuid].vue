@@ -1,11 +1,13 @@
 <template>
   <div>
-    <h1>Активація аккаунту</h1>
-    <p v-if="loading">Активація...</p>
-    <p v-if="error">
+    <h1 class="text-center text-2xl mt-2">Активація аккаунту</h1>
+    <p v-if="loading" class="text-center mt-1 mb-2">Активація...</p>
+    <p v-if="error" class="text-red-500 text-center mt-1 mb-2">
       {{ error }}
     </p>
-    <p v-if="success">Ваш аккаунт успішно активовано!</p>
+    <p v-if="success" class="text-green-500 text-center mt-1 mb-2">
+      Вітаємо Ваш аккаунт успішно активовано!
+    </p>
   </div>
 </template>
 
@@ -31,7 +33,11 @@ onMounted(async () => {
       error.value = 'Помилка активації.';
     }
   } catch (err) {
-    error.value = 'Помилка активації: ' + err;
+    error.value =
+      'Помилка активації: ' +
+      (err.response?.data?.message.includes('Error:')
+        ? err.response.data.message.replace('Error: ', '')
+        : err.response?.data?.message);
   } finally {
     loading.value = false;
   }

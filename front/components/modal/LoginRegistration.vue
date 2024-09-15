@@ -432,7 +432,7 @@ watch(isOpen, (newValue) => {
 
 .form-group.has-value label,
 .form-group input:focus + label {
-  top: 3px;
+  top: 8px;
   left: 0;
 }
 </style>
