@@ -23,11 +23,13 @@ services:
       context: ./
     env_file:
       - .env
+    environment:
+      - POSTGRES_HOST=postgres
     volumes:
       - ./:/app
       - /app/node_modules
     expose:
-      - ${PORT}
+      - ${PORT}:4040
     ports:
       - ${PORT}:4040
     command: sh -c "npm run db:setup && npm run start"
@@ -42,14 +44,12 @@ services:
       dockerfile: Dockerfile
     env_file:
       - ./front/.env
-    environment:
-      - NUXT_PORT=3000
     volumes:
       - ./front:/app
       - /app/node_modules
     ports:
       - ${NUXT_PORT}:3000
-    command: npm run start
+    command: sh -c "npm run build && npm run start"
     depends_on:
       - api
     restart: always
