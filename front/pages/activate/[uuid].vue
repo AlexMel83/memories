@@ -94,7 +94,7 @@ onMounted(async () => {
       ![400, 401, 403, 404, 500].includes(response.data.status)
     ) {
       const data = response.data;
-      authStore.setUserData(data);
+      authStore.saveUserData(data);
       success.value = true;
       if (!data.user.name || !data.user.surname || !data.user.phone) {
         name.value = data.user.name || '';
@@ -105,7 +105,7 @@ onMounted(async () => {
       }
     } else {
       error.value = 'Помилка активації.';
-      setTimeout(() => router.push('/'), 3000); // Переадресація на головну сторінку
+      setTimeout(() => router.push('/'), 3000);
     }
   } catch (err) {
     error.value =
@@ -113,7 +113,7 @@ onMounted(async () => {
       (err.response?.data?.message.includes('Error:')
         ? err.response.data.message.replace('Error: ', '')
         : err.response?.data?.message);
-    setTimeout(() => router.push('/'), 3000); // Переадресація на головну сторінку після помилки
+    setTimeout(() => router.push('/'), 3000);
   } finally {
     loading.value = false;
   }
@@ -139,13 +139,13 @@ const updateUser = async () => {
       editMode.value = false;
     } else {
       error.value = 'Не вдалося оновити дані користувача.';
-      setTimeout(() => router.push('/'), 3000); // Переадресація на головну сторінку після невдачі
+      setTimeout(() => router.push('/'), 3000);
     }
   } catch (err) {
     error.value =
       'Помилка оновлення: ' +
       (err.response?.data?.message || 'Невідома помилка.');
-    setTimeout(() => router.push('/'), 3000); // Переадресація на головну сторінку після невдачі
+    setTimeout(() => router.push('/'), 3000);
   }
 };
 </script>

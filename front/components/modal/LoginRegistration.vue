@@ -129,7 +129,7 @@ const handleSubmit = async (event) => {
       ![400, 401, 403, 404, 500].includes(res.data.status)
     ) {
       const data = res.data;
-      authStore.setUserData(data);
+      authStore.saveUserData(data);
       console.log(data);
       if (data.user.isactivated === false) {
         sendActivationEmail.value = true;
@@ -146,6 +146,7 @@ const handleSubmit = async (event) => {
       console.log(errors);
     }
   } catch (error) {
+    console.log(error);
     if (error) {
       errors.email = 'Користувача не авторизовано';
     }

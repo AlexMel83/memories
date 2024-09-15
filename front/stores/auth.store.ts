@@ -37,7 +37,9 @@ export const useAuthStore = defineStore('auth', {
   }),
 
   actions: {
-    saveUserData() {
+    saveUserData(data: AuthResponse) {
+      this.userData = data;
+      this.isAuthed = true;
       if (typeof window !== 'undefined') {
         localStorage.setItem('userData', JSON.stringify(this.userData));
       }
