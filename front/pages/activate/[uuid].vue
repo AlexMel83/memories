@@ -5,33 +5,59 @@
     <p v-if="error" class="text-red-500 text-center mt-1 mb-2">
       {{ error }}
     </p>
-    <p v-if="success" class="mt-1 mb-2">
-      <p class="text-green-500 text-center">Вітаємо Ваш аккаунт успішно активовано!</p>
-      <div v-if="editMode" class="mt-4">
-      <h2 class="text-center text-xl mb-2">Заповніть дані для завершення реєстрації</h2>
+    <p v-if="success" class="mt-1 mb-2" />
+    <p class="text-green-500 text-center">
+      Вітаємо Ваш аккаунт успішно активовано!
+    </p>
+    <div v-if="editMode" class="mt-4">
+      <h2 class="text-center text-xl mb-2">
+        Заповніть дані для завершення реєстрації
+      </h2>
       <form @submit.prevent="updateUser">
         <div class="mb-2">
           <label for="name" class="block">Ім'я:</label>
-          <input v-model="name" id="name" type="text" class="border rounded px-2 py-1 w-full" />
+          <input
+            id="name"
+            v-model="name"
+            type="text"
+            class="border rounded px-2 py-1 w-full"
+          />
         </div>
         <div class="mb-2">
           <label for="surname" class="block">Прізвище:</label>
-          <input v-model="surname" id="surname" type="text" class="border rounded px-2 py-1 w-full" />
+          <input
+            id="surname"
+            v-model="surname"
+            type="text"
+            class="border rounded px-2 py-1 w-full"
+          />
         </div>
         <div class="mb-2">
           <label for="phone" class="block">Телефон:</label>
-          <input v-model="phone" id="phone" type="text" class="border rounded px-2 py-1 w-full" />
+          <input
+            id="phone"
+            v-model="phone"
+            type="text"
+            class="border rounded px-2 py-1 w-full"
+          />
         </div>
         <div class="mb-2">
           <label for="picture" class="block">Фото профілю (URL):</label>
-          <input v-model="picture" id="picture" type="text" class="border rounded px-2 py-1 w-full" />
+          <input
+            id="picture"
+            v-model="picture"
+            type="text"
+            class="border rounded px-2 py-1 w-full"
+          />
         </div>
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded mt-2">
+        <button
+          type="submit"
+          class="bg-blue-500 text-white px-4 py-2 rounded mt-2"
+        >
           Зберегти
         </button>
       </form>
     </div>
-    </p>
   </div>
 </template>
 
@@ -104,7 +130,9 @@ const updateUser = async () => {
       error.value = 'Не вдалося оновити дані користувача.';
     }
   } catch (err) {
-    error.value = 'Помилка оновлення: ' + (err.response?.data?.message || 'Невідома помилка.');
+    error.value =
+      'Помилка оновлення: ' +
+      (err.response?.data?.message || 'Невідома помилка.');
   }
 };
 </script>
