@@ -195,7 +195,9 @@ class UserController {
   async updateUser(req, res) {
     const fields = req.body;
     const userData = req.user;
-    fields.id ? fields.id : (fields.id = userData.id);
+    if (!fields.id) {
+      fields.id = userData.id;
+    }
     let userDataBase = null;
     userDataBase = await userModel.getUsersByConditions({
       id: userData.id,

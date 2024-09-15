@@ -5,63 +5,62 @@
     <p v-if="error" class="text-red-500 text-center mt-1 mb-2">
       {{ error }}
     </p>
-    <p v-if="success && !error" class="mt-1 mb-2">
-      <p class="text-green-500 text-center">
-        Вітаємо Ваш аккаунт успішно активовано!
-      </p>
-      <div v-if="editMode" class="mt-4">
-        <h2 class="text-center text-xl mb-2">
-          Заповніть дані для завершення реєстрації
-        </h2>
-        <form @submit.prevent="updateUser">
-          <div class="mb-2">
-            <label for="name" class="block">Ім'я:</label>
-            <input
-              id="name"
-              v-model="name"
-              type="text"
-              class="border rounded px-2 py-1 w-full"
-            />
-          </div>
-          <div class="mb-2">
-            <label for="surname" class="block">Прізвище:</label>
-            <input
-              id="surname"
-              v-model="surname"
-              type="text"
-              class="border rounded px-2 py-1 w-full"
-            />
-          </div>
-          <div class="mb-2">
-            <label for="phone" class="block">Телефон:</label>
-            <input
-              id="phone"
-              v-model="phone"
-              type="text"
-              class="border rounded px-2 py-1 w-full"
-            />
-          </div>
-          <div class="mb-2">
-            <label for="picture" class="block">Фото профілю (URL):</label>
-            <input
-              id="picture"
-              v-model="picture"
-              type="text"
-              class="border rounded px-2 py-1 w-full"
-            />
-          </div>
-          <button
-            type="submit"
-            class="bg-blue-500 text-white px-4 py-2 rounded mt-2"
-          >
-            Зберегти
-          </button>
-        </form>
-      </div>
+    <p v-if="success && !error" class="mt-1 mb-2 text-green-500 text-center">
+      Вітаємо Ваш аккаунт успішно активовано!
     </p>
+
+    <div v-if="editMode" class="mt-4">
+      <h2 class="text-center text-xl mb-2">
+        Заповніть дані для завершення реєстрації
+      </h2>
+      <form @submit.prevent="updateUser">
+        <div class="mb-2">
+          <label for="name" class="block">Ім'я:</label>
+          <input
+            id="name"
+            v-model="name"
+            type="text"
+            class="border rounded px-2 py-1 w-full"
+          />
+        </div>
+        <div class="mb-2">
+          <label for="surname" class="block">Прізвище:</label>
+          <input
+            id="surname"
+            v-model="surname"
+            type="text"
+            class="border rounded px-2 py-1 w-full"
+          />
+        </div>
+        <div class="mb-2">
+          <label for="phone" class="block">Телефон:</label>
+          <input
+            id="phone"
+            v-model="phone"
+            type="text"
+            class="border rounded px-2 py-1 w-full"
+          />
+        </div>
+        <div class="mb-2">
+          <label for="picture" class="block">Фото профілю (URL):</label>
+          <input
+            id="picture"
+            v-model="picture"
+            type="text"
+            class="border rounded px-2 py-1 w-full"
+          />
+        </div>
+        <button
+          type="submit"
+          class="bg-blue-500 text-white px-4 py-2 rounded mt-2"
+        >
+          Зберегти
+        </button>
+      </form>
+    </div>
     <p v-if="!loading && (error || success)" class="text-center">
       <a href="/">Повернутися на головну</a>
-    </p> 
+    </p>
   </div>
 </template>
 
@@ -114,7 +113,7 @@ onMounted(async () => {
       (err.response?.data?.message.includes('Error:')
         ? err.response.data.message.replace('Error: ', '')
         : err.response?.data?.message);
-      setTimeout(() => router.push('/'), 3000); // Переадресація на головну сторінку після помилки
+    setTimeout(() => router.push('/'), 3000); // Переадресація на головну сторінку після помилки
   } finally {
     loading.value = false;
   }
@@ -146,7 +145,7 @@ const updateUser = async () => {
     error.value =
       'Помилка оновлення: ' +
       (err.response?.data?.message || 'Невідома помилка.');
-      setTimeout(() => router.push('/'), 3000); // Переадресація на головну сторінку після невдачі
+    setTimeout(() => router.push('/'), 3000); // Переадресація на головну сторінку після невдачі
   }
 };
 </script>

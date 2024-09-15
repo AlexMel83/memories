@@ -17,13 +17,6 @@ interface User {
   updated_at: string;
 }
 
-interface Advantage {
-  id: number;
-  name: string;
-  description: string;
-  icon: string;
-}
-
 interface AuthResponse {
   user: User;
   tokens: {
