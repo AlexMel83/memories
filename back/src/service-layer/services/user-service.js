@@ -16,13 +16,13 @@ class UserService {
     if (!user[0].isactivated) {
       throw ApiError.BadRequest(`Обліковий запис: ${email} не активовано`);
     }
-    const isPassEquals = await bcrypt.compare(password, user[0].password);
+    const isPassEquals = await bcrypt.compare(password, user[0]?.password);
     if (!isPassEquals) {
       throw ApiError.BadRequest('Невірний пароль');
     }
     const tokens = tokenService.generateTokens({ ...user[0] });
     await tokenService.saveToken(
-      user[0].id,
+      user[0]?.id,
       tokens.refreshToken,
       tokens.expRfToken,
       trx,
@@ -57,13 +57,13 @@ class UserService {
     const user = await UserModel.getUsersByConditions({
       activationlink,
     });
-    if (user?.length && !user[0].isactivated) {
-      const [activatedUser] = await UserModel.activateUser(user[0].email, trx);
+    if (user?.length && !user[0]?.isactivated) {
+      const [activatedUser] = await UserModel.activateUser(user[0]?.email, trx);
       if (!activatedUser) {
         throw ApiError.BadRequest('Помилка активації');
       }
       return activatedUser;
-    } else if (user[0].isactivated) {
+    } else if (user?.length && user[0]?.isactivated) {
       throw ApiError.BadRequest('Користувач вже активований');
     } else {
       throw ApiError.NotFound('Код активації недійсний');
@@ -90,7 +90,7 @@ class UserService {
     );
     const tokens = tokenService.generateTokens({ ...user[0] });
     await tokenService.saveToken(
-      user[0].id,
+      user[0]?.id,
       tokens.refreshToken,
       tokens.expRfToken,
       trx,
