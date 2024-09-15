@@ -68,8 +68,7 @@ class UserService {
       }
       return activatedUser;
     } else if (user?.length && user[0]?.isactivated) {
-      // throw ApiError.BadRequest('Користувач вже активований');
-      return user;
+      throw ApiError.BadRequest('Користувач вже активований');
     } else {
       throw ApiError.NotFound('Код активації недійсний');
     }

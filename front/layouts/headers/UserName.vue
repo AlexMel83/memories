@@ -24,16 +24,13 @@
 </template>
 
 <script setup>
-import { ref, computed, watchEffect, inject } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useAuthStore } from '@/stores/auth.store.ts';
 import { useRoute } from 'vue-router';
 
 const store = useAuthStore();
 const route = useRoute();
 const menuOpen = ref(false);
-
-const authUser = inject('authUser');
-const isUserDataReady = inject('isUserDataReady');
 
 const userName = ref('');
 const userSurname = ref('');
@@ -46,7 +43,6 @@ const updateUserData = () => {
     userSurname.value = parsedData.user.surname;
     store.userData = parsedData;
     store.isAuthed = true;
-    isUserDataReady.value = true;
   }
 };
 
