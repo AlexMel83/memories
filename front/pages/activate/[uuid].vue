@@ -5,65 +5,69 @@
     <p v-if="error" class="text-red-500 text-center mt-1 mb-2">
       {{ error }}
     </p>
-    <p v-if="success" class="mt-1 mb-2" />
-    <p class="text-green-500 text-center">
-      Вітаємо Ваш аккаунт успішно активовано!
+    <p v-if="success && !error" class="mt-1 mb-2">
+      <p class="text-green-500 text-center">
+        Вітаємо Ваш аккаунт успішно активовано!
+      </p>
+      <div v-if="editMode" class="mt-4">
+        <h2 class="text-center text-xl mb-2">
+          Заповніть дані для завершення реєстрації
+        </h2>
+        <form @submit.prevent="updateUser">
+          <div class="mb-2">
+            <label for="name" class="block">Ім'я:</label>
+            <input
+              id="name"
+              v-model="name"
+              type="text"
+              class="border rounded px-2 py-1 w-full"
+            />
+          </div>
+          <div class="mb-2">
+            <label for="surname" class="block">Прізвище:</label>
+            <input
+              id="surname"
+              v-model="surname"
+              type="text"
+              class="border rounded px-2 py-1 w-full"
+            />
+          </div>
+          <div class="mb-2">
+            <label for="phone" class="block">Телефон:</label>
+            <input
+              id="phone"
+              v-model="phone"
+              type="text"
+              class="border rounded px-2 py-1 w-full"
+            />
+          </div>
+          <div class="mb-2">
+            <label for="picture" class="block">Фото профілю (URL):</label>
+            <input
+              id="picture"
+              v-model="picture"
+              type="text"
+              class="border rounded px-2 py-1 w-full"
+            />
+          </div>
+          <button
+            type="submit"
+            class="bg-blue-500 text-white px-4 py-2 rounded mt-2"
+          >
+            Зберегти
+          </button>
+        </form>
+      </div>
     </p>
-    <div v-if="editMode" class="mt-4">
-      <h2 class="text-center text-xl mb-2">
-        Заповніть дані для завершення реєстрації
-      </h2>
-      <form @submit.prevent="updateUser">
-        <div class="mb-2">
-          <label for="name" class="block">Ім'я:</label>
-          <input
-            id="name"
-            v-model="name"
-            type="text"
-            class="border rounded px-2 py-1 w-full"
-          />
-        </div>
-        <div class="mb-2">
-          <label for="surname" class="block">Прізвище:</label>
-          <input
-            id="surname"
-            v-model="surname"
-            type="text"
-            class="border rounded px-2 py-1 w-full"
-          />
-        </div>
-        <div class="mb-2">
-          <label for="phone" class="block">Телефон:</label>
-          <input
-            id="phone"
-            v-model="phone"
-            type="text"
-            class="border rounded px-2 py-1 w-full"
-          />
-        </div>
-        <div class="mb-2">
-          <label for="picture" class="block">Фото профілю (URL):</label>
-          <input
-            id="picture"
-            v-model="picture"
-            type="text"
-            class="border rounded px-2 py-1 w-full"
-          />
-        </div>
-        <button
-          type="submit"
-          class="bg-blue-500 text-white px-4 py-2 rounded mt-2"
-        >
-          Зберегти
-        </button>
-      </form>
-    </div>
+    <p v-if="!loading && (error || success)" class="text-center">
+      <a href="/">Повернутися на головну</a>
+    </p> 
   </div>
 </template>
 
 <script setup>
 import { useAuthStore } from '~/stores/auth.store';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { ref, onMounted } from 'vue';
 import { useNuxtApp } from '#app';
 
@@ -71,6 +75,7 @@ const authStore = useAuthStore();
 const { $api } = useNuxtApp();
 const editMode = ref(false);
 const success = ref(false);
+const router = useRouter();
 const loading = ref(true);
 const route = useRoute();
 const error = ref(null);
@@ -84,7 +89,6 @@ onMounted(async () => {
   try {
     const uuid = route.params.uuid;
     const response = await $api.auth.activate(uuid);
-    console.log(response);
     if (
       response &&
       [200, 201].includes(response.status) &&
@@ -92,17 +96,17 @@ onMounted(async () => {
     ) {
       const data = response.data;
       authStore.setUserData(data);
-      console.log(data);
       success.value = true;
-      if (!data.name || !data.surname || !data.phone || !data.picture) {
-        name.value = data.name || '';
-        surname.value = data.surname || '';
-        phone.value = data.phone || '';
-        picture.value = data.picture || '';
+      if (!data.user.name || !data.user.surname || !data.user.phone) {
+        name.value = data.user.name || '';
+        surname.value = data.user.surname || '';
+        phone.value = data.user.phone || '';
+        picture.value = data.user.picture || '';
         editMode.value = true;
       }
     } else {
       error.value = 'Помилка активації.';
+      setTimeout(() => router.push('/'), 3000); // Переадресація на головну сторінку
     }
   } catch (err) {
     error.value =
@@ -110,6 +114,7 @@ onMounted(async () => {
       (err.response?.data?.message.includes('Error:')
         ? err.response.data.message.replace('Error: ', '')
         : err.response?.data?.message);
+      setTimeout(() => router.push('/'), 3000); // Переадресація на головну сторінку після помилки
   } finally {
     loading.value = false;
   }
@@ -117,10 +122,17 @@ onMounted(async () => {
 
 const updateUser = async () => {
   try {
+    let cleaned = phone.value.replace(/\D/g, '');
+    if (cleaned.startsWith('0')) {
+      cleaned = '38' + cleaned;
+    }
+    if (cleaned.startsWith('380')) {
+      cleaned = cleaned.replace(/^380/, '380');
+    }
     const response = await $api.auth.updateUser({
       name: name.value,
       surname: surname.value,
-      phone: phone.value,
+      phone: cleaned,
       picture: picture.value,
     });
     if ([200, 201].includes(response.status)) {
@@ -128,11 +140,13 @@ const updateUser = async () => {
       editMode.value = false;
     } else {
       error.value = 'Не вдалося оновити дані користувача.';
+      setTimeout(() => router.push('/'), 3000); // Переадресація на головну сторінку після невдачі
     }
   } catch (err) {
     error.value =
       'Помилка оновлення: ' +
       (err.response?.data?.message || 'Невідома помилка.');
+      setTimeout(() => router.push('/'), 3000); // Переадресація на головну сторінку після невдачі
   }
 };
 </script>

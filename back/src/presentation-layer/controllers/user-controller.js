@@ -130,7 +130,6 @@ class UserController {
     const trx = await knex.transaction();
     try {
       const { refreshToken } = req.cookies;
-      console.log(refreshToken);
       if (!refreshToken) {
         return res.json(
           ApiError.BadRequest('Користувач не автентифікований. Авторизуйтесь'),
@@ -196,32 +195,39 @@ class UserController {
   async updateUser(req, res) {
     const fields = req.body;
     const userData = req.user;
-    const userDataBase = await userModel.getUsersByConditions({
-      email: fields.email,
+    fields.id ? fields.id : (fields.id = userData.id);
+    let userDataBase = null;
+    userDataBase = await userModel.getUsersByConditions({
+      id: userData.id,
     });
-    if (!userDataBase) {
+    if (!userDataBase.length) {
       return res.json(
         ApiError.NotFound(`user with email: ${fields.email} was not found`),
       );
+    }
+    if (fields.email && userDataBase[0].role === admin) {
+      userDataBase = await userModel.getUsersByConditions({
+        email: userData.email,
+      });
     }
     let updatedUser = {};
     if (fields?.password) {
       fields.password = await userService.hashPassword(fields.password);
     }
     const payload = {
-      id: userDataBase.id,
+      id: userDataBase[0].id,
       email: fields.email,
-      password: fields?.password ?? userDataBase.password,
-      name: fields?.name ?? userDataBase.name,
-      surname: fields?.surname ?? userDataBase.surname,
-      phone: fields?.phone ?? userDataBase.phone,
-      role: fields?.role ?? userDataBase.role,
-      activationlink: fields?.activationlink ?? userDataBase.activationlink,
-      isactivated: fields?.isactivated ?? userDataBase.isactivated,
-      social_login: fields?.social_login ?? userDataBase.social_login,
-      facebook_id: fields?.facebook_id ?? userDataBase.facebook_id,
-      google_id: fields?.google_id ?? userDataBase.google_id,
-      picture: fields?.picture ?? userDataBase.picture,
+      password: fields?.password ?? userDataBase[0].password,
+      name: fields?.name ?? userDataBase[0].name,
+      surname: fields?.surname ?? userDataBase[0].surname,
+      phone: fields?.phone ?? userDataBase[0].phone,
+      role: fields?.role ?? userDataBase[0].role,
+      activationlink: fields?.activationlink ?? userDataBase[0].activationlink,
+      isactivated: fields?.isactivated ?? userDataBase[0].isactivated,
+      social_login: fields?.social_login ?? userDataBase[0].social_login,
+      facebook_id: fields?.facebook_id ?? userDataBase[0].facebook_id,
+      google_id: fields?.google_id ?? userDataBase[0].google_id,
+      picture: fields?.picture ?? userDataBase[0].picture,
       updated_at: new Date().toISOString(),
     };
     const trx = await knex.transaction();
@@ -229,11 +235,11 @@ class UserController {
       if (userData.role === 'admin') {
         updatedUser = await userModel.createOrUpdateUser(payload, trx);
         return res.status(200).json(updatedUser);
-      } else if (userData.id === userDataBase.id) {
-        payload.role = userDataBase.role;
-        payload.activationlink = userDataBase.activationlink;
-        payload.isactivated = userDataBase.isactivated;
-        updatedUser = await userModel.editUser(payload);
+      } else if (userData.id === userDataBase[0].id) {
+        payload.role = userDataBase[0].role;
+        payload.activationlink = userDataBase[0].activationlink;
+        payload.isactivated = userDataBase[0].isactivated;
+        updatedUser = await userModel.createOrUpdateUser(payload);
         await trx.commit();
         return res.status(200).json(updatedUser);
       } else {

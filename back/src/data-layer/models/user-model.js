@@ -70,6 +70,7 @@ export default {
   },
 
   async createOrUpdateUser(userData, trx = knex) {
+    console.log('usermodel payload: ', userData);
     try {
       const result = await trx(usersTable)
         .insert(userData)

@@ -37,7 +37,6 @@ const isUserDataReady = inject('isUserDataReady');
 const userRole = computed(() => store.userData.user.role);
 const userName = ref('');
 const userSurname = ref('');
-console.log(authUser.value.user);
 watchEffect(() => {
   if (isUserDataReady.value && authUser.value) {
     const userData =

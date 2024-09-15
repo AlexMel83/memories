@@ -36,17 +36,11 @@ interface AuthResponse {
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    allAdvantages: [] as Advantage[],
     userData: {} as AuthResponse,
     isMenuOpen: false,
     isLoading: false,
     isAuthed: false,
     menuOpen: false,
-    userRole: '',
-    // authUser: {} as User,
-    // activeTabAuthUserMenu: '',
-    // manager: {} as User | null,
-    // initialEmail: '',
   }),
 
   actions: {
@@ -77,12 +71,6 @@ export const useAuthStore = defineStore('auth', {
       } catch (error) {
         console.error('Error during logOut:', error);
       }
-    },
-
-    setUserData(userData: AuthResponse) {
-      this.userData = userData;
-      this.isAuthed = true;
-      this.saveUserData();
     },
 
     toggleMenu() {

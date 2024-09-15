@@ -38,7 +38,6 @@ class TokenService {
   }
 
   async saveToken(userId, refreshToken, expToken, trx, res) {
-    console.log(refreshToken);
     try {
       const token = await tokenModel.saveToken(
         userId,
@@ -57,21 +56,21 @@ class TokenService {
   async validateAccessToken(token, next) {
     try {
       const userData = jwt.verify(token, process.env.JWT_AC_SECRET);
-      const userDataBase = await userModel.findUserByEmail(userData.email);
-      userDataBase.iat = userData.iat;
-      userDataBase.exp = userData.exp;
-      if (!userDataBase) {
+      const userDataBase = await userModel.getUsersByConditions({
+        email: userData.email,
+      });
+      if (!userDataBase.length) {
         return next(
           ApiError.NotFound(`email: ${userData.email} was not found`),
         );
       }
-      if (!userDataBase.isactivated) {
+      if (!userDataBase[0].isactivated) {
         return next(ApiError.AccessDeniedForRole('User not activated'));
       }
-      if (!allowedRoles.includes(userDataBase.role)) {
+      if (!allowedRoles.includes(userDataBase[0].role)) {
         return next(ApiError.AccessDeniedForRole('Wrong role'));
       }
-      return userDataBase;
+      return userDataBase[0];
     } catch (error) {
       console.error(error);
       return null;
