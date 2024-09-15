@@ -52,6 +52,7 @@ import { useAuthStore } from '@/stores/auth.store.ts';
 import FooterMain from './footers/FooterMain.vue';
 import HeaderAuthUsers from '@/layouts/headers/HeaderAuthUsers.vue';
 import HeaderMain from './headers/HeaderMain.vue';
+import { nextTick } from 'vue';
 
 const store = useAuthStore();
 const isScrollToTopInFooter = ref(false);
@@ -78,7 +79,8 @@ const handleScroll = () => {
   }
 };
 
-const setUserData = () => {
+const setUserData = async () => {
+  await nextTick();
   if (localStorage.getItem('userData')) {
     store.userData = JSON.parse(localStorage.getItem('userData'));
     store.isAuthed = true;
@@ -86,9 +88,8 @@ const setUserData = () => {
     isUserDataReady.value = true;
   }
 };
-
-onMounted(() => {
-  setUserData();
+onMounted(async () => {
+  await setUserData();
   window.addEventListener('scroll', handleScroll);
 });
 

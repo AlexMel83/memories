@@ -24,6 +24,7 @@
 </template>
 
 <script setup>
+import { ref, computed, watchEffect, inject } from 'vue';
 import { useAuthStore } from '@/stores/auth.store.ts';
 import { useRoute } from 'vue-router';
 
@@ -34,20 +35,30 @@ const menuOpen = ref(false);
 const authUser = inject('authUser');
 const isUserDataReady = inject('isUserDataReady');
 
-const userRole = computed(() => store.userData.user.role);
 const userName = ref('');
 const userSurname = ref('');
-watchEffect(() => {
-  if (isUserDataReady.value && authUser.value) {
-    const userData =
-      typeof authUser.value === 'string'
-        ? JSON.parse(authUser.value)
-        : authUser.value;
 
-    userName.value = userData.user.name;
-    userSurname.value = userData.user.surname;
+const updateUserData = () => {
+  const userData = localStorage.getItem('userData');
+  if (userData) {
+    const parsedData = JSON.parse(userData);
+    userName.value = parsedData.user.name;
+    userSurname.value = parsedData.user.surname;
+    store.userData = parsedData;
+    store.isAuthed = true;
+    isUserDataReady.value = true;
   }
-});
+};
+
+watch(
+  () => localStorage.getItem('userData'),
+  (newVal) => {
+    if (newVal) {
+      updateUserData();
+    }
+  },
+  { immediate: true },
+);
 
 const isInCabinet = computed(() => {
   const currentPath = route.path;
@@ -59,18 +70,22 @@ const isInCabinet = computed(() => {
 });
 
 const setRout = () => {
-  if (userRole.value === 'manager') {
-    return '/manager/coworking';
-  } else if (userRole.value === 'user') {
-    return '/user';
-  } else if (userRole.value === 'admin') {
-    return '/admin';
+  switch (store.userData.user.role) {
+    case 'manager':
+      return '/manager';
+    case 'user':
+      return '/user';
+    case 'admin':
+      return '/admin';
+    default:
+      return '/';
   }
 };
 
 const goOut = () => {
   menuOpen.value = false;
   store.logOut();
+  localStorage.removeItem('userData'); // Clear user data from localStorage on logout
 };
 </script>
 
