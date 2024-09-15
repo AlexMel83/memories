@@ -47,6 +47,9 @@ export default {
   },
 
   async deleteOneToken(refreshtoken, trx) {
+    if (!refreshtoken) {
+      throw new Error('No refresh token provided for deletion');
+    }
     try {
       const rowsDeleted = await trx(tokensTable).where({ refreshtoken }).del();
       return rowsDeleted;

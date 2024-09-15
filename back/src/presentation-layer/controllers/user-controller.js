@@ -193,7 +193,7 @@ class UserController {
     }
   }
 
-  async editUser(req, res) {
+  async updateUser(req, res) {
     const fields = req.body;
     const userData = req.user;
     const userDataBase = await userModel.getUsersByConditions({

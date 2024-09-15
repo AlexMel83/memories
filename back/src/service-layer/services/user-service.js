@@ -20,6 +20,7 @@ class UserService {
     if (!isPassEquals) {
       throw ApiError.BadRequest('Невірний пароль');
     }
+    delete user[0]?.password;
     const tokens = tokenService.generateTokens({ ...user[0] });
     await tokenService.saveToken(
       user[0]?.id,
@@ -64,7 +65,8 @@ class UserService {
       }
       return activatedUser;
     } else if (user?.length && user[0]?.isactivated) {
-      throw ApiError.BadRequest('Користувач вже активований');
+      // throw ApiError.BadRequest('Користувач вже активований');
+      return user;
     } else {
       throw ApiError.NotFound('Код активації недійсний');
     }

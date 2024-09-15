@@ -69,7 +69,7 @@ export default function (app) {
     validateUser,
     body('id').notEmpty().withMessage('Id is required'),
     validateMiddleware,
-    userController.editUser,
+    userController.updateUser,
   );
 
   app.delete(

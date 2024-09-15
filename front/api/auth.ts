@@ -18,21 +18,44 @@ export interface AuthResponse {
       created_at: string;
       udated_at: string;
     };
-    url: string;
-    accessToken: string;
-    expAcToken: string;
-    expRfToken: string;
+    tokens: {
+      accessToken: string;
+      refreshToken: string;
+      expAcToken: string;
+      expRfToken: string;
+    };
   };
+}
+
+export interface User {
+  id: number;
+  email?: string | null;
+  facebook_id?: string | null;
+  google_id?: string | null;
+  name?: string;
+  surname?: string;
+  phone?: string;
+  picture?: string;
+  role?: string;
+  social_login?: boolean;
+  isactivated?: boolean;
+  created_at?: string;
+  udated_at?: string;
 }
 
 export interface AuthApi {
   signIn(payload: { email: string; password: string }): Promise<AuthResponse>;
-  signUp(payload: { email: string; password: string }): Promise<AuthResponse>;
+  signUp(payload: {
+    email: string;
+    password: string;
+    role?: string;
+  }): Promise<AuthResponse>;
   activate(activationLink: string): Promise<string>;
   logout(): Promise<void>;
   socAuth(provider: string): Promise<AuthResponse>;
   getAuthUser(authLink: string): Promise<AuthResponse>;
   refresh(refreshToken: string): Promise<AuthResponse>;
+  updateUser(payload: User): Promise<AuthResponse>;
 }
 
 export default function (instance: AxiosInstance): AuthApi {
@@ -65,6 +88,9 @@ export default function (instance: AxiosInstance): AuthApi {
     },
     async refresh(refreshToken) {
       return instance.post('/refresh', { refreshToken });
+    },
+    async updateUser(payload: User) {
+      return instance.put('/users', payload);
     },
   };
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="other-page">
-    <HeaderAuthUsers v-if="store?.authUser?.user?.isactivated" />
+    <HeaderAuthUsers v-if="store?.userData?.user?.isactivated" />
     <HeaderMain v-else />
     <NuxtPage />
     <FooterMain ref="footerRef" />
@@ -82,7 +82,7 @@ const handleScroll = () => {
 
 const setUserData = () => {
   if (localStorageAuthUser.value) {
-    store.setUserData(JSON.parse(localStorageAuthUser.value));
+    store.saveUserData(JSON.parse(localStorageAuthUser.value));
     authUser.value = JSON.parse(localStorageAuthUser.value);
     isUserDataReady.value = true;
   }
