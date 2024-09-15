@@ -23,7 +23,6 @@ class UserController {
     try {
       const { email, password } = req.body;
       const userData = await userService.login(email, password, trx, res);
-      res.cookie('refreshToken', userData.refreshToken, rFcookieOptions);
       await trx.commit();
       return res.json(userData);
     } catch (error) {
@@ -83,6 +82,7 @@ class UserController {
         trx,
         res,
       );
+      delete tokens.refreshToken;
       const userData = {
         user: user[0],
         tokens,
@@ -130,15 +130,15 @@ class UserController {
     const trx = await knex.transaction();
     try {
       const { refreshToken } = req.cookies;
+      console.log(refreshToken);
       if (!refreshToken) {
         return res.json(
-          ApiError.BadRequest('User not authorized, refreToken not found'),
+          ApiError.BadRequest('Користувач не автентифікований. Авторизуйтесь'),
         );
       }
-      const userData = await userService.refresh(refreshToken, trx);
+      const userData = await userService.refresh(refreshToken, trx, res);
       res.cookie('refreshToken', userData.refreshToken, rFcookieOptions);
       await trx.commit();
-      delete userData.refreshToken;
       return res.json(userData);
     } catch (error) {
       if (trx) {

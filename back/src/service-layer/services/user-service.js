@@ -29,8 +29,11 @@ class UserService {
       trx,
       res,
     );
+    delete tokens.refreshToken;
+    delete tokens.expRfToken;
     return { user: user[0], tokens };
   }
+
   async registration(email, password, role, trx) {
     const candidate = await UserModel.getUsersByConditions({ email }, trx);
     if (candidate?.length) {
@@ -77,7 +80,7 @@ class UserService {
     return result;
   }
 
-  async refresh(refreshToken, trx) {
+  async refresh(refreshToken, trx, res) {
     if (!refreshToken) {
       throw ApiError.UnauthorizedError();
     }
@@ -96,8 +99,11 @@ class UserService {
       tokens.refreshToken,
       tokens.expRfToken,
       trx,
+      res,
     );
-    return { ...tokens, user: user[0] };
+    delete tokens.refreshToken;
+    delete tokens.expRfToken;
+    return { tokens, user: user[0] };
   }
 
   async hashPassword(password) {
