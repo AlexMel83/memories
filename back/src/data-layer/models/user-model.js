@@ -70,7 +70,6 @@ export default {
   },
 
   async createOrUpdateUser(userData, trx = knex) {
-    console.log('usermodel payload: ', userData);
     const existingUser = await trx('users')
       .where('email', userData.email)
       .first();

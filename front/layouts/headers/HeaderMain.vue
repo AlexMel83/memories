@@ -40,7 +40,7 @@
       <div class="mt-4">
         <LoginRegistration
           ref="loginRegistrationRef"
-          @modalClosed="handleModalClosed"
+          @modal-closed="handleModalClosed"
         />
       </div>
       <p class="mt-6 text-center text-gray-200 header-text">

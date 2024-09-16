@@ -13,7 +13,7 @@
       <h2 class="text-center text-xl mb-2">
         Заповніть дані для завершення реєстрації
       </h2>
-      <form @submit.prevent="updateUser" class="w-1/2 mx-auto mb-2">
+      <form class="w-1/2 mx-auto mb-2" @submit.prevent="updateUser">
         <div class="mb-2">
           <label for="name" class="block">Ім'я:</label>
           <input
