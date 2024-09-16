@@ -71,12 +71,23 @@ export default {
 
   async createOrUpdateUser(userData, trx = knex) {
     console.log('usermodel payload: ', userData);
+    const existingUser = await trx('users')
+      .where('email', userData.email)
+      .first();
+    let result = null;
     try {
-      const result = await trx(usersTable)
-        .insert(userData)
-        .onConflict('id')
-        .merge(userData)
-        .returning(userFields);
+      if (existingUser) {
+        result = await trx('users')
+          .where('id', existingUser.id)
+          .update(userData)
+          .returning('*');
+      } else {
+        result = await trx('users')
+          .insert(userData)
+          .onConflict('id')
+          .merge(userData)
+          .returning(userFields);
+      }
       if (!result.length) {
         return null;
       }

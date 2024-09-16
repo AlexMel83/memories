@@ -16,7 +16,7 @@ dotenv.config({
 });
 const { PORT, CLIENT_URL, PAYMENT_DOMEN, JWT_AC_SECRET, JWT_RF_MA } =
   process.env;
-const sessionMaxAge = parseInt(JWT_RF_MA | 2592000000, 10);
+const sessionMaxAge = parseInt(JWT_RF_MA || 2592000000, 10);
 const app = express();
 const server = http.createServer(app);
 

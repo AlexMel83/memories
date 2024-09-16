@@ -16,6 +16,7 @@ const userIsNotRegistered = ref(false);
 const sendActivationEmail = ref(false);
 const togglePasswordVisibility = ref(false);
 
+const emit = defineEmits(['modalClosed']);
 const state = reactive({
   email: '',
   password: '',
@@ -68,18 +69,20 @@ const schema = computed(() =>
 );
 
 const openModal = () => {
-  isOpen.value = true;
+  isOpen.value = !isOpen.value;
+};
+const closeModal = () => {
+  isOpen.value = false;
+  clearErrors();
+  clearVars();
+  emit('modalClosed');
 };
 defineExpose({ openModal });
 defineShortcuts({
   escape: {
     usingInput: true,
     whenever: [isOpen],
-    handler: () => {
-      isOpen.value = false;
-      clearErrors();
-      clearVars();
-    },
+    handler: closeModal,
   },
 });
 
@@ -183,12 +186,7 @@ watch(isOpen, (newValue) => {
             variant="ghost"
             icon="i-heroicons-x-mark-20-solid"
             class="flex items-center justify-center w-8 h-8 ml-2"
-            @click="
-              () => {
-                isOpen = false;
-                clearVars();
-              }
-            "
+            @click="closeModal"
           />
         </div>
         <ModalSocial />

@@ -58,8 +58,6 @@ const store = useAuthStore();
 const isScrollToTopInFooter = ref(false);
 const showScrollToTop = ref(false);
 const footerRef = ref(null);
-const isUserDataReady = ref(false);
-const authUser = ref({});
 
 const scrollToTop = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -84,8 +82,6 @@ const setUserData = async () => {
   if (localStorage.getItem('userData')) {
     store.userData = JSON.parse(localStorage.getItem('userData'));
     store.isAuthed = true;
-    authUser.value = store.userData;
-    isUserDataReady.value = true;
   }
 };
 onMounted(async () => {
@@ -96,9 +92,6 @@ onMounted(async () => {
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll);
 });
-
-provide('authUser', authUser);
-provide('isUserDataReady', isUserDataReady);
 </script>
 
 <style>

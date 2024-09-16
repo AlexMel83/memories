@@ -3,6 +3,7 @@ import ApiError from '../../middlewares/exceptions/api-errors.js';
 import UserModel from '../../data-layer/models/user-model.js';
 import GoogleStrategy from '../strategies/google-strategy.js';
 import { rFcookieOptions } from '../../../config/config.js';
+import knex from './../../../config/knex.config.js';
 import tokenService from './token-service.js';
 
 const uuidRegex =
@@ -62,6 +63,7 @@ class SocialLoginService {
   }
 
   async handleCallback(provider, code, codeVerifier, res) {
+    const trx = await knex.transaction();
     try {
       const strategy = this.getStrategy(provider);
       const user = await strategy.handleCallback(code, codeVerifier);
@@ -70,11 +72,15 @@ class SocialLoginService {
         user.id,
         tokens.refreshToken,
         tokens.expRfToken,
+        trx,
+        res,
       );
       res.cookie('refreshToken', tokens.refreshToken, rFcookieOptions);
       const frontendRedirectUri = `${CLIENT_URL}?authLink=${user.activationlink}`;
+      await trx.commit();
       return res.redirect(frontendRedirectUri);
     } catch (error) {
+      await trx.rollback();
       console.error(`Error in ${provider} callback:`, error);
       if (error.name === 'TypeError' && error.code === 'ERR_NETWORK') {
         return res.redirect(

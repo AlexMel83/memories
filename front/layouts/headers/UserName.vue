@@ -24,26 +24,20 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
 import { useAuthStore } from '@/stores/auth.store.ts';
+import { ref, computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 const store = useAuthStore();
-const route = useRoute();
 const menuOpen = ref(false);
+const route = useRoute();
 
 const userName = ref('');
 const userSurname = ref('');
 
 const updateUserData = () => {
-  const userData = localStorage.getItem('userData');
-  if (userData) {
-    const parsedData = JSON.parse(userData);
-    userName.value = parsedData.user.name;
-    userSurname.value = parsedData.user.surname;
-    store.userData = parsedData;
-    store.isAuthed = true;
-  }
+  userName.value = store.userData.user.name;
+  userSurname.value = store.userData.user.surname;
 };
 
 watch(
@@ -81,7 +75,7 @@ const setRout = () => {
 const goOut = () => {
   menuOpen.value = false;
   store.logOut();
-  localStorage.removeItem('userData'); // Clear user data from localStorage on logout
+  localStorage.removeItem('userData');
 };
 </script>
 

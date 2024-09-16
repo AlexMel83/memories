@@ -13,7 +13,7 @@
       <h2 class="text-center text-xl mb-2">
         Заповніть дані для завершення реєстрації
       </h2>
-      <form @submit.prevent="updateUser">
+      <form @submit.prevent="updateUser" class="w-1/2 mx-auto mb-2">
         <div class="mb-2">
           <label for="name" class="block">Ім'я:</label>
           <input
@@ -138,12 +138,6 @@ const updateUser = async () => {
       const userData = authStore.loadUserData();
       userData.user = response.data[0];
       authStore.saveUserData(userData);
-      console.log(
-        'userData.user',
-        userData.user,
-        'response.data',
-        response.data,
-      );
       success.value = true;
       editMode.value = false;
     } else {

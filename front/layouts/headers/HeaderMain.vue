@@ -36,13 +36,12 @@
           </template>
         </div>
       </div>
-      <div v-if="menuOpen" class="mt-4">
-        <Login
-          v-if="menuLogin"
-          :initial-email="email"
-          @open-reg-component="changeCompenent"
+
+      <div class="mt-4">
+        <LoginRegistration
+          ref="loginRegistrationRef"
+          @modalClosed="handleModalClosed"
         />
-        <Registration v-else @open-login-component="changeCompenent" />
       </div>
       <p class="mt-6 text-center text-gray-200 header-text">
         <span class="font-bold">Мапа пам'яті:</span> збереження історії та
@@ -50,21 +49,18 @@
       </p>
     </div>
   </div>
-  <ModalLoginRegistration ref="loginRegistrationRef" />
+  <!-- <ModalLoginRegistration ref="loginRegistrationRef" /> -->
 </template>
 
 <script setup>
-import Registration from '@/components/modal/Registration.vue';
-import { useAuthStore } from '@/stores/auth.store';
-import Login from '@/components/modal/Login.vue';
 import { useRoute } from 'vue-router';
+import { useAuthStore } from '@/stores/auth.store';
+import LoginRegistration from '@/components/modal/LoginRegistration.vue';
 
 const loginRegistrationRef = ref(null);
 const authStore = useAuthStore();
 const menuOpen = ref(false);
-const menuLogin = ref(true);
 const route = useRoute();
-const email = ref('');
 
 const isHomePage = computed(() => route.path === '/');
 const isAuthed = computed(() => authStore.isAuthed);
@@ -81,11 +77,13 @@ const hideMenu = () => {
 
 const toggleMenu = () => {
   menuOpen.value = !menuOpen.value;
-  authStore.toggleMenu();
+  if (menuOpen.value) {
+    openLoginModal();
+  }
 };
 
-const changeCompenent = () => {
-  menuLogin.value = !menuLogin.value;
+const handleModalClosed = () => {
+  menuOpen.value = false;
 };
 </script>
 

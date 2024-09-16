@@ -2,6 +2,7 @@ import ApiError from '../../middlewares/exceptions/api-errors.js';
 import tokenModel from '../../data-layer/models/token-model.js';
 import userModel from '../../data-layer/models/user-model.js';
 import { rFcookieOptions } from '../../../config/config.js';
+import knex from './../../../config/knex.config.js';
 import moment from 'moment-timezone';
 import jwt from 'jsonwebtoken';
 
@@ -37,7 +38,7 @@ class TokenService {
     };
   }
 
-  async saveToken(userId, refreshToken, expToken, trx, res) {
+  async saveToken(userId, refreshToken, expToken, trx = knex, res) {
     try {
       const token = await tokenModel.saveToken(
         userId,
