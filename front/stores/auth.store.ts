@@ -29,7 +29,7 @@ interface AuthResponse {
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    userData: {} as AuthResponse,
+    userData: null as AuthResponse | null,
     isMenuOpen: false,
     isLoading: false,
     isAuthed: false,
@@ -54,6 +54,7 @@ export const useAuthStore = defineStore('auth', {
           return this.userData;
         }
       }
+      return null;
     },
 
     async logOut() {

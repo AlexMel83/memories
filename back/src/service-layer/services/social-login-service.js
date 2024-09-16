@@ -76,7 +76,7 @@ class SocialLoginService {
         res,
       );
       res.cookie('refreshToken', tokens.refreshToken, rFcookieOptions);
-      const frontendRedirectUri = `${CLIENT_URL}?authLink=${user.activationlink}`;
+      const frontendRedirectUri = `${CLIENT_URL}/callback/${user.activationlink}`;
       await trx.commit();
       return res.redirect(frontendRedirectUri);
     } catch (error) {
