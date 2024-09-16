@@ -48,6 +48,7 @@ class UserService {
       { email, password: hashPassword, role, activationlink },
       trx,
     );
+    delete user?.password;
     await mailService.sendActivationMail(
       email,
       `${CLIENT_URL}/activate/${activationlink}`,

@@ -51,6 +51,7 @@ export const useAuthStore = defineStore('auth', {
         if (data) {
           this.userData = JSON.parse(data);
           this.isAuthed = true;
+          return this.userData;
         }
       }
     },

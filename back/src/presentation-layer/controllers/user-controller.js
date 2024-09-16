@@ -82,11 +82,14 @@ class UserController {
         trx,
         res,
       );
+      console.log('token: ', tokens);
       delete tokens.refreshToken;
+      delete tokens.expRfToken;
       const userData = {
         user: user[0],
         tokens,
       };
+      console.log('userData: ', userData);
       await trx.commit();
       return res.json(userData);
     } catch (error) {

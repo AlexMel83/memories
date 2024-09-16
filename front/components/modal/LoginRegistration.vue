@@ -129,8 +129,9 @@ const handleSubmit = async (event) => {
       ![400, 401, 403, 404, 500].includes(res.data.status)
     ) {
       const data = res.data;
-      authStore.saveUserData(data);
-      console.log(data);
+      if (!userIsNotRegistered.value) {
+        authStore.saveUserData(data);
+      }
       if (data.user.isactivated === false) {
         sendActivationEmail.value = true;
       } else {

@@ -135,6 +135,15 @@ const updateUser = async () => {
       picture: picture.value,
     });
     if ([200, 201].includes(response.status)) {
+      const userData = authStore.loadUserData();
+      userData.user = response.data[0];
+      authStore.saveUserData(userData);
+      console.log(
+        'userData.user',
+        userData.user,
+        'response.data',
+        response.data,
+      );
       success.value = true;
       editMode.value = false;
     } else {
