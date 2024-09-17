@@ -11,7 +11,6 @@ const errors = reactive({
 const handleSocialLogin = async (provider) => {
   try {
     const res = await $load(async () => $api.auth.socAuth(provider), errors);
-    console.log(res);
     if (res.data.url) {
       window.location.href = res.data.url;
     }
