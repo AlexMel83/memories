@@ -11,7 +11,8 @@
 
     <div v-if="editMode" class="mt-4">
       <h2 class="text-center text-xl mb-2">
-        Заповніть дані для завершення реєстрації
+        Але дані Вашого профілю неповні. <br />Додайте інформації про себе, щоб
+        користуватись платформою.
       </h2>
       <form class="w-1/2 mx-auto mb-2" @submit.prevent="updateUser">
         <div class="mb-2">
