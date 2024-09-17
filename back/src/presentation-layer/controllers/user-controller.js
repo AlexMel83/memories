@@ -69,9 +69,8 @@ class UserController {
   }
 
   async activate(req, res, next) {
-    let trx;
+    const trx = await knex.transaction();
     try {
-      trx = await knex.transaction();
       const activationlink = req.body.activationlink;
       const user = await userService.activate(activationlink, trx);
       const tokens = tokenService.generateTokens({ ...user[0] });

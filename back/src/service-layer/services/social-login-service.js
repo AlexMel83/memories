@@ -107,13 +107,32 @@ class SocialLoginService {
     if (!uuidRegex.test(authLink)) {
       return next(ApiError.BadRequest('Wrong auth link'));
     }
+    const trx = await knex.transaction();
     try {
-      const userData = await UserModel.findUserByActivationLink(authLink);
-      if (!userData) {
+      const user = await UserModel.getUsersByConditions({
+        activationlink: authLink,
+      });
+      if (!user.length) {
         return next(ApiError.BadRequest('Wrong auth link'));
       }
+      const tokens = tokenService.generateTokens({ ...user[0] });
+      await tokenService.saveToken(
+        user[0].id,
+        tokens.refreshToken,
+        tokens.expRfToken,
+        trx,
+        res,
+      );
+      delete tokens.refreshToken;
+      delete tokens.expRfToken;
+      const userData = {
+        user: user[0],
+        tokens,
+      };
+      await trx.commit();
       return res.json(userData);
     } catch (error) {
+      await trx.rollback();
       console.error('Error in getAuthUser:', error);
       return next(
         ApiError.IntServError('An error occurred while fetching user data'),

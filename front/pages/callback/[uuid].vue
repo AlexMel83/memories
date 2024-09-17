@@ -87,7 +87,7 @@ const picture = ref('');
 onMounted(async () => {
   try {
     const uuid = route.params.uuid;
-    const response = await $api.auth.getAthUser(uuid);
+    const response = await $api.auth.getAuthUser(uuid);
     if (
       response &&
       [200, 201].includes(response.status) &&
