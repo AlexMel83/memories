@@ -10,23 +10,23 @@ const {
   POSTGRES_PORT,
   POSTGRES_HOST,
 } = process.env;
-let db = null;
+const db = knex({
+  client: 'pg',
+  connection: {
+    host: POSTGRES_HOST,
+    port: POSTGRES_PORT,
+    user: POSTGRES_USER,
+    password: POSTGRES_PASSWORD,
+    database: POSTGRES_DB,
+  },
+});
 try {
-  db = knex({
-    client: 'pg',
-    connection: {
-      host: POSTGRES_HOST,
-      port: POSTGRES_PORT,
-      user: POSTGRES_USER,
-      password: POSTGRES_PASSWORD,
-      database: POSTGRES_DB,
-    },
-  });
-
   // check connection to DB
   db.raw('SELECT 1')
     .then(() => {
-      console.log('Connected to the database successfully!');
+      console.log(
+        'Connected to the database on ' + POSTGRES_HOST + ' successfully!',
+      );
     })
     .catch((err) => {
       console.error('Failed to connect to the database:', err.message);

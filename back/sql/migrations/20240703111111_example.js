@@ -25,9 +25,10 @@ export const up = async (knex) => {
     });
     await trx.schema.createTable('tokens', (table) => {
       table.increments('id').primary().notNullable().unique();
-      table.integer('user_id').notNullable().index();
+      table.integer('user_id').notNullable().unique().index();
       table.text('refreshtoken').notNullable().index();
       table.timestamp('exp_token').notNullable();
+      table.timestamp('updated_at').defaultTo(knex.fn.now()).notNullable();
       table.timestamp('created_at').defaultTo(knex.fn.now()).notNullable();
     });
 

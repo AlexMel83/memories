@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+import defaultTheme from 'tailwindcss/defaultTheme';
 export default {
   content: [
     './components/**/*.{vue,js}',
@@ -10,6 +11,10 @@ export default {
   jit: true,
   theme: {
     extend: {},
+    screens: {
+      xs: '440px',
+      ...defaultTheme.screens,
+    },
     zIndex: {
       0: 0,
       10: 10,

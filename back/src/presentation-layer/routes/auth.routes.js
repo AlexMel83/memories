@@ -7,8 +7,12 @@ import { body, param } from 'express-validator';
 
 const phoneRegex = /^380\d{9}$/;
 const validateUser = [
+  body('id')
+    .optional({ checkFalsy: true })
+    .isNumeric()
+    .withMessage('Поле "id" має формат number'),
   body('email')
-    .notEmpty()
+    .optional({ checkFalsy: true })
     .isEmail()
     .isAscii()
     .withMessage('Поле "email" має формат email@email.ua'),
@@ -27,7 +31,7 @@ const validateUser = [
   body('phone')
     .optional({ checkFalsy: true })
     .matches(phoneRegex)
-    .withMessage('Поле "phone" має формат 3801234567'),
+    .withMessage('Поле "phone" має формат 380123456789'),
   body('role')
     .optional({ checkFalsy: true })
     .isString()
@@ -45,7 +49,15 @@ export default function (app) {
   app.post('/login', validateUser, validateMiddleware, userController.login);
 
   app.post('/logout', userController.logout);
-  app.get('/activate/:link', userController.activate);
+  app.post(
+    '/activate/',
+    body('activationlink')
+      .notEmpty()
+      .isUUID()
+      .withMessage('Поле "activationlink" має бути UUID'),
+    validateMiddleware,
+    userController.activate,
+  );
   app.get('/refresh', userController.refresh);
   app.get(
     '/users',
@@ -59,9 +71,8 @@ export default function (app) {
     '/users',
     authMiddleware,
     validateUser,
-    body('id').notEmpty().withMessage('Id is required'),
     validateMiddleware,
-    userController.editUser,
+    userController.updateUser,
   );
 
   app.delete(

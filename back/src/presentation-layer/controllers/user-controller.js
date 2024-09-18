@@ -1,11 +1,45 @@
 import userService from '../../service-layer/services/user-service.js';
 import ApiError from '../../middlewares/exceptions/api-errors.js';
 import userModel from '../../data-layer/models/user-model.js';
-import knex from './../../../config/knex.config.js';
 import { rFcookieOptions } from '../../../config/config.js';
-const { CLIENT_URL } = process.env;
+import knex from './../../../config/knex.config.js';
+import tokenService from './../../service-layer/services/token-service.js';
+
+const queryMappings = {
+  id: 'id',
+  email: 'email',
+  name: 'name',
+  surname: 'surname',
+  phone: 'phone',
+  role: 'role',
+  activationlink: 'activationlink',
+  facebook_id: 'facebook_id',
+  google_id: 'google_id',
+};
 
 class UserController {
+  async login(req, res, next) {
+    const trx = await knex.transaction();
+    try {
+      const { email, password } = req.body;
+      const userData = await userService.login(email, password, trx, res);
+      await trx.commit();
+      return res.json(userData);
+    } catch (error) {
+      await trx.rollback();
+      if (error.code === 'ECONNREFUSED') {
+        return next(ApiError.IntServError('Connection refused'));
+      }
+      if (error.status === 400) {
+        return next(ApiError.BadRequest(error.message));
+      } else if (error.status === 404) {
+        return next(ApiError.NotFound(error.message));
+      } else {
+        return next(ApiError.IntServError(error.message));
+      }
+    }
+  }
+
   async registration(req, res, next) {
     let trx;
     try {
@@ -17,9 +51,7 @@ class UserController {
         role,
         trx,
       );
-      res.cookie('refreshToken', userData.refreshToken, rFcookieOptions);
       await trx.commit();
-      delete userData.refreshToken;
       return res.json(userData);
     } catch (error) {
       await trx.rollback();
@@ -36,38 +68,43 @@ class UserController {
     }
   }
 
-  async login(req, res, next) {
-    let trx;
+  async activate(req, res, next) {
+    const trx = await knex.transaction();
     try {
-      trx = await knex.transaction();
-      const { email, password } = req.body;
-      const userData = await userService.login(email, password, trx);
-
-      res.cookie('refreshToken', userData.refreshToken, rFcookieOptions);
+      const activationlink = req.body.activationlink;
+      const user = await userService.activate(activationlink, trx);
+      const tokens = tokenService.generateTokens({ ...user[0] });
+      await tokenService.saveToken(
+        user[0].id,
+        tokens.refreshToken,
+        tokens.expRfToken,
+        trx,
+        res,
+      );
+      delete tokens.refreshToken;
+      delete tokens.expRfToken;
+      const userData = {
+        user: user[0],
+        tokens,
+      };
       await trx.commit();
-      delete userData.refreshToken; // Удаление токена из данных
       return res.json(userData);
     } catch (error) {
-      if (trx) {
-        await trx.rollback();
-      }
-      if (error.code === 'ECONNREFUSED') {
-        return next(ApiError.IntServError('Connection refused'));
-      }
+      await trx.rollback();
       if (error.status === 400) {
-        return next(ApiError.BadRequest(error.message));
+        return next(ApiError.BadRequest(error));
       } else if (error.status === 404) {
-        return next(ApiError.NotFound(error.message));
+        return next(ApiError.NotFound(error));
       } else {
-        return next(ApiError.IntServError(error.message));
+        console.error(error);
+        return next(ApiError.IntServError(error));
       }
     }
   }
 
   async logout(req, res) {
-    let trx;
+    const trx = await knex.transaction();
     try {
-      trx = await knex.transaction();
       let { refreshToken } = req.cookies;
       const token = await userService.logout(refreshToken, trx);
       res.clearCookie('refreshToken');
@@ -89,39 +126,18 @@ class UserController {
     }
   }
 
-  async activate(req, res) {
-    let trx;
-    try {
-      trx = await knex.transaction();
-      const activationLink = req.params.link;
-      const email = await userService.activate(activationLink, trx);
-      trx.commit();
-      return res.redirect(`${CLIENT_URL}/?email=${email}`);
-    } catch (error) {
-      trx.rollback();
-      console.error(error);
-      if (error.status === 400) {
-        return res.json(ApiError.BadRequest(error));
-      } else {
-        return res.json(ApiError.IntServError(error));
-      }
-    }
-  }
-
   async refresh(req, res) {
-    let trx;
+    const trx = await knex.transaction();
     try {
-      trx = await knex.transaction();
       const { refreshToken } = req.cookies;
       if (!refreshToken) {
         return res.json(
-          ApiError.BadRequest('User not authorized, refreToken not found'),
+          ApiError.BadRequest('Користувач не автентифікований. Авторизуйтесь'),
         );
       }
-      const userData = await userService.refresh(refreshToken, trx);
+      const userData = await userService.refresh(refreshToken, trx, res);
       res.cookie('refreshToken', userData.refreshToken, rFcookieOptions);
       await trx.commit();
-      delete userData.refreshToken;
       return res.json(userData);
     } catch (error) {
       if (trx) {
@@ -138,15 +154,29 @@ class UserController {
 
   async getUser(req, res) {
     const user = req.user;
+    let conditions = {};
     try {
+      const queryParams = req.query;
+      for (const key in queryParams) {
+        const mappedKey = queryMappings[key];
+        if (mappedKey) {
+          conditions[mappedKey] = queryParams[key];
+        }
+      }
       let response;
-      if (req && req.query && req.query.id) {
-        response = await userService.getUser(req.query.id);
-        if (user.id === response.id) {
+      if (req?.query?.id) {
+        response = await userModel.getUsersByConditions({ id: req.query.id });
+        if (user.id === response[0].id) {
           return res.json(response);
         } else {
           return res.send(ApiError.AccessDeniedForRole('User not owner'));
         }
+      } else if (req.user.role === 'admin') {
+        response = await userModel.getUsersByConditions(conditions);
+        if (!response) {
+          return res.json(ApiError.NotFound('Memories not found'));
+        }
+        return res.json(response);
       } else {
         return res.json(ApiError.BadRequest('parametr not found'));
       }
@@ -162,46 +192,64 @@ class UserController {
     }
   }
 
-  async editUser(req, res) {
+  async updateUser(req, res) {
     const fields = req.body;
-    const userDataBase = await userModel.findUserByEmailWithHash(fields.email);
-    if (!userDataBase) {
+    const userData = req.user;
+    if (!fields.id) {
+      fields.id = userData.id;
+    }
+    let userDataBase = null;
+    userDataBase = await userModel.getUsersByConditions({
+      id: userData.id,
+    });
+    if (!userDataBase.length) {
       return res.json(
         ApiError.NotFound(`user with email: ${fields.email} was not found`),
       );
+    }
+    if (fields.email && userDataBase[0].role === admin) {
+      userDataBase = await userModel.getUsersByConditions({
+        email: userData.email,
+      });
     }
     let updatedUser = {};
     if (fields?.password) {
       fields.password = await userService.hashPassword(fields.password);
     }
     const payload = {
-      id: userDataBase.id,
+      id: userDataBase[0].id,
       email: fields.email,
-      password: fields?.password ?? userDataBase.password,
-      name: fields?.name ?? userDataBase.name,
-      surname: fields?.surname ?? userDataBase.surname,
-      phone: fields?.phone ?? userDataBase.phone,
-      role: fields?.role ?? userDataBase.role,
-      activationlink: fields?.activationlink ?? userDataBase.activationlink,
-      isactivated: fields?.isactivated ?? userDataBase.isactivated,
+      password: fields?.password ?? userDataBase[0].password,
+      name: fields?.name ?? userDataBase[0].name,
+      surname: fields?.surname ?? userDataBase[0].surname,
+      phone: fields?.phone ?? userDataBase[0].phone,
+      role: fields?.role ?? userDataBase[0].role,
+      activationlink: fields?.activationlink ?? userDataBase[0].activationlink,
+      isactivated: fields?.isactivated ?? userDataBase[0].isactivated,
+      social_login: fields?.social_login ?? userDataBase[0].social_login,
+      facebook_id: fields?.facebook_id ?? userDataBase[0].facebook_id,
+      google_id: fields?.google_id ?? userDataBase[0].google_id,
+      picture: fields?.picture ?? userDataBase[0].picture,
       updated_at: new Date().toISOString(),
     };
-
-    const userData = req.user;
+    const trx = await knex.transaction();
     try {
       if (userData.role === 'admin') {
-        updatedUser = await userModel.editUser(payload);
+        updatedUser = await userModel.createOrUpdateUser(payload, trx);
         return res.status(200).json(updatedUser);
-      } else if (userData.id === userDataBase.id) {
-        payload.role = userDataBase.role;
-        payload.activationlink = userDataBase.activationlink;
-        payload.isactivated = userDataBase.isactivated;
-        updatedUser = await userModel.editUser(payload);
+      } else if (userData.id === userDataBase[0].id) {
+        payload.role = userDataBase[0].role;
+        payload.activationlink = userDataBase[0].activationlink;
+        payload.isactivated = userDataBase[0].isactivated;
+        updatedUser = await userModel.createOrUpdateUser(payload);
+        await trx.commit();
         return res.status(200).json(updatedUser);
       } else {
+        await trx.rollback();
         return res.json(ApiError.AccessDeniedForRole('User not owner'));
       }
     } catch (error) {
+      await trx.rollback();
       console.error(error);
       if (error.status === 400) {
         return res.json(ApiError.BadRequest(error));
@@ -212,12 +260,12 @@ class UserController {
   }
 
   async deleteUser(req, res) {
-    const userId = req.params.user_id;
+    const user_id = req.params.user_id;
 
-    const userDataBase = await userModel.findUserById(userId);
+    const userDataBase = await userModel.getUsersByConditions({ user_id });
     if (!userDataBase) {
       return res.json(
-        ApiError.NotFound(`user with email: ${userId} was not found`),
+        ApiError.NotFound(`user with email: ${user_id} was not found`),
       );
     }
 
@@ -225,7 +273,7 @@ class UserController {
     try {
       const role = req.user.role;
       if (role === 'admin') {
-        response = await userModel.deleteUser(userId);
+        response = await userModel.deleteUser(user_id);
         return res.status(200).json(response);
       } else {
         return res.json(ApiError.AccessDeniedForRole('User not owner'));

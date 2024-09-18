@@ -3,64 +3,51 @@ import { useAuthStore } from '~/stores/auth.store';
 import { object, string, ref as yupRef } from 'yup';
 import { defineShortcuts } from '#imports';
 
-const { $api, $load } = useNuxtApp();
 const authStore = useAuthStore();
+const { $api, $load } = useNuxtApp();
 
 const minPwd = 4;
 const isOpen = ref(false);
-const currentTab = ref(0);
 const isLoading = ref(false);
 const emailActive = ref(false);
 const passwordActive = ref(false);
 const passConfirmActive = ref(false);
+const userIsNotRegistered = ref(false);
+const sendActivationEmail = ref(false);
 const togglePasswordVisibility = ref(false);
 
-const formData = reactive({
+const emit = defineEmits(['modalClosed']);
+const state = reactive({
   email: '',
   password: '',
   passConfirm: '',
 });
-const state = reactive({
-  email: formData.email,
-  password: formData.password,
-  passConfirm: formData.passConfirm,
-});
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const isEmailValid = computed(() => emailRegex.test(state.email));
 const errors = reactive({
+  form: '',
   email: '',
   password: '',
-  form: '',
 });
-const items = [
-  {
-    key: 0,
-    label: 'Акаунт',
-    description: '',
-  },
-  {
-    key: 1,
-    label: 'Реєстрація',
-    description: '',
-  },
-];
-
 const clearErrors = () => {
+  errors.form = '';
   errors.email = '';
   errors.password = '';
-  errors.form = '';
 };
-const clearVars = () => {
-  togglePasswordVisibility.value = false;
-  isLoading.value = false;
-  state.email = '';
+const clearVars = (email) => {
+  state.email = email || '';
   state.password = '';
   state.passConfirm = '';
+  isLoading.value = false;
+  userIsNotRegistered.value = false;
+  sendActivationEmail.value = false;
+  togglePasswordVisibility.value = false;
 };
+
 const handleTogglePasswordVisibility = async () => {
   togglePasswordVisibility.value = !togglePasswordVisibility.value;
 };
-const schema = computed(() =>
-  currentTab.value === 0 ? loginSchema : registrationSchema,
-);
+
 const loginSchema = object({
   email: string().email('Невірний email').required('Потрібен Email'),
   password: string()
@@ -77,21 +64,25 @@ const registrationSchema = object({
     'Паролі не співпадають',
   ),
 });
+const schema = computed(() =>
+  userIsNotRegistered.value ? registrationSchema : loginSchema,
+);
 
 const openModal = () => {
-  isOpen.value = true;
+  isOpen.value = !isOpen.value;
+};
+const closeModal = () => {
+  isOpen.value = false;
+  clearErrors();
+  clearVars();
+  emit('modalClosed');
 };
 defineExpose({ openModal });
-
 defineShortcuts({
   escape: {
     usingInput: true,
     whenever: [isOpen],
-    handler: () => {
-      isOpen.value = false;
-      clearErrors();
-      clearVars();
-    },
+    handler: closeModal,
   },
 });
 
@@ -101,9 +92,9 @@ const handleFocus = (field) => {
   if (field === 'passConfirm') passConfirmActive.value = true;
 };
 const handleBlur = (field) => {
-  if (field === 'email' && !formData.email) emailActive.value = false;
-  if (field === 'password' && !formData.password) passwordActive.value = false;
-  if (field === 'passConfirm' && !formData.passConfirm)
+  if (field === 'email' && !state.email) emailActive.value = false;
+  if (field === 'password' && !state.password) passwordActive.value = false;
+  if (field === 'passConfirm' && !state.passConfirm)
     passConfirmActive.value = false;
 };
 
@@ -117,20 +108,21 @@ const handleSubmit = async (event) => {
   const payload = {
     email: state.email,
     password: state.password,
-    role: currentTab.value === 1 ? 'user' : '',
+    role: 'user',
   };
 
   try {
-    if (currentTab.value === 1 && state.passConfirm !== state.password) {
+    if (userIsNotRegistered.value && state.passConfirm !== state.password) {
       errors.password = 'Портібно підтвердити пароль';
+      if (state.passConfirm) errors.passConfirm = 'Паролі не співпадають';
       isLoading.value = false;
       return;
     }
     const res = await $load(
       () =>
-        currentTab.value === 0
-          ? $api.auth.signIn(payload)
-          : $api.auth.signUp(payload),
+        userIsNotRegistered.value
+          ? $api.auth.signUp(payload)
+          : $api.auth.signIn(payload),
       errors,
     );
 
@@ -140,30 +132,27 @@ const handleSubmit = async (event) => {
       ![400, 401, 403, 404, 500].includes(res.data.status)
     ) {
       const data = res.data;
-      authStore.setUserData(data);
-      console.log(data);
-      isOpen.value = false;
-      clearVars();
-    }
-    if (res.data && res.data.message) {
-      if (res.data.message.includes('Невірний пароль')) {
-        errors.password = 'Невірний пароль';
-      } else if (res.data.message.includes('mail-server')) {
-        errors.email =
-          'mail server is not responding, activation-email was not sent';
-      } else if (res.data.message.includes('вже існує')) {
-        errors.email = 'Ця пошта вже зареєстрована';
-      } else if (res.data.message.includes('не знайдений')) {
-        errors.email = 'даний email не зареєстровано';
-      } else if (res.data.message.includes('Помилка при валідації')) {
-        errors.email = 'Помилка при валідації';
-      } else if (res.data.message.includes('already exist')) {
-        errors.email = 'Користувач з такою поштою вже існує';
+      if (!userIsNotRegistered.value) {
+        authStore.saveUserData(data);
       }
+      if (data.user.isactivated === false) {
+        sendActivationEmail.value = true;
+      } else {
+        isOpen.value = false;
+        clearVars(userIsNotRegistered.value ? state.email : '');
+      }
+      isLoading.value = false;
+    }
+    if (errors) {
+      if (errors.email.includes('Цей email не зареєстровано')) {
+        userIsNotRegistered.value = true;
+      }
+      console.log(errors);
     }
   } catch (error) {
+    console.log(error);
     if (error) {
-      errors.form = 'Користувача не авторизовано';
+      errors.email = 'Користувача не авторизовано';
     }
   }
   isLoading.value = false;
@@ -180,197 +169,231 @@ watch(isOpen, (newValue) => {
   <div>
     <UModal v-model="isOpen" prevent-close :ui="{ wrapper: 'z-500' }">
       <UCard
+        v-if="!sendActivationEmail"
         :ui="{
           ring: '',
           divide: 'divide-y divide-gray-100 dark:divide-gray-800',
         }"
       >
-        <template #header>
-          <div class="flex items-center justify-between">
-            <h3
-              class="text-base font-semibold leading-6 text-gray-900 dark:text-white text-center"
+        <div class="flex items-center">
+          <h3
+            class="flex-grow text-base font-semibold leading-6 text-gray-900 dark:text-[#999] text-center"
+          >
+            Увійти до мапи пам'яті
+          </h3>
+          <UButton
+            color="gray"
+            variant="ghost"
+            icon="i-heroicons-x-mark-20-solid"
+            class="flex items-center justify-center w-8 h-8 ml-2"
+            @click="closeModal"
+          />
+        </div>
+        <ModalSocial />
+        <h3
+          class="text-base font-semibold leading-6 text-gray-900 dark:text-[#999] text-center"
+        >
+          Або введіть вашу електронну пошту
+        </h3>
+        <UForm
+          v-auto-animate
+          :schema="schema"
+          :state="state"
+          class="space-y-4"
+          @submit="handleSubmit"
+        >
+          <div class="space-y-3 mt-2">
+            <UFormGroup
+              name="email"
+              :error="errors.email"
+              :class="{
+                'has-value': state.email !== '' || emailActive,
+                'form-group': true,
+                'text-right': true,
+                'dark:text-[#999]': true,
+              }"
             >
-              Увійти до мапи пам'яті
-            </h3>
-            <UButton
-              color="gray"
-              variant="ghost"
-              icon="i-heroicons-x-mark-20-solid"
-              class="-my-1"
-              @click="
-                () => {
-                  isOpen = false;
-                  clearVars();
-                }
-              "
-            />
-          </div>
-          <ModalSocial />
-        </template>
-        Або введіть вашу електронну пошту
-        <UTabs v-model="currentTab" :items="items" :ui="{}">
-          <template #item="{ item }">
-            <UForm
-              v-auto-animate
-              :schema="schema"
-              :state="state"
-              class="space-y-4"
-              @submit="handleSubmit"
-            >
-              <div class="space-y-3 mt-5">
-                <UFormGroup
-                  name="email"
-                  :error="errors.email"
-                  :class="{
-                    'has-value': state.email !== '' || emailActive,
-                    'form-group': true,
-                    'text-right': true,
-                  }"
-                >
-                  <UInput
-                    v-model="state.email"
-                    icon="i-heroicons-envelope"
-                    variant="none"
-                    color="primary"
-                    :ui="{
-                      base: 'border-t-0 border-l-0 border-r-0 border-b-2 focus:ring-0',
-                      input: 'bg-transparent',
-                      rounded: 'rounded-none',
-                    }"
-                    @focus="handleFocus('email')"
-                    @blur="handleBlur('email')"
-                  >
-                    <label>Email</label>
-                  </UInput>
-                </UFormGroup>
-                <UFormGroup
-                  v-if="state.email"
-                  name="password"
-                  :error="errors.password"
-                  :class="{
-                    'has-value': state.password !== '' || passwordActive,
-                    'form-group': true,
-                    'text-right': true,
-                  }"
-                >
-                  <div class="password-input-wrapper">
-                    <UInput
-                      v-if="!togglePasswordVisibility"
-                      v-model="state.password"
-                      type="password"
-                      icon="i-heroicons-lock-closed"
-                      variant="none"
-                      color="primary"
-                      :ui="{
-                        base: 'border-t-0 border-l-0 border-r-0 border-b-2 focus:ring-0',
-                        input: 'bg-transparent',
-                        rounded: 'rounded-none',
-                      }"
-                      :password-visible="false"
-                      @focus="handleFocus('password')"
-                      @blur="handleBlur('password')"
-                    >
-                      <label>Пароль</label>
-                    </UInput>
-                    <UInput
-                      v-else
-                      v-model="state.password"
-                      type="text"
-                      icon="i-heroicons-lock-closed"
-                      variant="none"
-                      color="primary"
-                      :ui="{
-                        base: 'border-t-0 border-l-0 border-r-0 border-b-2 focus:ring-0',
-                        input: 'bg-transparent',
-                        rounded: 'rounded-none',
-                      }"
-                      @focus="handleFocus('password')"
-                      @blur="handleBlur('password')"
-                    >
-                      <label>Пароль</label>
-                    </UInput>
-                    <UButton
-                      color="gray"
-                      variant="ghost"
-                      :icon="
-                        togglePasswordVisibility
-                          ? 'i-heroicons-eye-slash'
-                          : 'i-heroicons-eye'
-                      "
-                      class="password-toggle"
-                      @click="handleTogglePasswordVisibility"
-                    />
-                  </div>
-                </UFormGroup>
-              </div>
-              <UFormGroup
-                v-if="item.key === 1"
-                name="passConfirm"
-                :class="{
-                  'has-value': state.passConfirm !== '' || passConfirmActive,
-                  'form-group': true,
-                  'text-right': true,
+              <UInput
+                v-model="state.email"
+                icon="i-heroicons-envelope"
+                variant="none"
+                color="primary"
+                autocomplete="new-email"
+                :ui="{
+                  base: 'border-t-0 border-l-0 border-r-0 border-b-2 focus:ring-0',
+                  input: 'bg-transparent',
+                  rounded: 'rounded-none',
                 }"
+                @focus="handleFocus('email')"
+                @blur="handleBlur('email')"
               >
-                <div class="password-input-wrapper">
-                  <UInput
-                    v-if="!togglePasswordVisibility"
-                    v-model="state.passConfirm"
-                    type="password"
-                    icon="i-heroicons-lock-closed"
-                    variant="none"
-                    color="primary"
-                    :ui="{
-                      base: 'border-t-0 border-l-0 border-r-0 border-b-2 focus:ring-0',
-                      input: 'bg-transparent',
-                      rounded: 'rounded-none',
-                    }"
-                    @focus="handleFocus('passConfirm')"
-                    @blur="handleBlur('passConfirm')"
-                  >
-                    <label>Повторіть пароль</label>
-                  </UInput>
-                  <UInput
-                    v-else
-                    v-model="state.passConfirm"
-                    type="text"
-                    icon="i-heroicons-lock-closed"
-                    variant="none"
-                    color="primary"
-                    :ui="{
-                      base: 'border-t-0 border-l-0 border-r-0 border-b-2 focus:ring-0',
-                      input: 'bg-transparent',
-                      rounded: 'rounded-none',
-                    }"
-                    @focus="handleFocus('passConfirm')"
-                    @blur="handleBlur('passConfirm')"
-                  >
-                    <label>Повторіть пароль</label>
-                  </UInput>
-                  <UButton
-                    color="gray"
-                    variant="ghost"
-                    :icon="
-                      togglePasswordVisibility
-                        ? 'i-heroicons-eye-slash'
-                        : 'i-heroicons-eye'
-                    "
-                    class="password-toggle"
-                    @click="handleTogglePasswordVisibility"
-                  />
-                </div>
-              </UFormGroup>
+                <label>Email</label>
+              </UInput>
+            </UFormGroup>
+            <UFormGroup
+              v-if="isEmailValid"
+              name="password"
+              :error="errors.password"
+              :class="{
+                'has-value': state.password !== '' || passwordActive,
+                'form-group': true,
+                'text-right': true,
+                'dark:text-[#999]': true,
+              }"
+            >
+              <div class="password-input-wrapper">
+                <UInput
+                  v-if="!togglePasswordVisibility"
+                  v-model="state.password"
+                  type="password"
+                  icon="i-heroicons-lock-closed"
+                  variant="none"
+                  color="primary"
+                  :ui="{
+                    base: 'border-t-0 border-l-0 border-r-0 border-b-2 focus:ring-0',
+                    input: 'bg-transparent',
+                    rounded: 'rounded-none',
+                  }"
+                  :password-visible="false"
+                  @focus="handleFocus('password')"
+                  @blur="handleBlur('password')"
+                >
+                  <label>Пароль</label>
+                </UInput>
+                <UInput
+                  v-else
+                  v-model="state.password"
+                  type="text"
+                  icon="i-heroicons-lock-closed"
+                  variant="none"
+                  color="primary"
+                  :ui="{
+                    base: 'border-t-0 border-l-0 border-r-0 border-b-2 focus:ring-0',
+                    input: 'bg-transparent',
+                    rounded: 'rounded-none',
+                  }"
+                  @focus="handleFocus('password')"
+                  @blur="handleBlur('password')"
+                >
+                  <label>Пароль</label>
+                </UInput>
+                <UButton
+                  color="gray"
+                  variant="ghost"
+                  :icon="
+                    togglePasswordVisibility
+                      ? 'i-heroicons-eye-slash'
+                      : 'i-heroicons-eye'
+                  "
+                  class="password-toggle"
+                  @click="handleTogglePasswordVisibility"
+                />
+              </div>
+            </UFormGroup>
+          </div>
+          <UFormGroup
+            v-if="userIsNotRegistered && isEmailValid"
+            name="passConfirm"
+            :error="errors.passConfirm"
+            :class="{
+              'has-value': state.passConfirm !== '' || passConfirmActive,
+              'form-group': true,
+              'text-right': true,
+              'dark:text-[#999]': true,
+            }"
+          >
+            <div class="password-input-wrapper">
+              <UInput
+                v-if="!togglePasswordVisibility"
+                v-model="state.passConfirm"
+                type="password"
+                :error="errors.passConfirm"
+                icon="i-heroicons-lock-closed"
+                variant="none"
+                color="primary"
+                :ui="{
+                  base: 'border-t-0 border-l-0 border-r-0 border-b-2 focus:ring-0',
+                  input: 'bg-transparent',
+                  rounded: 'rounded-none',
+                }"
+                @focus="handleFocus('passConfirm')"
+                @blur="handleBlur('passConfirm')"
+              >
+                <label>Повторіть пароль</label>
+              </UInput>
+              <UInput
+                v-else
+                v-model="state.passConfirm"
+                type="text"
+                icon="i-heroicons-lock-closed"
+                variant="none"
+                color="primary"
+                :ui="{
+                  base: 'border-t-0 border-l-0 border-r-0 border-b-2 focus:ring-0',
+                  input: 'bg-transparent',
+                  rounded: 'rounded-none',
+                }"
+                @focus="handleFocus('passConfirm')"
+                @blur="handleBlur('passConfirm')"
+              >
+                <label>Повторіть пароль</label>
+              </UInput>
               <UButton
-                v-if="state.email"
-                type="submit"
-                color="black"
-                :loading="isLoading"
-              >
-                {{ item.key === 0 ? 'Увійти' : 'Зареєструватись' }}
-              </UButton>
-            </UForm>
-          </template>
-        </UTabs>
+                color="gray"
+                variant="ghost"
+                :icon="
+                  togglePasswordVisibility
+                    ? 'i-heroicons-eye-slash'
+                    : 'i-heroicons-eye'
+                "
+                class="password-toggle"
+                @click="handleTogglePasswordVisibility"
+              />
+            </div>
+          </UFormGroup>
+          <UButton
+            v-if="isEmailValid && state.password.length >= minPwd"
+            type="submit"
+            color="black"
+            :loading="isLoading"
+          >
+            {{
+              isEmailValid && userIsNotRegistered ? 'Зареєструватись' : 'Увійти'
+            }}
+          </UButton>
+        </UForm>
+      </UCard>
+      <UCard
+        v-else
+        :ui="{
+          ring: '',
+          divide: 'divide-y divide-gray-100 dark:divide-gray-800',
+        }"
+      >
+        <div class="flex items-center">
+          <h3
+            class="flex-grow text-base font-semibold leading-6 text-gray-900 dark:text-[#999] text-center"
+          >
+            Вітаємо з успішною реєстрацією!
+          </h3>
+          <UButton
+            color="gray"
+            variant="ghost"
+            icon="i-heroicons-x-mark-20-solid"
+            class="flex items-center justify-center w-8 h-8 ml-2"
+            @click="
+              () => {
+                isOpen = false;
+                clearVars();
+              }
+            "
+          />
+        </div>
+        <h3
+          class="text-base font-semibold leading-6 text-gray-900 dark:text-[#999] text-center"
+        >
+          Лист активації надіслано на {{ state.email }}
+        </h3>
       </UCard>
     </UModal>
   </div>
@@ -409,9 +432,7 @@ watch(isOpen, (newValue) => {
 
 .form-group.has-value label,
 .form-group input:focus + label {
-  top: 3px;
+  top: 8px;
   left: 0;
-  /* font-size: 0.75rem; */
-  /* color: #333; */
 }
 </style>

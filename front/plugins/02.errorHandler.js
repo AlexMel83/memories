@@ -6,22 +6,27 @@ export default defineNuxtPlugin((nuxtApp) => {
     } catch (error) {
       if (errHandler) {
         if (error.response) {
-          console.log(error.response);
           const message =
-            error.response.data?.message || 'Unknown error occured';
+            error.response?.data?.message || 'Unknown error occurred';
           if (message.includes('Невірний пароль')) {
-            errHandler.password = message;
+            errHandler.password = 'Невірний пароль';
           } else if (message.includes('mail-server')) {
-            errHandler.email =
-              'mail server is not responding, activation-email was not sent';
+            errHandler.email = 'Проблеми з сервером пошти';
           } else if (message.includes('вже існує')) {
-            errHandler.email = message;
-          } else if (res.data.message.includes('не знайдений')) {
-            errHandler.email = 'даний email не зареєстровано';
-          } else if (res.data.message.includes('Помилка при валідації')) {
-            errHandler.email = 'Помилка при валідації';
+            errHandler.email = 'Ця пошта вже зареєстрована';
+          } else if (message.includes('не знайдений')) {
+            errHandler.email =
+              'Цей email не зареєстровано, будь ласка зареєструйтесь';
+          } else if (message.includes('Validation error')) {
+            errHandler.email = 'Перевірте правильність введених даних.';
+          } else if (message.includes('535 Incorrect authentication data')) {
+            errHandler.email =
+              'Помилка відправки листа активації. Зверніться до адміністратора';
+          } else if (message.includes('не активовано')) {
+            errHandler.email =
+              'Обліковий запис не активовано. Перевірте пошту або зверніться до адміністратора.';
           } else {
-            errHandler.email = message;
+            errHandler.form = message;
           }
         } else if (error.request) {
           console.log('Error', error);
@@ -31,8 +36,10 @@ export default defineNuxtPlugin((nuxtApp) => {
         } else {
           errHandler.textError = error.message || 'An unknown error occurred.';
         }
+        return errHandler;
       } else {
         console.error('An error occurred:', error);
+        return error;
       }
     }
   });

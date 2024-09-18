@@ -56,10 +56,10 @@
         </div>
       </div>
       <div class="additional-links">
-        <nuxt-link to="/terms" class="terms-link">
+        <nuxt-link to="/donation-service-terms" class="terms-link">
           Умови використання
         </nuxt-link>
-        <nuxt-link to="/privacy" class="terms-link">
+        <nuxt-link to="/privacy-policy" class="terms-link">
           Політика конфіденційності
         </nuxt-link>
       </div>
@@ -94,6 +94,7 @@ export default {
 <style scoped>
 .footer-wrapper {
   background-color: var(--footer-bg);
+  margin-top: auto;
 }
 
 .footer {

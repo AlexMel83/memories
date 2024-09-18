@@ -25,29 +25,30 @@
 
 <script setup>
 import { useAuthStore } from '@/stores/auth.store.ts';
+import { ref, computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 const store = useAuthStore();
-const route = useRoute();
 const menuOpen = ref(false);
+const route = useRoute();
 
-const authUser = inject('authUser');
-const isUserDataReady = inject('isUserDataReady');
-
-const userRole = computed(() => store.userRole);
 const userName = ref('');
 const userSurname = ref('');
-watchEffect(() => {
-  if (isUserDataReady.value && authUser.value) {
-    const userData =
-      typeof authUser.value === 'string'
-        ? JSON.parse(authUser.value)
-        : authUser.value;
 
-    userName.value = userData.user.name;
-    userSurname.value = userData.user.surname;
-  }
-});
+const updateUserData = () => {
+  userName.value = store.userData.user.name;
+  userSurname.value = store.userData.user.surname;
+};
+
+watch(
+  () => localStorage.getItem('userData'),
+  (newVal) => {
+    if (newVal) {
+      updateUserData();
+    }
+  },
+  { immediate: true },
+);
 
 const isInCabinet = computed(() => {
   const currentPath = route.path;
@@ -59,18 +60,22 @@ const isInCabinet = computed(() => {
 });
 
 const setRout = () => {
-  if (userRole.value === 'manager') {
-    return '/manager/coworking';
-  } else if (userRole.value === 'user') {
-    return '/user';
-  } else if (userRole.value === 'admin') {
-    return '/admin';
+  switch (store.userData.user.role) {
+    case 'manager':
+      return '/manager';
+    case 'user':
+      return '/user';
+    case 'admin':
+      return '/admin';
+    default:
+      return '/';
   }
 };
 
 const goOut = () => {
   menuOpen.value = false;
   store.logOut();
+  localStorage.removeItem('userData');
 };
 </script>
 

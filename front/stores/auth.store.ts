@@ -17,108 +17,61 @@ interface User {
   updated_at: string;
 }
 
-interface Advantage {
-  id: number;
-  name: string;
-  description: string;
-  icon: string;
+interface AuthResponse {
+  user: User;
+  tokens: {
+    accessToken: string;
+    refreshToken: string;
+    expAcToken: string;
+    expRfToken: string;
+  };
 }
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    accessToken: '',
+    userData: null as AuthResponse | null,
+    isMenuOpen: false,
     isLoading: false,
     isAuthed: false,
-    isMenuOpen: false,
     menuOpen: false,
-    userRole: '',
-    userData: null,
-    authUser: {} as User,
-    activeTabAuthUserMenu: '',
-    manager: {} as User | null,
-    allAdvantages: [] as Advantage[],
-    initialEmail: '',
   }),
 
   actions: {
-    setName(ob: Partial<typeof this.$state>) {
-      Object.assign(this, ob);
+    saveUserData(data: AuthResponse) {
+      this.userData = data;
       this.isAuthed = true;
-    },
-
-    setRole(role: string) {
-      this.userRole = role;
       if (typeof window !== 'undefined') {
-        localStorage.setItem('userRole', role);
+        localStorage.setItem('userData', JSON.stringify(this.userData));
       }
     },
 
-    setAccessToken(token: string) {
-      this.accessToken = token;
+    loadUserData() {
       if (typeof window !== 'undefined') {
-        localStorage.setItem('access_token', token);
+        const data = localStorage.getItem('userData');
+        if (data) {
+          this.userData = JSON.parse(data);
+          this.isAuthed = true;
+          return this.userData;
+        }
       }
+      return null;
     },
 
     async logOut() {
       const { $api } = useNuxtApp();
       try {
-        const response = await $api.auth.logout();
-        if (response && typeof window !== 'undefined') {
+        await $api.auth.logout();
+        this.$reset(); // очищення Pinia-стану
+        if (typeof window !== 'undefined') {
           localStorage.clear();
-          this.authUser = {} as User;
-          this.userRole = 'unknown';
-          this.isAuthed = false;
-          this.accessToken = '';
-          localStorage.removeItem('access_token');
-          localStorage.removeItem('userData');
         }
       } catch (error) {
-        console.log(error);
-      }
-    },
-
-    getUserData(data: User) {
-      this.authUser = data;
-      this.isAuthed = true;
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('userData', JSON.stringify(data));
-      }
-    },
-
-    getAllAdvantages(data: Advantage[]) {
-      this.allAdvantages = data;
-    },
-
-    setUserData(userData: User | string) {
-      if (typeof userData === 'string') {
-        this.authUser = JSON.parse(userData);
-      }
-      if (typeof userData === 'object') {
-        this.authUser = { ...userData };
-      }
-      localStorage.setItem('userData', JSON.stringify(userData));
-    },
-
-    setAllAdvantages(data: Advantage[]) {
-      this.allAdvantages = data;
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('allAdvantages', JSON.stringify(data));
+        console.error('Error during logOut:', error);
       }
     },
 
     toggleMenu() {
       this.isMenuOpen = !this.isMenuOpen;
-    },
-    initializeStore() {
-      if (process.client) {
-        this.userRole = localStorage.getItem('userRole') || '';
-        const userData = localStorage.getItem('userData');
-        if (userData) {
-          this.userData = JSON.parse(userData);
-          this.isAuthed = true;
-        }
-      }
     },
   },
 });

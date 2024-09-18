@@ -1,98 +1,100 @@
 <template>
-  <main>
-    <section class="search">
-      <SearchInput />
-    </section>
-    <section class="memories-list" :class="{ blurred: authStore.isMenuOpen }">
-      <Map :memories="filteredMemories || []" />
-      <div v-auto-animate class="memories-wrapper">
-        <template v-if="filteredMemories?.length > 0 && !isLoading">
-          <div
-            v-auto-animate
-            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
-          >
+  <div class="index-page">
+    <main>
+      <section class="search">
+        <SearchInput />
+      </section>
+      <section class="memories-list" :class="{ blurred: authStore.isMenuOpen }">
+        <Map :memories="filteredMemories || []" />
+        <div v-auto-animate class="memories-wrapper">
+          <template v-if="filteredMemories?.length > 0 && !isLoading">
             <div
-              v-for="memory in filteredMemories"
-              :key="memory.id"
-              class="bg-white shadow-md rounded-lg"
+              v-auto-animate
+              class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
             >
-              <nuxt-link class="container" :to="'/'">
-                <div class="photo">
-                  <img
-                    v-if="memory.memory_photos.length"
-                    :src="`${memory.memory_photos[0].url.includes('http') ? '' : baseURL}${memory.memory_photos[0].url}`"
-                    loading="lazy"
-                  />
-                  <img
-                    v-else
-                    src="./../public/default-coworking.png"
-                    loading="lazy"
-                  />
-                  <div class="title">
-                    <h2 class="memory-title">
-                      {{ memory.title }}
-                    </h2>
+              <div
+                v-for="memory in filteredMemories"
+                :key="memory.id"
+                class="bg-white shadow-md rounded-lg"
+              >
+                <nuxt-link class="container" :to="'/'">
+                  <div class="photo">
+                    <img
+                      v-if="memory.memory_photos.length"
+                      :src="`${memory.memory_photos[0].url.includes('http') ? '' : baseURL}${memory.memory_photos[0].url}`"
+                      loading="lazy"
+                    />
+                    <img
+                      v-else
+                      src="./../public/default-coworking.png"
+                      loading="lazy"
+                    />
+                    <div class="title">
+                      <h2 class="memory-title">
+                        {{ memory.title }}
+                      </h2>
+                    </div>
                   </div>
-                </div>
-                <div v-auto-animate class="info-card">
-                  <div class="description-container">
-                    <p class="description">
-                      {{ memory.description }}
-                    </p>
-                  </div>
-                  <div v-if="memory.address" class="map" @click.stop>
-                    <a
-                      :href="
-                        'https://maps.google.com/?q=' +
-                        encodeURIComponent(memory.address)
-                      "
-                      target="_blank"
-                    >
-                      <img
-                        src="~assets/spaces_images/location-marker.png"
-                        loading="lazy"
-                        alt="local"
-                      />
-                      <span>{{ memory.address }}</span>
-                    </a>
-                  </div>
-                  <div class="icons-container up">
-                    <div class="time">
-                      <img
-                        src="~assets/spaces_images/time.svg"
-                        loading="lazy"
-                        alt="time icon"
-                      />
-                      <div flex>
-                        Створено:{{ formatDate(memory.created_at) }}
-                        <div v-if="memory.updated_at !== memory.created_at">
-                          Оновлено: {{ formatDate(memory.updated_at) }}
-                        </div>
-                        <div v-if="memory.date_event">
-                          Дата події: {{ formatDate(memory.date_event) }}
+                  <div v-auto-animate class="info-card">
+                    <div class="description-container">
+                      <p class="description">
+                        {{ memory.description }}
+                      </p>
+                    </div>
+                    <div v-if="memory.address" class="map" @click.stop>
+                      <a
+                        :href="
+                          'https://maps.google.com/?q=' +
+                          encodeURIComponent(memory.address)
+                        "
+                        target="_blank"
+                      >
+                        <img
+                          src="~assets/spaces_images/location-marker.png"
+                          loading="lazy"
+                          alt="local"
+                        />
+                        <span>{{ memory.address }}</span>
+                      </a>
+                    </div>
+                    <div class="icons-container up">
+                      <div class="time">
+                        <img
+                          src="~assets/spaces_images/time.svg"
+                          loading="lazy"
+                          alt="time icon"
+                        />
+                        <div flex>
+                          Створено:{{ formatDate(memory.created_at) }}
+                          <div v-if="memory.updated_at !== memory.created_at">
+                            Оновлено: {{ formatDate(memory.updated_at) }}
+                          </div>
+                          <div v-if="memory.date_event">
+                            Дата події: {{ formatDate(memory.date_event) }}
+                          </div>
                         </div>
                       </div>
                     </div>
+                    <nuxt-link :to="'/'" class="btn"> Переглянути </nuxt-link>
                   </div>
-                  <nuxt-link :to="'/'" class="btn"> Переглянути </nuxt-link>
-                </div>
-              </nuxt-link>
+                </nuxt-link>
+              </div>
             </div>
-          </div>
-          <div class="flex justify-center pagination">
-            <UPagination
-              v-model="page"
-              :total="Math.ceil(memoriesDataApi.length / perPage)"
-              size="md"
-              rounded
-              class="custom-pagination"
-            />
-          </div>
-        </template>
-        <Loader v-if="isLoad" />
-      </div>
-    </section>
-  </main>
+            <div class="flex justify-center pagination">
+              <UPagination
+                v-model="page"
+                :total="Math.ceil(memoriesDataApi.length / perPage)"
+                size="md"
+                rounded
+                class="custom-pagination"
+              />
+            </div>
+          </template>
+          <Loader v-if="isLoad" />
+        </div>
+      </section>
+    </main>
+  </div>
 </template>
 
 <script setup>
@@ -137,10 +139,6 @@ onMounted(async () => {
   }
 });
 
-// watch(searchTerm, async (newValue) => {
-//   await fetchMemories(newValue);
-// });
-
 const fetchMemories = async (searchQuery = null) => {
   isLoading.value = true;
   try {
@@ -170,6 +168,16 @@ const filteredMemories = computed(() => {
 
 <style scoped>
 @import '../assets/src/styles.css';
+
+.index-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+main {
+  flex: 1;
+}
 
 .memories-wrapper {
   padding: 20px 25px 10px 25px;

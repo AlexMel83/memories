@@ -12,16 +12,16 @@ const queryMappings = {
 
 class MemoriesController {
   async getMemories(req, res) {
-    let condition = {};
+    let conditions = {};
     try {
       const queryParams = req.query;
       for (const key in queryParams) {
         const mappedKey = queryMappings[key];
         if (mappedKey) {
-          condition[mappedKey] = queryParams[key];
+          conditions[mappedKey] = queryParams[key];
         }
       }
-      const response = await memoriesModel.getMemoriesByCondition(condition);
+      const response = await memoriesModel.getMemoriesByCondition(conditions);
       if (!response) {
         return res.json(ApiError.NotFound('Memories not found'));
       }

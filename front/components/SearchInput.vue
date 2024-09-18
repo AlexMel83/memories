@@ -3,7 +3,7 @@
     <UInput
       v-model="searchTerm"
       name="searchTerm"
-      placeholder="Пошук по назві коворкінга"
+      placeholder="Пошук по назві"
       icon="i-heroicons-magnifying-glass-20-solid"
       autocomplete="off"
       :ui="{ icon: { trailing: { pointer: '' } } }"

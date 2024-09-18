@@ -2,8 +2,8 @@ import FacebookStrategy from '../strategies/facebook-strategy.js';
 import ApiError from '../../middlewares/exceptions/api-errors.js';
 import UserModel from '../../data-layer/models/user-model.js';
 import GoogleStrategy from '../strategies/google-strategy.js';
-import UserDto from '../../data-layer/dtos/user-dto.js';
 import { rFcookieOptions } from '../../../config/config.js';
+import knex from './../../../config/knex.config.js';
 import tokenService from './token-service.js';
 
 const uuidRegex =
@@ -11,7 +11,7 @@ const uuidRegex =
 const emailRegex = /\(email\)=\(([^)]+)\)/;
 const {
   CLIENT_URL,
-  API_URL,
+  API_BASE,
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
   FACEBOOK_CLIENT_ID,
@@ -31,14 +31,14 @@ class SocialLoginService {
             this.strategies[provider] = new GoogleStrategy(
               GOOGLE_CLIENT_ID,
               GOOGLE_CLIENT_SECRET,
-              `${API_URL}/social-login/google/callback`,
+              `${API_BASE}/social-login/google/callback`,
             );
             break;
           case 'facebook':
             this.strategies[provider] = new FacebookStrategy(
               FACEBOOK_CLIENT_ID,
               FACEBOOK_CLIENT_SECRET,
-              `${API_URL}/social-login/facebook/callback`,
+              `${API_BASE}/social-login/facebook/callback`,
             );
             break;
           default:
@@ -63,20 +63,24 @@ class SocialLoginService {
   }
 
   async handleCallback(provider, code, codeVerifier, res) {
+    const trx = await knex.transaction();
     try {
       const strategy = this.getStrategy(provider);
       const user = await strategy.handleCallback(code, codeVerifier);
-      const userDto = new UserDto(user);
-      const tokens = tokenService.generateTokens({ ...userDto });
+      const tokens = tokenService.generateTokens({ ...user });
       await tokenService.saveToken(
         user.id,
         tokens.refreshToken,
         tokens.expRfToken,
+        trx,
+        res,
       );
       res.cookie('refreshToken', tokens.refreshToken, rFcookieOptions);
-      const frontendRedirectUri = `${CLIENT_URL}?authLink=${user.activationlink}`;
+      const frontendRedirectUri = `${CLIENT_URL}/callback/${user.activationlink}`;
+      await trx.commit();
       return res.redirect(frontendRedirectUri);
     } catch (error) {
+      await trx.rollback();
       console.error(`Error in ${provider} callback:`, error);
       if (error.name === 'TypeError' && error.code === 'ERR_NETWORK') {
         return res.redirect(
@@ -103,13 +107,32 @@ class SocialLoginService {
     if (!uuidRegex.test(authLink)) {
       return next(ApiError.BadRequest('Wrong auth link'));
     }
+    const trx = await knex.transaction();
     try {
-      const userData = await UserModel.findUserByActivationLink(authLink);
-      if (!userData) {
+      const user = await UserModel.getUsersByConditions({
+        activationlink: authLink,
+      });
+      if (!user.length) {
         return next(ApiError.BadRequest('Wrong auth link'));
       }
+      const tokens = tokenService.generateTokens({ ...user[0] });
+      await tokenService.saveToken(
+        user[0].id,
+        tokens.refreshToken,
+        tokens.expRfToken,
+        trx,
+        res,
+      );
+      delete tokens.refreshToken;
+      delete tokens.expRfToken;
+      const userData = {
+        user: user[0],
+        tokens,
+      };
+      await trx.commit();
       return res.json(userData);
     } catch (error) {
+      await trx.rollback();
       console.error('Error in getAuthUser:', error);
       return next(
         ApiError.IntServError('An error occurred while fetching user data'),

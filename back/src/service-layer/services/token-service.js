@@ -1,7 +1,8 @@
 import ApiError from '../../middlewares/exceptions/api-errors.js';
 import tokenModel from '../../data-layer/models/token-model.js';
 import userModel from '../../data-layer/models/user-model.js';
-import knex from '../../../config/knex.config.js';
+import { rFcookieOptions } from '../../../config/config.js';
+import knex from './../../../config/knex.config.js';
 import moment from 'moment-timezone';
 import jwt from 'jsonwebtoken';
 
@@ -37,18 +38,15 @@ class TokenService {
     };
   }
 
-  async saveToken(userId, refreshToken, expToken, trx = knex) {
+  async saveToken(userId, refreshToken, expToken, trx = knex, res) {
     try {
-      const tokenData = await tokenModel.getUserToken({ userId }, trx);
-      if (tokenData.length) {
-        tokenData.refreshToken = refreshToken;
-      }
       const token = await tokenModel.saveToken(
         userId,
         refreshToken,
         expToken,
         trx,
       );
+      res.cookie('refreshToken', refreshToken, rFcookieOptions);
       return token;
     } catch (error) {
       console.error(error);
@@ -59,24 +57,21 @@ class TokenService {
   async validateAccessToken(token, next) {
     try {
       const userData = jwt.verify(token, process.env.JWT_AC_SECRET);
-      const userDataBase = await userModel.findUserByEmail(userData.email);
-      userDataBase.iat = userData.iat;
-      userDataBase.exp = userData.exp;
-      if (!userDataBase) {
+      const userDataBase = await userModel.getUsersByConditions({
+        email: userData.email,
+      });
+      if (!userDataBase.length) {
         return next(
           ApiError.NotFound(`email: ${userData.email} was not found`),
         );
       }
-      const isactivated_token = userDataBase.isactivated;
-      if (!isactivated_token) {
+      if (!userDataBase[0].isactivated) {
         return next(ApiError.AccessDeniedForRole('User not activated'));
       }
-      const { role } = userDataBase;
-      if (allowedRoles.includes(role)) {
-        return userDataBase;
-      } else {
+      if (!allowedRoles.includes(userDataBase[0].role)) {
         return next(ApiError.AccessDeniedForRole('Wrong role'));
       }
+      return userDataBase[0];
     } catch (error) {
       console.error(error);
       return null;

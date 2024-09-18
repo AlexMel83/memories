@@ -4,26 +4,32 @@ dotenv.config({
   path: './../../.env',
 });
 
+const {
+  POSTGRES_USER,
+  POSTGRES_PASSWORD,
+  POSTGRES_DB,
+  POSTGRES_PORT,
+  POSTGRES_HOST,
+} = process.env;
+
 /**
  * @type {Object.<string, import('knex').Knex.Config>}
  */
 console.log('Loaded environment variables:');
-console.log(`POSTGRES_HOST: ${process.env.POSTGRES_HOST}`);
-console.log(`POSTGRES_PORT: ${process.env.POSTGRES_PORT}`);
-console.log(`POSTGRES_USER: ${process.env.POSTGRES_USER}`);
-console.log(
-  `POSTGRES_PASSWORD: ${process.env.POSTGRES_PASSWORD ? '****' : 'undefined'}`,
-);
-console.log(`POSTGRES_DB: ${process.env.POSTGRES_DB}`);
+console.log(`POSTGRES_HOST: ${POSTGRES_HOST}`);
+console.log(`POSTGRES_PORT: ${POSTGRES_PORT}`);
+console.log(`POSTGRES_USER: ${POSTGRES_USER}`);
+console.log(`POSTGRES_PASSWORD: ${POSTGRES_PASSWORD ? '****' : 'undefined'}`);
+console.log(`POSTGRES_DB: ${POSTGRES_DB}`);
 export default {
   development: {
     client: 'postgresql',
     connection: {
-      host: process.env.POSTGRES_HOST,
-      port: process.env.POSTGRES_PORT,
-      user: process.env.POSTGRES_USER,
-      password: process.env.POSTGRES_PASSWORD,
-      database: process.env.POSTGRES_DB,
+      host: POSTGRES_HOST,
+      port: POSTGRES_PORT,
+      user: POSTGRES_USER,
+      password: POSTGRES_PASSWORD,
+      database: POSTGRES_DB,
       debug: true,
     },
     pool: { min: 0, max: 7 },

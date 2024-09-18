@@ -36,13 +36,12 @@
           </template>
         </div>
       </div>
-      <div v-if="menuOpen" class="mt-4">
-        <Login
-          v-if="menuLogin"
-          :initial-email="email"
-          @open-reg-component="changeCompenent"
+
+      <div class="mt-4">
+        <LoginRegistration
+          ref="loginRegistrationRef"
+          @modal-closed="handleModalClosed"
         />
-        <Registration v-else @open-login-component="changeCompenent" />
       </div>
       <p class="mt-6 text-center text-gray-200 header-text">
         <span class="font-bold">Мапа пам'яті:</span> збереження історії та
@@ -50,30 +49,21 @@
       </p>
     </div>
   </div>
-  <ModalLoginRegistration ref="loginRegistrationRef" />
+  <!-- <ModalLoginRegistration ref="loginRegistrationRef" /> -->
 </template>
 
 <script setup>
 import { useRoute } from 'vue-router';
 import { useAuthStore } from '@/stores/auth.store';
-import Login from '@/components/modal/Login.vue';
-import Registration from '@/components/modal/Registration.vue';
-
-import { useLocalStorage } from '@vueuse/core';
-const localStorageUserId = useLocalStorage('userId', null);
-const localStorageEmail = useLocalStorage('email', null);
-
-const authStore = useAuthStore();
-const route = useRoute();
+import LoginRegistration from '@/components/modal/LoginRegistration.vue';
 
 const loginRegistrationRef = ref(null);
+const authStore = useAuthStore();
 const menuOpen = ref(false);
-const menuLogin = ref(true);
-const email = ref('');
-const authLink = ref('');
+const route = useRoute();
 
-const isAuthed = computed(() => authStore.isAuthed);
 const isHomePage = computed(() => route.path === '/');
+const isAuthed = computed(() => authStore.isAuthed);
 
 const openLoginModal = () => {
   if (loginRegistrationRef.value) {
@@ -81,61 +71,19 @@ const openLoginModal = () => {
   }
 };
 
-onMounted(() => {
-  const emailRegex = /([\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})/;
-  const uuidRegex =
-    /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
-
-  if (route.query.email) {
-    email.value = route.query.email;
-    const match = email.value.match(emailRegex);
-    if (match) {
-      email.value = match[0];
-      openLogin();
-    } else {
-      email.value = '';
-    }
-  }
-
-  if (route.query.authLink) {
-    authLink.value = route.query.authLink;
-    if (uuidRegex.test(authLink.value)) {
-      fetchUserData(authLink.value);
-    }
-  }
-});
-
 const hideMenu = () => {
   menuOpen.value = false;
 };
 
 const toggleMenu = () => {
   menuOpen.value = !menuOpen.value;
-  authStore.toggleMenu();
-};
-
-const changeCompenent = () => {
-  menuLogin.value = !menuLogin.value;
-};
-
-const fetchUserData = async (authLinkValue) => {
-  try {
-    const { $api } = useNuxtApp();
-    const response = await $api.post(`/auth-user/${authLinkValue}`);
-    if (response.data) {
-      const userDataValue = response.data;
-      localStorageUserId.value = userDataValue.id;
-      authStore.setRole(userDataValue.role);
-      localStorageEmail.value = userDataValue.email;
-      authStore.getUserData(userDataValue);
-      useNuxtApp().$bus.$emit('Modal', {
-        openModal: false,
-      });
-      document.body.style.position = '';
-    }
-  } catch (error) {
-    console.error('Error fetching user data:', error);
+  if (menuOpen.value) {
+    openLoginModal();
   }
+};
+
+const handleModalClosed = () => {
+  menuOpen.value = false;
 };
 </script>
 

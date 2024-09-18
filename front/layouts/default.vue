@@ -1,8 +1,10 @@
 <template>
-  <div class="other-page">
-    <HeaderAuthUsers v-if="store?.authUser?.user?.isactivated" />
-    <HeaderMain v-else />
-    <NuxtPage />
+  <div class="page-container">
+    <div class="content-wrap">
+      <HeaderAuthUsers v-if="store?.userData?.user?.isactivated" />
+      <HeaderMain v-else />
+      <NuxtPage />
+    </div>
     <FooterMain ref="footerRef" />
     <button
       id="scrollToTop"
@@ -52,15 +54,12 @@ import { useAuthStore } from '@/stores/auth.store.ts';
 import FooterMain from './footers/FooterMain.vue';
 import HeaderAuthUsers from '@/layouts/headers/HeaderAuthUsers.vue';
 import HeaderMain from './headers/HeaderMain.vue';
-import { useLocalStorage } from '@vueuse/core';
+import { nextTick } from 'vue';
 
-const localStorageAuthUser = useLocalStorage('userData', null);
 const store = useAuthStore();
 const isScrollToTopInFooter = ref(false);
 const showScrollToTop = ref(false);
 const footerRef = ref(null);
-const isUserDataReady = ref(false);
-const authUser = ref({});
 
 const scrollToTop = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -80,32 +79,65 @@ const handleScroll = () => {
   }
 };
 
-const setUserData = () => {
-  if (localStorageAuthUser.value) {
-    store.setUserData(JSON.parse(localStorageAuthUser.value));
-    authUser.value = JSON.parse(localStorageAuthUser.value);
-    isUserDataReady.value = true;
+const setUserData = async () => {
+  await nextTick();
+  if (localStorage.getItem('userData')) {
+    store.userData = JSON.parse(localStorage.getItem('userData'));
+    store.isAuthed = true;
   }
 };
-
-onMounted(() => {
-  setUserData();
+onMounted(async () => {
+  await setUserData();
   window.addEventListener('scroll', handleScroll);
 });
 
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll);
 });
-
-provide('authUser', authUser);
-provide('isUserDataReady', isUserDataReady);
 </script>
 
 <style>
-.other-page {
+html {
+  overflow-y: scroll;
+}
+/* Стилизация полосы прокрутки для WebKit браузеров (Chrome, Safari) */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Стилизация для Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
+}
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Это обеспечит, что контейнер занимает как минимум всю высоту viewport */
+}
+
+.content-wrap {
+  flex: 1; /* Это позволит контенту расширяться и занимать доступное пространство */
+}
+
+/* .other-page {
   margin: 0 auto;
   font-family: 'Inter', sans-serif;
-}
+} */
 
 .grecaptcha-badge {
   display: none !important;

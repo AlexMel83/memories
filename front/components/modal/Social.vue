@@ -11,7 +11,6 @@ const errors = reactive({
 const handleSocialLogin = async (provider) => {
   try {
     const res = await $load(async () => $api.auth.socAuth(provider), errors);
-    console.log(res);
     if (res.data.url) {
       window.location.href = res.data.url;
     }
@@ -25,7 +24,7 @@ const handleSocialLogin = async (provider) => {
 
 <template>
   <div class="wrapper-login-using">
-    <div class="login-using mt-2">
+    <div class="login-using m-2">
       <div class="login-using-item" @click="handleSocialLogin('google')">
         <LogosGoogleIcon class="social-icon" />
         <span class="login-text">За допомогою<br />Google</span>
