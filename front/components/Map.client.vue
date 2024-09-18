@@ -1,7 +1,7 @@
 <template>
   <section
     v-if="memories.length > 0"
-    class="mapsection h-screen relative"
+    class="mapsection h-96 relative"
     name="image-map"
   >
     <modal-geo-error
@@ -20,7 +20,7 @@
     />
     <LMap
       ref="map"
-      class="h-full z-[1]"
+      class="z-[1]"
       :marker-zoom-animation="false"
       :use-global-leaflet="true"
       :scroll-wheel-zoom="false"
