@@ -94,6 +94,7 @@ export default {
 <style scoped>
 .footer-wrapper {
   background-color: var(--footer-bg);
+  margin-top: auto;
 }
 
 .footer {

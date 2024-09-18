@@ -1,8 +1,10 @@
 <template>
-  <div class="other-page">
-    <HeaderAuthUsers v-if="store?.userData?.user?.isactivated" />
-    <HeaderMain v-else />
-    <NuxtPage />
+  <div class="page-container">
+    <div class="content-wrap">
+      <HeaderAuthUsers v-if="store?.userData?.user?.isactivated" />
+      <HeaderMain v-else />
+      <NuxtPage />
+    </div>
     <FooterMain ref="footerRef" />
     <button
       id="scrollToTop"
@@ -95,10 +97,47 @@ onUnmounted(() => {
 </script>
 
 <style>
-.other-page {
+html {
+  overflow-y: scroll;
+}
+/* Стилизация полосы прокрутки для WebKit браузеров (Chrome, Safari) */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Стилизация для Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
+}
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Это обеспечит, что контейнер занимает как минимум всю высоту viewport */
+}
+
+.content-wrap {
+  flex: 1; /* Это позволит контенту расширяться и занимать доступное пространство */
+}
+
+/* .other-page {
   margin: 0 auto;
   font-family: 'Inter', sans-serif;
-}
+} */
 
 .grecaptcha-badge {
   display: none !important;
