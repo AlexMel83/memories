@@ -16,8 +16,12 @@
               <img :src="item" class="w-full" draggable="false" />
             </UCarousel>
           </div>
-          <h1 class="text-3xl font-bold mb-4">{{ memory.title }}</h1>
-          <p class="text-lg mb-6">{{ memory.description }}</p>
+          <h1 class="text-3xl font-bold mb-4">
+            {{ memory.title }}
+          </h1>
+          <p class="text-lg mb-6">
+            {{ memory.description }}
+          </p>
           <!-- Дополнительная информация -->
           <div class="info">
             <p>
