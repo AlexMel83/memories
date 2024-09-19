@@ -1,8 +1,8 @@
 <template>
   <div
+    v-if="isLoad()"
     class="memory-page animate-slide-from-header"
     :class="{ blurred: isMenuOpen }"
-    v-if="isLoad()"
   >
     <div class="main">
       <div class="main-wrapper block">
@@ -72,13 +72,13 @@
             </div>
             <div class="right">
               <div
-                class="time flex"
                 v-if="
                   item.workday_start &&
                   item.workday_end &&
                   item.dayoff_start &&
                   item.dayoff_end
                 "
+                class="time flex"
               >
                 <div>
                   <img src="~assets/spaces_images/clock-white.svg" alt="time" />
@@ -99,14 +99,14 @@
                 </div>
               </div>
               <div class="contacts-box">
-                <div class="tel" v-if="item.phone">
+                <div v-if="item.phone" class="tel">
                   <a :href="'tel:' + item.phone" class="contact">
                     <img src="~assets/spaces_images/phone-white.svg" />
                     {{ item.phone }}
                   </a>
                 </div>
 
-                <div class="email" v-if="item.email">
+                <div v-if="item.email" class="email">
                   <a
                     :href="'mailto:' + item.email"
                     target="_blank"
@@ -117,7 +117,7 @@
                   </a>
                 </div>
 
-                <div class="map" v-if="item.address">
+                <div v-if="item.address" class="map">
                   <a
                     :href="
                       'https://maps.google.com/?q=' +
@@ -153,13 +153,13 @@
     <div class="memory-wrapper">
       <div class="info block">
         <div
-          class="time flex"
           v-if="
             item.workday_start &&
             item.workday_end &&
             item.dayoff_start &&
             item.dayoff_end
           "
+          class="time flex"
         >
           <div>
             <img src="~assets/spaces_images/clock-black.svg" alt="time" />
@@ -173,19 +173,19 @@
             </p>
           </div>
         </div>
-        <div class="tel" v-if="item.phone">
+        <div v-if="item.phone" class="tel">
           <a :href="'tel:' + item.phone" class="flex">
             <img src="~assets/spaces_images/phone-black.svg" />
             {{ item.phone }}
           </a>
         </div>
-        <div class="email" v-if="item.email">
+        <div v-if="item.email" class="email">
           <a :href="'mailto:' + item.email" target="_blank" class="flex">
             <img src="~assets/spaces_images/email-black.svg" />
             {{ item.email }}
           </a>
         </div>
-        <div class="map" v-if="item.address">
+        <div v-if="item.address" class="map">
           <a
             :href="
               'https://maps.google.com/?q=' + encodeURIComponent(item.address)
@@ -209,15 +209,17 @@
           </div>
         </div>
       </div>
-      <div class="about" v-if="item.description">
+      <div v-if="item.description" class="about">
         <div class="block">
           <h2 class="title">Про нас</h2>
-          <p class="description">{{ item.description }}</p>
+          <p class="description">
+            {{ item.description }}
+          </p>
         </div>
       </div>
       <div
-        class="services block"
         v-if="item && item.advantages && item.advantages.length > 0"
+        class="services block"
       >
         <h2 class="title">
           Безкоштовні послуги<br />
@@ -231,9 +233,9 @@
           }"
         >
           <div
-            class="services-box flex"
             v-for="advantage in item.advantages"
             :key="advantage.name"
+            class="services-box flex"
           >
             <img
               :src="`${baseURL}/${advantage.icon}`"
@@ -244,7 +246,7 @@
           </div>
         </div>
       </div>
-      <div class="spaces block" v-if="item.spaces && item.spaces.length > 0">
+      <div v-if="item.spaces && item.spaces.length > 0" class="spaces block">
         <h2 class="title">Простори</h2>
         <v-row class="spaces-row">
           <v-col
@@ -270,11 +272,11 @@
                   src="./../../public/default-space.jpg"
                   alt="space photo"
                 />
-                <div class="places" v-if="space.amount">
+                <div v-if="space.amount" class="places">
                   {{ formatSeats(space.amount) }}
                 </div>
 
-                <div class="favorite" v-if="authUser().role === 'user'">
+                <div v-if="authUser().role === 'user'" class="favorite">
                   <v-tooltip
                     :text="
                       space.isFavorite
@@ -282,18 +284,20 @@
                         : 'Додати в збережені'
                     "
                   >
-                    <template v-slot:activator="{ props }">
-                      <v-btn @click="toggleFavorite(space)" v-bind="props">
-                        <v-icon :color="space.isFavorite ? '#AF3800' : ''"
-                          >mdi-heart</v-icon
-                        >
+                    <template #activator="{ props }">
+                      <v-btn v-bind="props" @click="toggleFavorite(space)">
+                        <v-icon :color="space.isFavorite ? '#AF3800' : ''">
+                          mdi-heart
+                        </v-icon>
                       </v-btn>
                     </template>
                   </v-tooltip>
                 </div>
               </div>
               <div class="space-info">
-                <p class="space-name">{{ space.space_name }}</p>
+                <p class="space-name">
+                  {{ space.space_name }}
+                </p>
                 <p
                   class="space-description"
                   :class="{ expanded: space.showFullDescription }"
@@ -323,26 +327,28 @@
                     >Згорнути</span
                   >
                 </p>
-                <p class="space-price" v-if="space.first_price">
+                <p v-if="space.first_price" class="space-price">
                   Ціна за 1 год <span>{{ space.first_price }}</span> грн
                 </p>
-                <p class="space-price" v-else>Ціна не вказана</p>
+                <p v-else class="space-price">Ціна не вказана</p>
                 <div class="box-book-button">
                   <v-btn
+                    v-if="item.memory_name == 'EduHUB'"
                     class="book-button"
                     @click="openBookModal"
-                    v-if="item.memory_name == 'EduHUB'"
-                    >Забронювати</v-btn
                   >
+                    Забронювати
+                  </v-btn>
                   <v-btn
-                    class="book-button"
                     v-else
+                    class="book-button"
                     @click="
                       openBookSpace(space.id, space.first_price, space.amount)
                     "
-                    >Забронювати</v-btn
                   >
-                  <ModalComponents @closeModal="closeModal" />
+                    Забронювати
+                  </v-btn>
+                  <ModalComponents @close-modal="closeModal" />
                 </div>
               </div>
             </div>
@@ -353,7 +359,7 @@
     <Review />
     <Reviews />
   </div>
-  <div class="loader" v-else>
+  <div v-else class="loader">
     <Loader v-if="isLoading" />
   </div>
 </template>
