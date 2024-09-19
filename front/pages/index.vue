@@ -14,10 +14,13 @@
             >
               <div
                 v-for="memory in filteredMemories"
-                :key="memory.id"
+                :key="memory.memory_id"
                 class="bg-white shadow-md rounded-lg"
               >
-                <nuxt-link class="container" :to="'/'">
+                <nuxt-link
+                  class="container"
+                  :to="'/memories/' + memory.memory_id"
+                >
                   <div class="photo">
                     <img
                       v-if="memory.memory_photos.length"
@@ -127,7 +130,7 @@ const formatDate = (dateString) => {
 onMounted(async () => {
   try {
     if (!searchTerm.value) {
-      await fetchMemories(); // Выполняем запрос только если searchTerm пустой
+      await fetchMemories();
     }
 
     bus.$on('searchTermUpdated', (newSearchTerm) => {

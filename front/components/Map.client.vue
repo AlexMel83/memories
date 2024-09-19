@@ -130,13 +130,13 @@ const createPopupContent = (memory) => {
 
   return `
     <div class="popup-content" style="text-align: center;">
-      <a href="/coworking/${memory.id}" target="_blank">
+      <a href="/memories/${memory.memory_id}" target="_blank">
         <b style="display: block; font-weight: bold; font-size: 130%;">${memory.title}</b>
       </a>
       <p>
         <a href="https://www.google.com/maps?q=${encodeURIComponent(memory.address)}" target="_blank">${memory.address}</a>
       </p>
-      <a href="/coworking/${memory.id}" target="_blank">
+      <a href="/memories/${memory.memory_id}" target="_blank">
         <img src="${photoURL}" alt="${memory.title}" style="max-width: 100%; display: block;" />
       </a>
     </div>`;
@@ -152,6 +152,11 @@ const onMapReady = () => {
   const markerClusterGroup = L.markerClusterGroup();
   markerClusterGroup.addLayers(markers);
   map.value.leafletObject.addLayer(markerClusterGroup);
+
+  const layersControl = document.querySelector('.leaflet-control-layers');
+  if (layersControl) {
+    layersControl.style.zIndex = '200000';
+  }
 };
 
 const plotGeoLocation = (coords) => {

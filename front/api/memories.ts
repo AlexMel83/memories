@@ -28,6 +28,7 @@ export interface QueryParams {
 
 export interface MemoriesApi {
   getMemories(queryParams: QueryParams): Promise<MemoriesResponse>;
+  getMemoryById(id: number): Promise<Memory>;
 }
 
 export default function (instance: AxiosInstance) {
@@ -39,6 +40,9 @@ export default function (instance: AxiosInstance) {
         url += `?${queryString}`;
       }
       return await instance.get(url);
+    },
+    async getMemoryById(id: number) {
+      return await instance.get(`/memories?id=${id}`);
     },
   };
 }
