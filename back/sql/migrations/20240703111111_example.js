@@ -87,7 +87,7 @@ export const up = async (knex) => {
       table.string('title', 100).nullable();
       table.text('description').nullable();
       table.string('address').nullable();
-      table.timestamp('shooting_date').nullable;
+      table.timestamp('shooting_date').defaultTo(knex.fn.now()).notNullable();
       table.decimal('latitude', 9, 7).notNullable(); // Широта
       table.decimal('longitude', 9, 7).notNullable(); // Долгота
       table.string('view_mode', 10); // Режим вида (например: '3a')
