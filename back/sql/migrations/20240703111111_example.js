@@ -81,7 +81,7 @@ export const up = async (knex) => {
       table.integer('user_id').notNullable();
       table.foreign('user_id').references('users.id').onDelete('CASCADE');
     });
-    await trx.schema.createTable('google_panoramas', (table) => {
+    await trx.schema.createTable('panoramas', (table) => {
       table.increments('id').primary().notNullable();
       table.integer('user_id').notNullable();
       table.string('title', 100).nullable();
@@ -121,7 +121,7 @@ export const down = async (knex) => {
     await trx.schema.dropTableIfExists('favorite_memories');
     await trx.schema.dropTableIfExists('memory_photos');
     await trx.schema.dropTableIfExists('memories');
-    await trx.schema.dropTableIfExists('google_panoramas');
+    await trx.schema.dropTableIfExists('panoramas');
     await trx.schema.dropTableIfExists('users');
     await trx.commit();
   } catch (error) {

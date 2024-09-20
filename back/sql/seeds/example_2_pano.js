@@ -3,7 +3,7 @@
  * @returns { Promise<void> }
  */
 
-const google_panoramasData = [
+const panoramasData = [
   {
     user_id: 1,
     title: 'Замок князей Острожских',
@@ -167,13 +167,13 @@ const google_panoramasData = [
 ];
 
 export const seed = async (knex) => {
-  const seedExist = await knex('google_panoramas').select('*').where({ id: 1 });
+  const seedExist = await knex('panoramas').select('*').where({ id: 1 });
 
   if (!seedExist[0]) {
     const trx = await knex.transaction();
 
     try {
-      await trx('google_panoramas').insert(google_panoramasData);
+      await trx('panoramas').insert(panoramasData);
 
       await trx.commit();
     } catch (error) {
