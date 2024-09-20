@@ -81,6 +81,26 @@ export const up = async (knex) => {
       table.integer('user_id').notNullable();
       table.foreign('user_id').references('users.id').onDelete('CASCADE');
     });
+    await trx.schema.createTable('google_panoramas', (table) => {
+      table.increments('id').primary().notNullable();
+      table.integer('user_id').notNullable();
+      table.string('title', 100).nullable();
+      table.text('description').nullable();
+      table.string('address').nullable();
+      table.timestamp('shooting_date').nullable;
+      table.decimal('latitude', 9, 7).notNullable(); // Широта
+      table.decimal('longitude', 9, 7).notNullable(); // Долгота
+      table.string('view_mode', 10); // Режим вида (например: '3a')
+      table.decimal('yaw', 5, 2); // Угол обзора камеры
+      table.decimal('heading', 6, 2); // Направление камеры
+      table.decimal('tilt', 5, 2); // Угол наклона камеры
+      table.string('pano_id', 50); // Идентификатор панорамы
+      table.text('thumbnail_url'); // URL миниатюры
+      table.integer('image_width'); // Ширина изображения
+      table.integer('image_height'); // Высота изображения
+      table.timestamp('created_at').defaultTo(knex.fn.now()).notNullable();
+      table.timestamp('updated_at').defaultTo(knex.fn.now()).notNullable();
+    });
     await trx.commit();
   } catch (error) {
     console.error(error);
@@ -101,6 +121,7 @@ export const down = async (knex) => {
     await trx.schema.dropTableIfExists('favorite_memories');
     await trx.schema.dropTableIfExists('memory_photos');
     await trx.schema.dropTableIfExists('memories');
+    await trx.schema.dropTableIfExists('google_panoramas');
     await trx.schema.dropTableIfExists('users');
     await trx.commit();
   } catch (error) {
