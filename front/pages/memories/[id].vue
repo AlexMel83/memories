@@ -9,9 +9,20 @@
               ref="carouselRef"
               v-slot="{ item }"
               :items="memory_photos_urls"
-              :ui="{ item: 'basis-full' }"
-              class="rounded-lg overflow-hidden"
+              :ui="{
+                item: 'basis-full',
+                container: 'rounded-lg',
+              }"
+              :prev-button="{
+                color: 'gray',
+                icon: 'i-heroicons-arrow-left-20-solid',
+              }"
+              :next-button="{
+                color: 'gray',
+                icon: 'i-heroicons-arrow-right-20-solid',
+              }"
               indicators
+              arrows
             >
               <img :src="item" class="w-full" draggable="false" />
             </UCarousel>
@@ -25,14 +36,18 @@
           <!-- Дополнительная информация -->
           <div class="info">
             <p>
-              <strong>Адрес:</strong> {{ memory.address || 'Адрес не указан' }}
+              <strong>Адреса:</strong> {{ memory.address || 'Адрес не указан' }}
+            </p>
+            <p v-if="memory.date_event">
+              <strong>Дата події:</strong>
+              {{ formatDate(memory.date_event) }}
             </p>
             <p>
-              <strong>Дата события:</strong> {{ formatDate(memory.date_event) }}
+              <strong>Створено:</strong> {{ formatDate(memory.created_at) }}
             </p>
-            <p><strong>Создано:</strong> {{ formatDate(memory.created_at) }}</p>
             <p v-if="memory.updated_at !== memory.created_at">
-              <strong>Обновлено:</strong> {{ formatDate(memory.updated_at) }}
+              <strong>Оновлено:</strong>
+              {{ formatDate(memory.updated_at) }}
             </p>
           </div>
         </div>

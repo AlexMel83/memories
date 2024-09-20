@@ -29,7 +29,7 @@
                     />
                     <img
                       v-else
-                      src="./../public/default-coworking.png"
+                      src="./../public/default-memory.png"
                       loading="lazy"
                     />
                     <div class="title">
