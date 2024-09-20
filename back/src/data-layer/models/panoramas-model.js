@@ -2,7 +2,7 @@ import knex from '../../../config/knex.config.js';
 
 const panoramasTable = 'panoramas';
 const panoramasFields = [
-  'panoramas.id as memory_id',
+  'panoramas.id',
   'panoramas.user_id',
   'panoramas.title',
   'panoramas.description',

@@ -144,7 +144,7 @@ const panoramasData = [
     tilt: 91.37,
     pano_id: 'AF1QipNFEWw123lZRd7CeUTDwc3sA4QzlrA2v83KMJHZ',
     thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipNFEWw123lZRd7CeUTDwc3sA4QzlrA2v83KMJHZ=w900-h600-k-no-pi',
+      'https://lh5.ggpht.com/p/AF1QipNFEWw123lZRd7CeUTDwc3sA4QzlrA2v83KMJHZ=w900-h600-k-no-pi-1.3703767597165069-ya268.9739757697253-ro0-fo100',
     image_width: 10000,
     image_height: 5000,
   },
@@ -160,9 +160,41 @@ const panoramasData = [
     tilt: 87.29,
     pano_id: 'AF1QipOJ-Avee4cpUZ_4fJq7ywt43sRUHzVwkGKHfepJ',
     thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipOJ-Avee4cpUZ_4fJq7ywt43sRUHzVwkGKHfepJ=w900-h600-k-no-pi',
+      'https://lh5.ggpht.com/p/AF1QipOJ-Avee4cpUZ_4fJq7ywt43sRUHzVwkGKHfepJ=w900-h600-k-no-pi2.7099999999999937-ya357.4-ro0-fo100',
     image_width: 11264,
     image_height: 5632,
+  },
+  {
+    user_id: 1,
+    title: 'Зоомагазин ФОП Бухтоярова Е.А.',
+    shooting_date: new Date('2021-04-01T00:00:00Z'),
+    latitude: 49.7550101,
+    longitude: 27.1874278,
+    view_mode: '3a',
+    yaw: 75.0,
+    heading: 221.84,
+    tilt: 88.27,
+    pano_id: 'AF1QipOfwNYXxKOSwD79THyIe-3GWyP3IIM2Ib2soQwZ',
+    thumbnail_url:
+      'https://lh5.ggpht.com/p/AF1QipOfwNYXxKOSwD79THyIe-3GWyP3IIM2Ib2soQwZ=w900-h600-k-no-pi1.7274168154856397-ya223.0102149253349-ro0-fo100',
+    image_width: 10000,
+    image_height: 5000,
+  },
+  {
+    user_id: 1,
+    title: 'СТО "Гараж"',
+    shooting_date: new Date('2020-10-01T00:00:00Z'),
+    latitude: 49.7582378,
+    longitude: 27.1820207,
+    view_mode: '3a',
+    yaw: 75.0,
+    heading: 281.28,
+    tilt: 90.62,
+    pano_id: 'AF1QipNw6OiF6j_d883xq5u1dRXfrAOT33yW_kH99j3q',
+    thumbnail_url:
+      'https://lh5.ggpht.com/p/AF1QipNw6OiF6j_d883xq5u1dRXfrAOT33yW_kH99j3q=w900-h600-k-no-pi-0.6158385561304556-ya333.0620142605147-ro0-fo100',
+    image_width: 10000,
+    image_height: 5000,
   },
 ];
 
