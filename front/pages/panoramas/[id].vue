@@ -45,9 +45,13 @@ const initStreetView = () => {
       position: location,
       pov: {
         heading: parseFloat(panorama.value.heading) || 0,
-        pitch: parseFloat(panorama.value.tilt) || 0,
+        pitch: parseFloat(panorama.value.tilt) - 90 || 0,
       },
       zoom: 1,
+    });
+    console.log({
+      heading: parseFloat(panorama.value.heading) || 0,
+      pitch: parseFloat(panorama.value.tilt) || 0,
     });
   } else {
     console.warn(
