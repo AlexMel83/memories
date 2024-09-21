@@ -37,7 +37,15 @@ export default defineNuxtConfig({
         { name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui' },
       ],
       link: [
-        { rel: 'stylesheet', href: 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css', integrity: 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=', crossorigin: '' }
+        { rel: 'stylesheet', href: 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css', integrity: 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=', crossorigin: '' },
+        { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css' },
+      ],
+      script: [
+        {
+          src: `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLEAPIS}`,
+          async: true,
+          defer: true,
+        },
       ],
     }
   },
@@ -49,6 +57,7 @@ export default defineNuxtConfig({
     public: {
       apiKeyMapbox: process.env.APIKEY_MAPBOX,
       apiBase: process.env.API_BASE || 'https://api.memory.pp.ua',
+      googleapis: process.env.GOOGLEAPIS,
     },
     private: {
       // Значения здесь доступны только на стороне сервера

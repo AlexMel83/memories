@@ -26,7 +26,7 @@
       :scroll-wheel-zoom="false"
       :fade-animation="false"
       :center="center"
-      :max-zoom="19"
+      :max-zoom="18"
       :max-native-zoom="18"
       :zoom="zoom"
       @ready="onMapReady"
@@ -159,7 +159,7 @@ const createMemoryPopupContent = (memory) => {
       <p>
         <a href="https://www.google.com/maps?q=${encodeURIComponent(memory.address)}" target="_blank">${memory.address}</a>
       </p>
-      <a href="/memories/${memory.memory_id}" target="_blank">
+      <a href="/memories/${memory.memory_id}">
         <img src="${photoURL}" alt="${memory.title}" style="max-width: 100%; display: block;" />
       </a>
     </div>`;
