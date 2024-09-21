@@ -2,7 +2,7 @@
   <div class="panorama-page">
     <div v-if="panorama" class="panorama-container">
       <h1>{{ panorama.title }}</h1>
-      <div ref="streetViewContainer" class="street-view"></div>
+      <div ref="streetViewContainer" class="street-view" />
     </div>
     <div v-else class="loading">Загрузка панорамы...</div>
   </div>
