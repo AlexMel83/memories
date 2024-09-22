@@ -26,8 +26,6 @@
       :scroll-wheel-zoom="false"
       :fade-animation="false"
       :center="center"
-      :max-zoom="18"
-      :max-native-zoom="18"
       :zoom="zoom"
       @ready="onMapReady"
     >
@@ -43,6 +41,7 @@
         :url="tileProvider.url"
         layer-type="base"
       />
+      <LControlScale position="bottomright" :imperial="false" :metric="true" />
     </LMap>
   </section>
 </template>
@@ -90,7 +89,7 @@ const tileProviders = ref([
   {
     name: 'ArcGIS satellite',
     visible: false,
-    maxZoom: 19,
+    maxZoom: 18,
     url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
     attribution: 'Tiles &copy; Esri &mdash; Source: Esri, USGS, NOAA',
   },

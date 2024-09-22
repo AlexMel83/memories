@@ -49,10 +49,6 @@ const initStreetView = () => {
       },
       zoom: 1,
     });
-    console.log({
-      heading: parseFloat(panorama.value.heading) || 0,
-      pitch: parseFloat(panorama.value.tilt) || 0,
-    });
   } else {
     console.warn(
       'Контейнер для панорамы не готов или данные панорамы отсутствуют.',
