@@ -34,9 +34,11 @@
         v-for="tileProvider in tileProviders"
         :key="tileProvider.name"
         :attribution="tileProvider.attribution"
-        :max-native-zoom="tileProvider.maxZoom"
-        :max-zoom="tileProvider.maxZoom"
-        :visible="tileProvider.visible"
+        :max-zoom="20 || tileProvider.maxZoom"
+        :min-zoom="14 || tileProvider.minZoom"
+        :max-native-zoom="18 || tileProvider.maxNativeZoom"
+        :min-native-zoom="14 || tileProvider.minNativeZoom"
+        :visible="false || tileProvider.visible"
         :name="tileProvider.name"
         :url="tileProvider.url"
         layer-type="base"
@@ -81,7 +83,6 @@ const tileProviders = ref([
   {
     name: 'OpenStreetMap',
     visible: true,
-    maxZoom: 18,
     attribution:
       '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
     url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -89,7 +90,10 @@ const tileProviders = ref([
   {
     name: 'ArcGIS satellite',
     visible: false,
-    maxZoom: 18,
+    maxZoom: 22,
+    minZoom: 14,
+    minNativeZoom: 14,
+    maxNativeZoom: 18,
     url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
     attribution: 'Tiles &copy; Esri &mdash; Source: Esri, USGS, NOAA',
   },
