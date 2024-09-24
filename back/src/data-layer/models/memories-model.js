@@ -31,11 +31,11 @@ const conditionHandlers = {
     memoriesQuery.where('memories.title', 'ilike', `%${value}%`),
   description: (memoriesQuery, value) =>
     memoriesQuery.where('memories.description', 'ilike', `%${value}%`),
-  sort_field: (bookingsQuery, value, sort) => {
+  sort_field: (memoriesQuery, value, sort) => {
     if (sort === 'down') {
-      bookingsQuery.orderBy(value, 'desc');
+      memoriesQuery.orderBy(value, 'desc');
     } else {
-      bookingsQuery.orderBy(value, 'asc');
+      memoriesQuery.orderBy(value, 'asc');
     }
   },
 };

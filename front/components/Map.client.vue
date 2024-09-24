@@ -1,6 +1,6 @@
 <template>
   <section
-    v-if="memories.length > 0"
+    v-if="memories.length > 0 || panoramas.length > 0"
     class="mapsection h-96 relative"
     name="image-map"
   >
@@ -26,20 +26,24 @@
       :scroll-wheel-zoom="false"
       :fade-animation="false"
       :center="center"
-      :max-zoom="19"
       :zoom="zoom"
       @ready="onMapReady"
     >
-      <l-control-layers position="topright" />
+      <l-control-layers position="bottomleft" />
       <LTileLayer
         v-for="tileProvider in tileProviders"
         :key="tileProvider.name"
         :attribution="tileProvider.attribution"
-        :visible="tileProvider.visible"
+        :max-zoom="20 || tileProvider.maxZoom"
+        :min-zoom="3 || tileProvider.minZoom"
+        :max-native-zoom="18 || tileProvider.maxNativeZoom"
+        :min-native-zoom="3 || tileProvider.minNativeZoom"
+        :visible="false || tileProvider.visible"
         :name="tileProvider.name"
         :url="tileProvider.url"
         layer-type="base"
       />
+      <LControlScale position="bottomright" :imperial="false" :metric="true" />
     </LMap>
   </section>
 </template>
@@ -50,6 +54,10 @@ import 'leaflet.markercluster';
 
 const props = defineProps({
   memories: {
+    type: Array,
+    default: () => [],
+  },
+  panoramas: {
     type: Array,
     default: () => [],
   },
@@ -82,35 +90,53 @@ const tileProviders = ref([
   {
     name: 'ArcGIS satellite',
     visible: false,
+    maxZoom: 22,
+    minZoom: 3,
+    minNativeZoom: 3,
+    maxNativeZoom: 18,
     url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
     attribution: 'Tiles &copy; Esri &mdash; Source: Esri, USGS, NOAA',
   },
   {
     name: 'Mapbox satellite',
     visible: false,
+    maxZoom: 19,
     url: `https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/{z}/{x}/{y}?access_token=${mapboxApiKey}`,
     attribution: '&copy; <a href="https://www.mapbox.com/">Mapbox</a>',
   },
   {
     name: 'Mapbox hybrid',
     visible: false,
+    maxZoom: 19,
     url: `https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/tiles/{z}/{x}/{y}?access_token=${mapboxApiKey}`,
     attribution: '&copy; <a href="https://www.mapbox.com/">Mapbox</a>',
   },
   {
     name: 'OpenTopoMap',
     visible: false,
+    maxZoom: 18,
     url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
     attribution:
       'Map data: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
   },
 ]);
 
-const markerData = computed(() =>
+const markerMemoryData = computed(() =>
   props.memories.map((memory) => ({
     id: memory.id,
     ...getCoordinatesFromLocation(memory.location),
-    popupContent: createPopupContent(memory),
+    popupContent: createMemoryPopupContent(memory),
+  })),
+);
+
+const markerPanoramaData = computed(() =>
+  props.panoramas.map((panorama) => ({
+    id: panorama.id,
+    latitude: panorama.latitude,
+    longitude: panorama.longitude,
+    address: panorama.address,
+    title: panorama.title,
+    thumbnail_url: panorama.thumbnail_url,
   })),
 );
 
@@ -123,40 +149,63 @@ const getCoordinatesFromLocation = (location) => {
   };
 };
 
-const createPopupContent = (memory) => {
+const createMemoryPopupContent = (memory) => {
   const photoURL = memory.memory_photos?.[0]?.url
     ? `${memory.memory_photos[0].url.includes('http') ? '' : baseURL}${memory.memory_photos[0].url}`
-    : './default-coworking.png';
+    : './default-memory.png';
 
   return `
     <div class="popup-content" style="text-align: center;">
-      <a href="/memories/${memory.memory_id}" target="_blank">
+      <a href="/memories/${memory.memory_id}">
         <b style="display: block; font-weight: bold; font-size: 130%;">${memory.title}</b>
       </a>
       <p>
         <a href="https://www.google.com/maps?q=${encodeURIComponent(memory.address)}" target="_blank">${memory.address}</a>
       </p>
-      <a href="/memories/${memory.memory_id}" target="_blank">
+      <a href="/memories/${memory.memory_id}">
         <img src="${photoURL}" alt="${memory.title}" style="max-width: 100%; display: block;" />
       </a>
     </div>`;
 };
 
+const createPanoramaPopupContent = (panorama) => {
+  const photoURL = panorama.thumbnail_url
+    ? panorama.thumbnail_url
+    : './default-memory.png';
+  const address = panorama.address
+    ? `<p><a href="https://www.google.com/maps?q=${encodeURIComponent(panorama.address)}" target="_blank">${panorama.address}</a></p>`
+    : '';
+
+  return `
+    <div class="popup-content" style="text-align: center;">
+      <a href="/panoramas/${panorama.memory_id}">
+        <b style="display: block; font-weight: bold; font-size: 130%;">${panorama.title}</b>
+      </a>
+      ${address}
+      <a href="/panoramas/${panorama.id}">
+        <img src="${photoURL}" alt="${panorama.title}" style="max-width: 100%; display: block;" />
+      </a>
+    </div>`;
+};
+
 const onMapReady = () => {
-  const markers = markerData.value.map((memory) => {
+  const memoryMarkers = markerMemoryData.value.map((memory) => {
     const marker = L.marker([memory.latitude, memory.longitude]);
     marker.bindPopup(memory.popupContent);
     return marker;
   });
 
-  const markerClusterGroup = L.markerClusterGroup();
-  markerClusterGroup.addLayers(markers);
-  map.value.leafletObject.addLayer(markerClusterGroup);
+  const panoramaMarkers = markerPanoramaData.value.map((panorama) => {
+    const marker = L.marker([panorama.latitude, panorama.longitude], {
+      icon: createPanoramaIcon(),
+    });
+    marker.bindPopup(createPanoramaPopupContent(panorama));
+    return marker;
+  });
 
-  const layersControl = document.querySelector('.leaflet-control-layers');
-  if (layersControl) {
-    layersControl.style.zIndex = '200000';
-  }
+  const markerClusterGroup = L.markerClusterGroup();
+  markerClusterGroup.addLayers([...memoryMarkers, ...panoramaMarkers]);
+  map.value.leafletObject.addLayer(markerClusterGroup);
 };
 
 const plotGeoLocation = (coords) => {
@@ -224,6 +273,25 @@ const createCustomIcon = (lat, lng) => {
   });
 
   return marker;
+};
+
+const createPanoramaIcon = () => {
+  const icon = L.divIcon({
+    html: `
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 512 512">
+        <path fill="#E5E4DF" d="M256 0c141.4 0 256 114.6 256 256S397.4 512 256 512S0 397.3 0 256C0 114.6 114.6 0 256 0"/>
+        <path fill="#00B1FF" d="M256 80c97.2 0 176 78.8 176 176s-78.8 176-176 176S80 353.2 80 256S158.8 80 256 80"/>
+        <path fill="#2B3B47" d="M256 160c53 0 96 43 96 96s-43 96-96 96s-96-43-96-96s43-96 96-96"/>
+        <path fill="#D4EDF6" d="M327.9 160c22.1 0 40 17.9 40 40s-17.9 40-40 40s-40-17.9-40-40s18-40 40-40"/>
+        <path fill="#D6DBDE" d="M349.2 233.7c-6.5-27.3-24.5-50-48.7-62.7c-7.7 7.3-12.6 17.5-12.6 29c0 22.1 17.9 40 40 40c7.9-.1 15.2-2.4 21.3-6.3"/>
+      </svg>
+    `,
+    className: 'custom-div-icon',
+    iconAnchor: [16, 32],
+    iconSize: [32, 32],
+  });
+
+  return icon;
 };
 
 const createSvgIcon = () => `
@@ -313,7 +381,7 @@ const updateMarkers = (memories) => {
         memory.location,
       );
       const marker = L.marker([latitude, longitude]).bindPopup(
-        createPopupContent(memory),
+        createMemoryPopupContent(memory),
       );
       return marker;
     });
@@ -352,14 +420,19 @@ watch(
 
 :deep(.leaflet-popup-content p) {
   margin: 0 !important;
+  min-width: 200px !important;
+  min-width: 200px !important;
 }
 
 :deep(.leaflet-popup-content) {
   margin: 0 0 10px 0 !important;
+  min-width: 200px !important;
 }
 
 :deep(.leaflet-popup-content-wrapper) {
   border-radius: 0 !important;
+  min-width: 200px !important;
+  max-width: 300px;
 }
 
 .btn:hover {

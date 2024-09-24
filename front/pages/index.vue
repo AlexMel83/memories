@@ -5,8 +5,87 @@
         <SearchInput />
       </section>
       <section class="memories-list" :class="{ blurred: authStore.isMenuOpen }">
-        <Map :memories="filteredMemories || []" />
+        <Map
+          :memories="filteredMemories || []"
+          :panoramas="panoramasDataApi || []"
+        />
         <div v-auto-animate class="memories-wrapper">
+          <template v-if="panoramasDataApi && !isLoading">
+            <div
+              v-auto-animate
+              class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
+            >
+              <div
+                v-for="panorama in panoramasDataApi"
+                :key="panorama.id"
+                class="bg-white shadow-md rounded-lg"
+              >
+                <nuxt-link class="container" :to="'/panoramas/' + panorama.id">
+                  <div class="photo">
+                    <img
+                      v-if="panorama.thumbnail_url"
+                      :src="panorama.thumbnail_url"
+                      loading="lazy"
+                    />
+                    <img v-else src="./../public/default-memory.png" />
+                    <div class="title">
+                      <h2 class="memory-title">
+                        {{ panorama.title }}
+                      </h2>
+                    </div>
+                  </div>
+                  <div v-auto-animate class="info-card">
+                    <div
+                      v-if="panorama.description"
+                      class="description-container"
+                    >
+                      <p class="description">
+                        {{ panorama.description }}
+                      </p>
+                    </div>
+                    <div v-if="panorama.address" class="map" @click.stop>
+                      <a
+                        :href="
+                          'https://maps.google.com/?q=' +
+                          encodeURIComponent(panorama.address)
+                        "
+                        target="_blank"
+                      >
+                        <img
+                          src="~assets/spaces_images/location-marker.png"
+                          loading="lazy"
+                          alt="local"
+                        />
+                        <span>{{ panorama.address }}</span>
+                      </a>
+                    </div>
+                    <div class="icons-container up">
+                      <div class="time">
+                        <img
+                          src="~assets/spaces_images/time.svg"
+                          loading="lazy"
+                          alt="time icon"
+                        />
+                        <div flex>
+                          Створено:{{ formatDate(panorama.created_at) }}
+                          <div
+                            v-if="panorama.updated_at !== panorama.created_at"
+                          >
+                            Оновлено: {{ formatDate(panorama.updated_at) }}
+                          </div>
+                          <div v-if="panorama.shooting_date">
+                            Дата зйомки:
+                            {{ formatDate(panorama.shooting_date) }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <nuxt-link :to="'/'" class="btn"> Переглянути </nuxt-link>
+                  </div>
+                </nuxt-link>
+              </div>
+            </div>
+          </template>
           <template v-if="filteredMemories?.length > 0 && !isLoading">
             <div
               v-auto-animate
@@ -108,6 +187,7 @@ const isLoading = ref(false);
 const isLoad = ref(false);
 const { $api } = useNuxtApp();
 const memoriesDataApi = ref([]);
+const panoramasDataApi = ref([]);
 const authStore = useAuthStore();
 const config = useRuntimeConfig();
 const baseURL = config.public.apiBase;
@@ -129,6 +209,7 @@ const formatDate = (dateString) => {
 
 onMounted(async () => {
   try {
+    await fetchPanoramas();
     if (!searchTerm.value) {
       await fetchMemories();
     }
@@ -152,6 +233,19 @@ const fetchMemories = async (searchQuery = null) => {
     memoriesDataApi.value = memories;
   } catch (error) {
     console.error('Error fetching memories data:', error);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+const fetchPanoramas = async (searchQuery = null) => {
+  isLoading.value = true;
+  try {
+    const response = await $api.panoramas.getPanoramas(searchQuery);
+
+    panoramasDataApi.value = response.data;
+  } catch (error) {
+    console.error('Error fetching panoramas data:', error);
   } finally {
     isLoading.value = false;
   }
