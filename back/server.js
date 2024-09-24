@@ -27,6 +27,7 @@ const allowedOrigins = [
   'http://localhost:3000',
 ];
 
+console.log(CLIENT_URL);
 const corsOptions = {
   origin: (origin, callback) => {
     if (allowedOrigins.includes(origin) || !origin) {

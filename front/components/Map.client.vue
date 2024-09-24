@@ -35,9 +35,9 @@
         :key="tileProvider.name"
         :attribution="tileProvider.attribution"
         :max-zoom="20 || tileProvider.maxZoom"
-        :min-zoom="14 || tileProvider.minZoom"
+        :min-zoom="3 || tileProvider.minZoom"
         :max-native-zoom="18 || tileProvider.maxNativeZoom"
-        :min-native-zoom="14 || tileProvider.minNativeZoom"
+        :min-native-zoom="3 || tileProvider.minNativeZoom"
         :visible="false || tileProvider.visible"
         :name="tileProvider.name"
         :url="tileProvider.url"
@@ -91,8 +91,8 @@ const tileProviders = ref([
     name: 'ArcGIS satellite',
     visible: false,
     maxZoom: 22,
-    minZoom: 14,
-    minNativeZoom: 14,
+    minZoom: 3,
+    minNativeZoom: 3,
     maxNativeZoom: 18,
     url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
     attribution: 'Tiles &copy; Esri &mdash; Source: Esri, USGS, NOAA',
