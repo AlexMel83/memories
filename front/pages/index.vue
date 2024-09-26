@@ -7,7 +7,7 @@
       <section class="memories-list" :class="{ blurred: authStore.isMenuOpen }">
         <Map
           :memories="filteredMemories || []"
-          :panoramas="filteredPanoramas || []"
+          :panoramas="panoramasDataApi || []"
         />
         <div v-auto-animate class="memories-wrapper">
           <template v-if="panoramasDataApi.length > 0 && !isLoading">
@@ -88,9 +88,7 @@
             <div class="flex justify-center pagination">
               <UPagination
                 v-model="panoramaPage"
-                :page-count="
-                  Math.ceil(panoramasDataApi.length / panoramaPerPage)
-                "
+                :page-count="perPage"
                 :total="Math.ceil(panoramasDataApi.length)"
                 size="md"
                 rounded
@@ -177,7 +175,7 @@
             <div class="flex justify-center pagination">
               <UPagination
                 v-model="page"
-                :page-count="Math.ceil(filteredMemories.length / perPage)"
+                :page-count="perPage"
                 :total="Math.ceil(filteredMemories.length)"
                 size="md"
                 rounded
@@ -206,7 +204,7 @@ const config = useRuntimeConfig();
 const baseURL = config.public.apiBase;
 const searchTerm = inject('searchTerm', ref(''));
 const page = ref(1);
-const perPage = 12;
+const perPage = 9;
 const panoramaPage = ref(1);
 const panoramaPerPage = 9;
 const bus = useNuxtApp().$bus;
