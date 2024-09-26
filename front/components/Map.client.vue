@@ -64,7 +64,8 @@ const props = defineProps({
 });
 
 const markerCoordinates = ref({ lat: null, lng: null });
-const center = ref([49.230173, 28.447339]);
+const center = ref([48.1304779, 37.7444687]);
+const markerClusterGroup = ref(null);
 const config = useRuntimeConfig();
 const searchResults = ref(null);
 const resultMarker = ref(null);
@@ -74,7 +75,7 @@ const geoMarker = ref(null);
 const geoError = ref(null);
 const coords = ref(null);
 const map = ref(null);
-const zoom = ref(14);
+const zoom = ref(15);
 
 const mapboxApiKey = config.public.apiKeyMapbox;
 const baseURL = config.public.apiBase;
@@ -189,23 +190,28 @@ const createPanoramaPopupContent = (panorama) => {
 };
 
 const onMapReady = () => {
-  const memoryMarkers = markerMemoryData.value.map((memory) => {
-    const marker = L.marker([memory.latitude, memory.longitude]);
-    marker.bindPopup(memory.popupContent);
-    return marker;
-  });
+  if (!map.value?.leafletObject) return;
+  markerClusterGroup.value = L.markerClusterGroup();
+  updateMarkers();
+  map.value.leafletObject.addLayer(markerClusterGroup.value);
 
-  const panoramaMarkers = markerPanoramaData.value.map((panorama) => {
-    const marker = L.marker([panorama.latitude, panorama.longitude], {
-      icon: createPanoramaIcon(),
-    });
-    marker.bindPopup(createPanoramaPopupContent(panorama));
-    return marker;
-  });
+  // const memoryMarkers = markerMemoryData.value.map((memory) => {
+  //   const marker = L.marker([memory.latitude, memory.longitude]);
+  //   marker.bindPopup(memory.popupContent);
+  //   return marker;
+  // });
 
-  const markerClusterGroup = L.markerClusterGroup();
-  markerClusterGroup.addLayers([...memoryMarkers, ...panoramaMarkers]);
-  map.value.leafletObject.addLayer(markerClusterGroup);
+  // const panoramaMarkers = markerPanoramaData.value.map((panorama) => {
+  //   const marker = L.marker([panorama.latitude, panorama.longitude], {
+  //     icon: createPanoramaIcon(),
+  //   });
+  //   marker.bindPopup(createPanoramaPopupContent(panorama));
+  //   return marker;
+  // });
+
+  // const markerClusterGroup = L.markerClusterGroup();
+  // markerClusterGroup.addLayers([...memoryMarkers, ...panoramaMarkers]);
+  // map.value.leafletObject.addLayer(markerClusterGroup);
 };
 
 const plotGeoLocation = (coords) => {
@@ -369,35 +375,41 @@ const removeResult = () => {
   }
 };
 
-const updateMarkers = (memories) => {
-  if (map.value?.leafletObject) {
-    map.value.leafletObject.eachLayer((layer) => {
-      if (layer instanceof L.Marker) {
-        map.value.leafletObject.removeLayer(layer);
-      }
+const updateMarkers = () => {
+  if (!map.value?.leafletObject || !markerClusterGroup.value) return;
+
+  markerClusterGroup.value.clearLayers();
+
+  const memoryMarkers = markerMemoryData.value.map((memory) => {
+    const marker = L.marker([memory.latitude, memory.longitude]);
+    marker.bindPopup(memory.popupContent);
+    return marker;
+  });
+
+  const panoramaMarkers = markerPanoramaData.value.map((panorama) => {
+    const marker = L.marker([panorama.latitude, panorama.longitude], {
+      icon: createPanoramaIcon(),
     });
-    const markers = memories.map((memory) => {
-      const { latitude, longitude } = getCoordinatesFromLocation(
-        memory.location,
-      );
-      const marker = L.marker([latitude, longitude]).bindPopup(
-        createMemoryPopupContent(memory),
-      );
-      return marker;
-    });
-    const markerClusterGroup = L.markerClusterGroup();
-    markerClusterGroup.addLayers(markers);
-    map.value.leafletObject.addLayer(markerClusterGroup);
-  }
+    marker.bindPopup(createPanoramaPopupContent(panorama));
+    return marker;
+  });
+
+  markerClusterGroup.value.addLayers([...memoryMarkers, ...panoramaMarkers]);
 };
 
 watch(
-  () => props.memories,
-  (newMemories) => {
-    updateMarkers(newMemories);
+  () => [...props.memories, ...props.panoramas],
+  () => {
+    updateMarkers();
   },
   { deep: true },
 );
+
+onMounted(() => {
+  if (map.value?.leafletObject) {
+    onMapReady();
+  }
+});
 </script>
 
 <style scoped>

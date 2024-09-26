@@ -7,16 +7,16 @@
       <section class="memories-list" :class="{ blurred: authStore.isMenuOpen }">
         <Map
           :memories="filteredMemories || []"
-          :panoramas="panoramasDataApi || []"
+          :panoramas="filteredPanoramas || []"
         />
         <div v-auto-animate class="memories-wrapper">
-          <template v-if="panoramasDataApi && !isLoading">
+          <template v-if="panoramasDataApi.length > 0 && !isLoading">
             <div
               v-auto-animate
               class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
             >
               <div
-                v-for="panorama in panoramasDataApi"
+                v-for="panorama in filteredPanoramas"
                 :key="panorama.id"
                 class="bg-white shadow-md rounded-lg"
               >
@@ -85,8 +85,20 @@
                 </nuxt-link>
               </div>
             </div>
+            <div class="flex justify-center pagination">
+              <UPagination
+                v-model="panoramaPage"
+                :page-count="
+                  Math.ceil(panoramasDataApi.length / panoramaPerPage)
+                "
+                :total="Math.ceil(panoramasDataApi.length)"
+                size="md"
+                rounded
+                class="custom-pagination"
+              />
+            </div>
           </template>
-          <template v-if="filteredMemories?.length > 0 && !isLoading">
+          <template v-if="memoriesDataApi.length > 0 && !isLoading">
             <div
               v-auto-animate
               class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
@@ -165,7 +177,8 @@
             <div class="flex justify-center pagination">
               <UPagination
                 v-model="page"
-                :total="Math.ceil(memoriesDataApi.length / perPage)"
+                :page-count="Math.ceil(filteredMemories.length / perPage)"
+                :total="Math.ceil(filteredMemories.length)"
                 size="md"
                 rounded
                 class="custom-pagination"
@@ -194,6 +207,8 @@ const baseURL = config.public.apiBase;
 const searchTerm = inject('searchTerm', ref(''));
 const page = ref(1);
 const perPage = 12;
+const panoramaPage = ref(1);
+const panoramaPerPage = 9;
 const bus = useNuxtApp().$bus;
 
 const formatDate = (dateString) => {
@@ -260,6 +275,24 @@ const filteredMemories = computed(() => {
       memory.title.toLowerCase().includes(lowerCaseSearchTerm),
     )
     .slice(startIndex, endIndex);
+});
+
+const filteredPanoramas = computed(() => {
+  const lowerCaseSearchTerm = searchTerm.value?.toLowerCase() || '';
+  const startIndex = (panoramaPage.value - 1) * panoramaPerPage;
+  const endIndex = startIndex + panoramaPerPage;
+  return panoramasDataApi.value
+    .filter((panorama) =>
+      panorama.title.toLowerCase().includes(lowerCaseSearchTerm),
+    )
+    .slice(startIndex, endIndex);
+});
+
+watch(panoramaPage, () => {
+  window.scrollTo(0, 0);
+});
+watch(page, () => {
+  window.scrollTo(0, 0);
 });
 </script>
 
