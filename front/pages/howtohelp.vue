@@ -48,7 +48,8 @@
         <NuxtLink
           to="https://cfhope.in.ua"
           class="text-blue-500 underline hover:text-blue-700"
-          >Благодійний фонд соціальних реформ та підтримки "Надія"</NuxtLink
+        >
+          Благодійний фонд соціальних реформ та підтримки "Надія" </NuxtLink
         >.
       </p>
     </div>

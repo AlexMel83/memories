@@ -94,8 +94,6 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
-
 const isExpanded = ref(true);
 
 const props = defineProps({

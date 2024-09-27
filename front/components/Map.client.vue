@@ -34,12 +34,12 @@
           class="absolute top-2 right-2 z-[1000] bg-white p-4 rounded shadow-lg"
         >
           <label>
-            <input type="checkbox" v-model="showMemoryMarkers" />
+            <input v-model="showMemoryMarkers" type="checkbox" />
             Спогади
           </label>
           <br />
           <label>
-            <input type="checkbox" v-model="showPanoramaMarkers" />
+            <input v-model="showPanoramaMarkers" type="checkbox" />
             Панорами
           </label>
         </div>
