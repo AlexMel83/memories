@@ -81,17 +81,10 @@
 </template>
 
 <script setup>
-import { useAuthStore } from '@/stores/auth.store.ts';
-import SearchInput from '@/components/SearchInput.vue';
-
 const isLoading = ref(false);
-const isLoad = ref(false);
 const { $api } = useNuxtApp();
 const memoriesDataApi = ref([]);
 const panoramasDataApi = ref([]);
-const authStore = useAuthStore();
-const config = useRuntimeConfig();
-const baseURL = config.public.apiBase;
 const searchTerm = inject('searchTerm', ref(''));
 const page = ref(1);
 const perPage = 9;
@@ -153,17 +146,6 @@ const fetchPanoramas = async (searchQuery = null) => {
     isLoading.value = false;
   }
 };
-
-const filteredMemories = computed(() => {
-  const lowerCaseSearchTerm = searchTerm.value?.toLowerCase() || '';
-  const startIndex = (page.value - 1) * perPage;
-  const endIndex = startIndex + perPage;
-  return memoriesDataApi.value
-    .filter((memory) =>
-      memory.title.toLowerCase().includes(lowerCaseSearchTerm),
-    )
-    .slice(startIndex, endIndex);
-});
 
 const filteredPanoramas = computed(() => {
   const lowerCaseSearchTerm = searchTerm.value?.toLowerCase() || '';

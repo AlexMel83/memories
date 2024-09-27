@@ -23,13 +23,17 @@
               />
               <img v-else src="./../public/default-memory.png" />
               <div class="title">
-                <h2 class="memory-title">{{ memory.title }}</h2>
+                <h2 class="memory-title">
+                  {{ memory.title }}
+                </h2>
               </div>
             </div>
             <!-- Информация -->
             <div v-auto-animate class="info-card">
-              <p class="description">{{ memory.description }}</p>
-              <nuxt-link :to="'/'" class="btn">Переглянути</nuxt-link>
+              <p class="description">
+                {{ memory.description }}
+              </p>
+              <nuxt-link :to="'/'" class="btn"> Переглянути </nuxt-link>
             </div>
           </nuxt-link>
         </div>
@@ -52,7 +56,6 @@
 
 <script setup>
 const isCollapsed = ref(false);
-const memoriesDataApi = ref([]); // Передайте данные воспоминаний через props или запрос
 const page = ref(1);
 const perPage = 9;
 
