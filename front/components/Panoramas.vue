@@ -1,96 +1,122 @@
-<template v-if="panoramasDataApi.length > 0 && !isLoading">
-  <div
-    v-auto-animate
-    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
-  >
-    <div
-      v-for="panorama in filteredPanoramas"
-      :key="panorama.id"
-      class="bg-white shadow-md rounded-lg"
-    >
-      <nuxt-link class="container" :to="'/panoramas/' + panorama.id">
-        <div class="photo">
-          <img
-            v-if="panorama.thumbnail_url"
-            :src="panorama.thumbnail_url"
-            loading="lazy"
-          />
-          <img v-else src="./../public/default-memory.png" />
-          <div class="title">
-            <h2 class="memory-title">
-              {{ panorama.title }}
-            </h2>
-          </div>
-        </div>
-        <div v-auto-animate class="info-card">
-          <div v-if="panorama.description" class="description-container">
-            <p class="description">
-              {{ panorama.description }}
-            </p>
-          </div>
-          <div v-if="panorama.address" class="map" @click.stop>
-            <a
-              :href="
-                'https://maps.google.com/?q=' +
-                encodeURIComponent(panorama.address)
-              "
-              target="_blank"
-            >
+<template>
+  <UButton @click="toggleAccordion" class="accordion-button mb-2">
+    {{ isExpanded ? 'Свернуть панорамы' : 'Развернуть панорамы' }}
+    <template #trailing>
+      <UIcon
+        :name="
+          isExpanded ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'
+        "
+        class="w-5 h-5"
+      />
+    </template>
+  </UButton>
+  <div v-show="isExpanded">
+    <div v-if="panoramas.length > 0 && !isLoading">
+      <div
+        v-auto-animate
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
+      >
+        <div
+          v-for="panorama in filteredPanoramas"
+          :key="panorama.id"
+          class="bg-white shadow-md rounded-lg"
+        >
+          <nuxt-link class="container" :to="'/panoramas/' + panorama.id">
+            <div class="photo">
               <img
-                src="~assets/spaces_images/location-marker.png"
+                v-if="panorama.thumbnail_url"
+                :src="panorama.thumbnail_url"
                 loading="lazy"
-                alt="local"
               />
-              <span>{{ panorama.address }}</span>
-            </a>
-          </div>
-          <div class="icons-container up">
-            <div class="time">
-              <img
-                src="~assets/spaces_images/time.svg"
-                loading="lazy"
-                alt="time icon"
-              />
-              <div flex>
-                Створено:{{ formatDate(panorama.created_at) }}
-                <div v-if="panorama.updated_at !== panorama.created_at">
-                  Оновлено: {{ formatDate(panorama.updated_at) }}
-                </div>
-                <div v-if="panorama.shooting_date">
-                  Дата зйомки:
-                  {{ formatDate(panorama.shooting_date) }}
-                </div>
+              <img v-else src="./../public/default-memory.png" />
+              <div class="title">
+                <h2 class="memory-title">
+                  {{ panorama.title }}
+                </h2>
               </div>
             </div>
-          </div>
-          <nuxt-link :to="'/'" class="btn"> Переглянути </nuxt-link>
+            <div v-auto-animate class="info-card">
+              <div v-if="panorama.description" class="description-container">
+                <p class="description">
+                  {{ panorama.description }}
+                </p>
+              </div>
+              <div v-if="panorama.address" class="map" @click.stop>
+                <a
+                  :href="
+                    'https://maps.google.com/?q=' +
+                    encodeURIComponent(panorama.address)
+                  "
+                  target="_blank"
+                >
+                  <img
+                    src="~assets/spaces_images/location-marker.png"
+                    loading="lazy"
+                    alt="local"
+                  />
+                  <span>{{ panorama.address }}</span>
+                </a>
+              </div>
+              <div class="icons-container up">
+                <div class="time">
+                  <img
+                    src="~assets/spaces_images/time.svg"
+                    loading="lazy"
+                    alt="time icon"
+                  />
+                  <div flex>
+                    Створено:{{ formatDate(panorama.created_at) }}
+                    <div v-if="panorama.updated_at !== panorama.created_at">
+                      Оновлено: {{ formatDate(panorama.updated_at) }}
+                    </div>
+                    <div v-if="panorama.shooting_date">
+                      Дата зйомки:
+                      {{ formatDate(panorama.shooting_date) }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <nuxt-link :to="'/'" class="btn"> Переглянути </nuxt-link>
+            </div>
+          </nuxt-link>
         </div>
-      </nuxt-link>
+      </div>
+      <div class="flex justify-center pagination">
+        <UPagination
+          v-model="currentPage"
+          :page-count="perPage"
+          :total="Math.ceil(panoramas.length)"
+          size="md"
+          rounded
+          class="custom-pagination"
+        />
+      </div>
     </div>
-  </div>
-  <div class="flex justify-center pagination">
-    <UPagination
-      v-model="panoramaPage"
-      :page-count="perPage"
-      :total="Math.ceil(panoramasDataApi.length)"
-      size="md"
-      rounded
-      class="custom-pagination"
-    />
   </div>
 </template>
 
 <script setup>
-const isLoading = ref(false);
-const { $api } = useNuxtApp();
-const memoriesDataApi = ref([]);
-const panoramasDataApi = ref([]);
-const searchTerm = inject('searchTerm', ref(''));
-const page = ref(1);
+import { ref, computed, watch } from 'vue';
+
+const isExpanded = ref(true);
+
+const props = defineProps({
+  panoramas: {
+    type: Array,
+    required: true,
+  },
+  isLoading: {
+    type: Boolean,
+    default: false,
+  },
+  searchTerm: {
+    type: String,
+    default: '',
+  },
+});
+
+const currentPage = ref(1);
 const perPage = 9;
-const panoramaPage = ref(1);
-const panoramaPerPage = 9;
-const bus = useNuxtApp().$bus;
 
 const formatDate = (dateString) => {
   const options = {
@@ -103,87 +129,27 @@ const formatDate = (dateString) => {
   return new Date(dateString).toLocaleString('ru-RU', options);
 };
 
-onMounted(async () => {
-  try {
-    await fetchPanoramas();
-    if (!searchTerm.value) {
-      await fetchMemories();
-    }
-
-    bus.$on('searchTermUpdated', (newSearchTerm) => {
-      searchTerm.value = newSearchTerm;
-      fetchMemories(newSearchTerm);
-    });
-  } catch (error) {
-    console.error('Error in onMounted:', error);
-  }
-});
-
-const fetchMemories = async (searchQuery = null) => {
-  isLoading.value = true;
-  try {
-    const response = await $api.memories.getMemories(searchQuery);
-    const memories = response.data.filter(
-      (memory) => memory.published === true,
-    );
-    memoriesDataApi.value = memories;
-  } catch (error) {
-    console.error('Error fetching memories data:', error);
-  } finally {
-    isLoading.value = false;
-  }
-};
-
-const fetchPanoramas = async (searchQuery = null) => {
-  isLoading.value = true;
-  try {
-    const response = await $api.panoramas.getPanoramas(searchQuery);
-
-    panoramasDataApi.value = response.data;
-  } catch (error) {
-    console.error('Error fetching panoramas data:', error);
-  } finally {
-    isLoading.value = false;
-  }
-};
-
 const filteredPanoramas = computed(() => {
-  const lowerCaseSearchTerm = searchTerm.value?.toLowerCase() || '';
-  const startIndex = (panoramaPage.value - 1) * panoramaPerPage;
-  const endIndex = startIndex + panoramaPerPage;
-  return panoramasDataApi.value
+  const lowerCaseSearchTerm = props.searchTerm.toLowerCase();
+  const startIndex = (currentPage.value - 1) * perPage;
+  const endIndex = startIndex + perPage;
+  return props.panoramas
     .filter((panorama) =>
       panorama.title.toLowerCase().includes(lowerCaseSearchTerm),
     )
     .slice(startIndex, endIndex);
 });
 
-watch(panoramaPage, () => {
+watch(currentPage, () => {
   window.scrollTo(0, 0);
 });
-watch(page, () => {
-  window.scrollTo(0, 0);
-});
+
+const toggleAccordion = () => {
+  isExpanded.value = !isExpanded.value;
+};
 </script>
 
 <style scoped>
-@import '../assets/src/styles.css';
-
-.index-page {
-  display: flex;
-  flex-direction: column;
-  min-height: 100%;
-}
-
-main {
-  flex: 1;
-}
-
-.memories-wrapper {
-  padding: 20px 25px 10px 25px;
-  margin-top: 10px;
-}
-
 .description-container {
   padding: 0 5px;
   margin-bottom: 10px;
@@ -202,26 +168,6 @@ main {
 .blurred {
   filter: blur(5px);
   pointer-events: none;
-}
-
-.search {
-  background-color: var(--header-bg);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.memories-list {
-  background-color: var(--space-bg-mob);
-}
-
-.spaces-wrapper {
-  margin: 0 auto;
-  min-height: 100vh;
-}
-
-.search-wrapper {
-  padding: 0 16px;
 }
 
 .container {
@@ -321,22 +267,6 @@ main {
   background-color: var(--header-bg);
 }
 
-.map {
-  display: flex;
-  margin-bottom: 5px;
-}
-
-.map img {
-  width: 25px;
-  height: 25px;
-}
-
-.map a {
-  display: flex;
-  align-items: center;
-  column-gap: 7px;
-}
-
 .info-item {
   display: flex;
   justify-content: space-between;
@@ -411,14 +341,6 @@ a {
 }
 
 @media (min-width: 1024px) {
-  .search {
-    padding: 0 10px;
-  }
-
-  .search-wrapper {
-    padding: 0 8px;
-  }
-
   .btn {
     opacity: 0;
   }
@@ -435,12 +357,6 @@ a {
     width: 32px;
     height: 32px;
     border-radius: 6px;
-  }
-}
-
-@media (min-width: 1440px) {
-  .memories-wrapper {
-    padding: 20px 25px;
   }
 }
 </style>

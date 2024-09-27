@@ -10,92 +10,11 @@
           :panoramas="panoramasDataApi || []"
         />
         <div v-auto-animate class="memories-wrapper">
-          <template v-if="panoramasDataApi.length > 0 && !isLoading">
-            <div
-              v-auto-animate
-              class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
-            >
-              <div
-                v-for="panorama in filteredPanoramas"
-                :key="panorama.id"
-                class="bg-white shadow-md rounded-lg"
-              >
-                <nuxt-link class="container" :to="'/panoramas/' + panorama.id">
-                  <div class="photo">
-                    <img
-                      v-if="panorama.thumbnail_url"
-                      :src="panorama.thumbnail_url"
-                      loading="lazy"
-                    />
-                    <img v-else src="./../public/default-memory.png" />
-                    <div class="title">
-                      <h2 class="memory-title">
-                        {{ panorama.title }}
-                      </h2>
-                    </div>
-                  </div>
-                  <div v-auto-animate class="info-card">
-                    <div
-                      v-if="panorama.description"
-                      class="description-container"
-                    >
-                      <p class="description">
-                        {{ panorama.description }}
-                      </p>
-                    </div>
-                    <div v-if="panorama.address" class="map" @click.stop>
-                      <a
-                        :href="
-                          'https://maps.google.com/?q=' +
-                          encodeURIComponent(panorama.address)
-                        "
-                        target="_blank"
-                      >
-                        <img
-                          src="~assets/spaces_images/location-marker.png"
-                          loading="lazy"
-                          alt="local"
-                        />
-                        <span>{{ panorama.address }}</span>
-                      </a>
-                    </div>
-                    <div class="icons-container up">
-                      <div class="time">
-                        <img
-                          src="~assets/spaces_images/time.svg"
-                          loading="lazy"
-                          alt="time icon"
-                        />
-                        <div flex>
-                          Створено:{{ formatDate(panorama.created_at) }}
-                          <div
-                            v-if="panorama.updated_at !== panorama.created_at"
-                          >
-                            Оновлено: {{ formatDate(panorama.updated_at) }}
-                          </div>
-                          <div v-if="panorama.shooting_date">
-                            Дата зйомки:
-                            {{ formatDate(panorama.shooting_date) }}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <nuxt-link :to="'/'" class="btn"> Переглянути </nuxt-link>
-                  </div>
-                </nuxt-link>
-              </div>
-            </div>
-            <div class="flex justify-center pagination">
-              <UPagination
-                v-model="panoramaPage"
-                :page-count="perPage"
-                :total="Math.ceil(panoramasDataApi.length)"
-                size="md"
-                rounded
-                class="custom-pagination"
-              />
-            </div>
-          </template>
+          <Panoramas
+            :panoramas="panoramasDataApi"
+            :is-loading="isLoading"
+            :search-term="searchTerm"
+          />
           <template v-if="memoriesDataApi.length > 0 && !isLoading">
             <div
               v-auto-animate
@@ -205,8 +124,6 @@ const baseURL = config.public.apiBase;
 const searchTerm = inject('searchTerm', ref(''));
 const page = ref(1);
 const perPage = 9;
-const panoramaPage = ref(1);
-const panoramaPerPage = 9;
 const bus = useNuxtApp().$bus;
 
 const formatDate = (dateString) => {
@@ -275,20 +192,6 @@ const filteredMemories = computed(() => {
     .slice(startIndex, endIndex);
 });
 
-const filteredPanoramas = computed(() => {
-  const lowerCaseSearchTerm = searchTerm.value?.toLowerCase() || '';
-  const startIndex = (panoramaPage.value - 1) * panoramaPerPage;
-  const endIndex = startIndex + panoramaPerPage;
-  return panoramasDataApi.value
-    .filter((panorama) =>
-      panorama.title.toLowerCase().includes(lowerCaseSearchTerm),
-    )
-    .slice(startIndex, endIndex);
-});
-
-watch(panoramaPage, () => {
-  window.scrollTo(0, 0);
-});
 watch(page, () => {
   window.scrollTo(0, 0);
 });
