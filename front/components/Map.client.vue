@@ -263,24 +263,24 @@ const createCustomIcon = (lat, lng) => {
   return marker;
 };
 
-const createPanoramaIcon = () => {
-  const icon = L.divIcon({
-    html: `
-      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 512 512">
-        <path fill="#E5E4DF" d="M256 0c141.4 0 256 114.6 256 256S397.4 512 256 512S0 397.3 0 256C0 114.6 114.6 0 256 0"/>
-        <path fill="#00B1FF" d="M256 80c97.2 0 176 78.8 176 176s-78.8 176-176 176S80 353.2 80 256S158.8 80 256 80"/>
-        <path fill="#2B3B47" d="M256 160c53 0 96 43 96 96s-43 96-96 96s-96-43-96-96s43-96 96-96"/>
-        <path fill="#D4EDF6" d="M327.9 160c22.1 0 40 17.9 40 40s-17.9 40-40 40s-40-17.9-40-40s18-40 40-40"/>
-        <path fill="#D6DBDE" d="M349.2 233.7c-6.5-27.3-24.5-50-48.7-62.7c-7.7 7.3-12.6 17.5-12.6 29c0 22.1 17.9 40 40 40c7.9-.1 15.2-2.4 21.3-6.3"/>
-      </svg>
-    `,
-    className: 'custom-div-icon',
-    iconAnchor: [16, 32],
-    iconSize: [32, 32],
-  });
+// const createPanoramaIcon = () => {
+//   const icon = L.divIcon({
+//     html: `
+//       <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 512 512">
+//         <path fill="#E5E4DF" d="M256 0c141.4 0 256 114.6 256 256S397.4 512 256 512S0 397.3 0 256C0 114.6 114.6 0 256 0"/>
+//         <path fill="#00B1FF" d="M256 80c97.2 0 176 78.8 176 176s-78.8 176-176 176S80 353.2 80 256S158.8 80 256 80"/>
+//         <path fill="#2B3B47" d="M256 160c53 0 96 43 96 96s-43 96-96 96s-96-43-96-96s43-96 96-96"/>
+//         <path fill="#D4EDF6" d="M327.9 160c22.1 0 40 17.9 40 40s-17.9 40-40 40s-40-17.9-40-40s18-40 40-40"/>
+//         <path fill="#D6DBDE" d="M349.2 233.7c-6.5-27.3-24.5-50-48.7-62.7c-7.7 7.3-12.6 17.5-12.6 29c0 22.1 17.9 40 40 40c7.9-.1 15.2-2.4 21.3-6.3"/>
+//       </svg>
+//     `,
+//     className: 'custom-div-icon',
+//     iconAnchor: [16, 32],
+//     iconSize: [32, 32],
+//   });
+//   return icon;
+// };
 
-  return icon;
-};
 const createSvgIcon = (color = '#ef4444') => `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${color}" class="custom-map-pin">
     <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
