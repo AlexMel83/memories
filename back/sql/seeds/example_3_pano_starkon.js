@@ -199,7 +199,7 @@ const panoramasData = [
 ];
 
 export const seed = async (knex) => {
-  const seedExist = await knex('panoramas').select('*').where({ id: 51 });
+  const seedExist = await knex('panoramas').select('*').where({ id: 52 });
 
   if (!seedExist[0]) {
     const trx = await knex.transaction();

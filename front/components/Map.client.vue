@@ -194,24 +194,6 @@ const onMapReady = () => {
   markerClusterGroup.value = L.markerClusterGroup();
   updateMarkers();
   map.value.leafletObject.addLayer(markerClusterGroup.value);
-
-  // const memoryMarkers = markerMemoryData.value.map((memory) => {
-  //   const marker = L.marker([memory.latitude, memory.longitude]);
-  //   marker.bindPopup(memory.popupContent);
-  //   return marker;
-  // });
-
-  // const panoramaMarkers = markerPanoramaData.value.map((panorama) => {
-  //   const marker = L.marker([panorama.latitude, panorama.longitude], {
-  //     icon: createPanoramaIcon(),
-  //   });
-  //   marker.bindPopup(createPanoramaPopupContent(panorama));
-  //   return marker;
-  // });
-
-  // const markerClusterGroup = L.markerClusterGroup();
-  // markerClusterGroup.addLayers([...memoryMarkers, ...panoramaMarkers]);
-  // map.value.leafletObject.addLayer(markerClusterGroup);
 };
 
 const plotGeoLocation = (coords) => {
@@ -299,9 +281,8 @@ const createPanoramaIcon = () => {
 
   return icon;
 };
-
-const createSvgIcon = () => `
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ef4444" class="custom-map-pin">
+const createSvgIcon = (color = '#ef4444') => `
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${color}" class="custom-map-pin">
     <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
   </svg>
 `;
@@ -387,9 +368,21 @@ const updateMarkers = () => {
   });
 
   const panoramaMarkers = markerPanoramaData.value.map((panorama) => {
-    const marker = L.marker([panorama.latitude, panorama.longitude], {
-      icon: createPanoramaIcon(),
+    // const marker = L.marker([panorama.latitude, panorama.longitude], {
+    //   icon: createPanoramaIcon(),
+    // });
+
+    const icon = L.divIcon({
+      html: createSvgIcon('#0000ff'),
+      className: 'custom-div-icon',
+      iconAnchor: [16, 32],
+      iconSize: [32, 32],
     });
+
+    const marker = L.marker([panorama.latitude, panorama.longitude], {
+      icon: icon, // Используем созданную кастомную иконку
+    });
+
     marker.bindPopup(createPanoramaPopupContent(panorama));
     return marker;
   });
