@@ -1,53 +1,90 @@
 <template>
-  <div>
-    <button @click="toggleCollapse">
-      {{ isCollapsed ? 'Развернуть воспоминания' : 'Свернуть воспоминания' }}
-    </button>
-    <div v-if="!isCollapsed" v-auto-animate>
-      <div
-        v-auto-animate
-        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
-      >
+  <UButton class="accordion-button mb-2" @click="toggleAccordion">
+    {{ isExpanded ? 'Згорнути спогади' : 'Розгорнути спогади' }}
+    <template #trailing>
+      <UIcon
+        :name="
+          isExpanded ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'
+        "
+        class="w-5 h-5"
+      />
+    </template>
+  </UButton>
+  <div v-show="isExpanded">
+    <div v-if="memories.length > 0 && !isLoading">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         <div
-          v-for="memory in filteredMemories"
+          v-for="memory in paginatedMemories"
           :key="memory.memory_id"
           class="bg-white shadow-md rounded-lg"
         >
           <nuxt-link class="container" :to="'/memories/' + memory.memory_id">
-            <!-- Воспоминание -->
             <div class="photo">
               <img
                 v-if="memory.memory_photos.length"
-                :src="`${memory.memory_photos[0].url}`"
+                :src="`${memory.memory_photos[0].url.includes('http') ? '' : baseURL}${memory.memory_photos[0].url}`"
                 loading="lazy"
               />
-              <img v-else src="./../public/default-memory.png" />
+              <img v-else src="./../public/default-memory.png" loading="lazy" />
               <div class="title">
                 <h2 class="memory-title">
                   {{ memory.title }}
                 </h2>
               </div>
             </div>
-            <!-- Информация -->
             <div v-auto-animate class="info-card">
-              <p class="description">
-                {{ memory.description }}
-              </p>
+              <div class="description-container">
+                <p class="description">
+                  {{ memory.description }}
+                </p>
+              </div>
+              <div v-if="memory.address" class="map" @click.stop>
+                <a
+                  :href="
+                    'https://maps.google.com/?q=' +
+                    encodeURIComponent(memory.address)
+                  "
+                  target="_blank"
+                >
+                  <img
+                    src="~assets/spaces_images/location-marker.png"
+                    loading="lazy"
+                    alt="local"
+                  />
+                  <span>{{ memory.address }}</span>
+                </a>
+              </div>
+              <div class="icons-container up">
+                <div class="time">
+                  <img
+                    src="~assets/spaces_images/time.svg"
+                    loading="lazy"
+                    alt="time icon"
+                  />
+                  <div flex>
+                    Створено:{{ formatDate(memory.created_at) }}
+                    <div v-if="memory.updated_at !== memory.created_at">
+                      Оновлено: {{ formatDate(memory.updated_at) }}
+                    </div>
+                    <div v-if="memory.date_event">
+                      Дата події: {{ formatDate(memory.date_event) }}
+                    </div>
+                  </div>
+                </div>
+              </div>
               <nuxt-link :to="'/'" class="btn"> Переглянути </nuxt-link>
             </div>
           </nuxt-link>
         </div>
       </div>
-      <!-- Пагинация -->
       <div class="flex justify-center pagination">
         <UPagination
-          :model-value="page"
-          :page-count="Math.ceil(perPage)"
-          :total="Math.ceil(memoriesDataApi.length)"
+          v-model="currentPage"
+          :page-count="perPage"
+          :total="Math.ceil(memories.length)"
           size="md"
           rounded
           class="custom-pagination"
-          @update:model-value="page = $event"
         />
       </div>
     </div>
@@ -55,52 +92,236 @@
 </template>
 
 <script setup>
-const isCollapsed = ref(false);
-const page = ref(1);
+const isExpanded = ref(true);
 const perPage = 9;
-
-defineProps({
-  memoriesDataApi: {
+const currentPage = ref(1);
+const props = defineProps({
+  memories: {
     type: Array,
-    default: () => [],
+    required: true,
+  },
+  isLoading: {
+    type: Boolean,
+    default: false,
+  },
+  searchTerm: {
+    type: String,
+    default: '',
   },
 });
-
-onMounted(() => {
-  memoriesDataApi.value = memoriesDataApi.value;
-  console.log(memoriesDataApi.value);
-});
-
-const filteredMemories = computed(() => {
-  const startIndex = (page.value - 1) * perPage;
-  const endIndex = startIndex + perPage;
-  return memoriesDataApi.value.slice(startIndex, endIndex);
-});
-
-const toggleCollapse = () => {
-  isCollapsed.value = !isCollapsed.value;
+const toggleAccordion = () => {
+  isExpanded.value = !isExpanded.value;
 };
+const formatDate = (dateString) => {
+  const options = {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  };
+  return new Date(dateString).toLocaleString('ru-RU', options);
+};
+const paginatedMemories = computed(() => {
+  const start = (currentPage.value - 1) * perPage;
+  const end = start + perPage;
+  return props.memories.slice(start, end);
+});
 </script>
 
 <style scoped>
-.collapsible-header {
+.description-container {
+  padding: 0 5px;
+  margin-bottom: 10px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-clamp: 3;
+  -webkit-line-clamp: 3; /* Показывает только 3 строки */
+  text-overflow: ellipsis; /* Добавляет "..." в конце */
+  max-height: calc(1.5em * 3); /* Высота для 3 строк текста */
+}
+
+.pagination {
+  margin-top: 10px;
+}
+.memories-list {
+  background-color: var(--space-bg-mob);
+}
+
+.memory-title {
+  text-align: center;
+  font-size: 20px;
+}
+
+.blurred {
+  filter: blur(5px);
+  pointer-events: none;
+}
+.spaces-wrapper {
+  margin: 0 auto;
+  min-height: 100vh;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 20px;
+  background: var(--white-color);
+  width: 95%;
+  margin: 10px auto;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease-in-out;
+}
+.photo {
+  width: 100%;
+  max-height: 230px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.title {
+  display: flex;
+  max-width: 92%;
+  padding: 0 20px;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 0px 20px 20px 0px;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(5px);
+  position: absolute;
+  bottom: 15px;
+}
+
+.info-card {
+  padding: 10px 3px 20px 3px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.icons-container.up {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  cursor: pointer;
-  background-color: var(--header-bg);
-  padding: 10px;
-  color: var(--white-color);
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(25px);
+  color: var(--black-color);
 }
 
-.collapse-enter-active,
-.collapse-leave-active {
-  transition: all 0.3s ease;
+.icons-container.up img {
+  margin-right: 7px;
 }
-.collapse-enter-from,
-.collapse-leave-to {
-  max-height: 0;
+
+.time {
+  display: flex;
+  align-items: center;
+}
+
+.icons-container.down {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(25px);
+  margin-bottom: 16px;
+  padding: 4px 0;
+  min-height: 32px;
+}
+
+.icons-container.down img {
+  width: 27px;
+  height: 26px;
+  margin-right: 10px;
+  border-radius: 4px;
+  background-color: var(--header-bg);
+}
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.btn {
   opacity: 0;
-  overflow: hidden;
+  text-transform: capitalize;
+  font-size: 18px;
+  line-height: normal;
+  border-radius: 4px;
+  background-color: var(--header-bg);
+  color: var(--white-color);
+  display: flex;
+  max-width: 182px;
+  padding: 6px 14px;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid transparent;
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translate(-50%, 0%);
+}
+
+.btn:hover {
+  background-color: var(--btn-border);
+}
+
+.btn:active {
+  border: 2px solid var(--icons-contact-bg);
+  background-color: var(--header-bg);
+}
+
+a {
+  text-decoration: none;
+  color: var(--text-color);
+}
+.icons-container .down {
+  position: relative;
+}
+
+.dots-icon::before {
+  position: absolute;
+  bottom: -30%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.container:hover .btn {
+  opacity: 1;
+}
+@media (min-width: 1024px) {
+  .btn {
+    opacity: 0;
+  }
+  .photo {
+    max-height: 274px;
+  }
+  .container {
+    margin-bottom: 15px;
+    width: 95%;
+  }
+  .icons-container.down img {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+  }
 }
 </style>

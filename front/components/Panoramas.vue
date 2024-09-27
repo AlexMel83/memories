@@ -1,6 +1,6 @@
 <template>
   <UButton class="accordion-button mb-2" @click="toggleAccordion">
-    {{ isExpanded ? 'Свернуть панорамы' : 'Развернуть панорамы' }}
+    {{ isExpanded ? 'Згорнути панорами' : 'Розгорнути панорами' }}
     <template #trailing>
       <UIcon
         :name="
@@ -12,10 +12,7 @@
   </UButton>
   <div v-show="isExpanded">
     <div v-if="panoramas.length > 0 && !isLoading">
-      <div
-        v-auto-animate
-        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
-      >
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         <div
           v-for="panorama in filteredPanoramas"
           :key="panorama.id"
@@ -84,6 +81,7 @@
       <div class="flex justify-center pagination">
         <UPagination
           v-model="currentPage"
+          :max="5"
           :page-count="perPage"
           :total="Math.ceil(panoramas.length)"
           size="md"
@@ -138,10 +136,6 @@ const filteredPanoramas = computed(() => {
       panorama.title.toLowerCase().includes(lowerCaseSearchTerm),
     )
     .slice(startIndex, endIndex);
-});
-
-watch(currentPage, () => {
-  window.scrollTo(0, 0);
 });
 
 const toggleAccordion = () => {
