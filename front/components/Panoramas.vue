@@ -1,5 +1,5 @@
 <template>
-  <UButton @click="toggleAccordion" class="accordion-button mb-2">
+  <UButton class="accordion-button mb-2" @click="toggleAccordion">
     {{ isExpanded ? 'Свернуть панорамы' : 'Развернуть панорамы' }}
     <template #trailing>
       <UIcon
