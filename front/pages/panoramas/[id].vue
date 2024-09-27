@@ -7,13 +7,13 @@
       <div ref="streetViewContainer" class="street-view" />
       <div class="pagination">
         <UButton
-          @click="previousPanorama"
           :disabled="currentId <= 1"
           class="mx-4"
+          @click="previousPanorama"
         >
           Назад
         </UButton>
-        <UButton @click="nextPanorama" class="mx-4">Вперед</UButton>
+        <UButton class="mx-4" @click="nextPanorama"> Вперед </UButton>
       </div>
     </div>
     <div v-else class="loading">Загрузка панорамы...</div>
