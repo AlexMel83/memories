@@ -266,8 +266,8 @@ const createCustomIcon = (lat, lng) => {
   marker.on('moveend', (event) => {
     const newLatLng = event.target.getLatLng();
     markerCoordinates.value = {
-      lat: newLatLng.lat.toFixed(4),
-      lng: newLatLng.lng.toFixed(4),
+      lat: newLatLng.lat.toFixed(7),
+      lng: newLatLng.lng.toFixed(7),
     };
     marker.setPopupContent(
       createCoordinatesPopupContent(markerCoordinates.value),
