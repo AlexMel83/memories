@@ -29,22 +29,7 @@
       :zoom="zoom"
       @ready="onMapReady"
     >
-      <l-control position="topright">
-        <div
-          class="absolute top-2 right-2 z-[1000] bg-white p-4 rounded shadow-lg"
-        >
-          <label>
-            <input v-model="showMemoryMarkers" type="checkbox" />
-            Спогади
-          </label>
-          <br />
-          <label>
-            <input v-model="showPanoramaMarkers" type="checkbox" />
-            Панорами
-          </label>
-        </div>
-      </l-control>
-      <l-control-layers position="bottomleft" />
+      <l-control-layers position="bottomleft" :collapsed="false" />
       <LTileLayer
         v-for="tileProvider in tileProviders"
         :key="tileProvider.name"
@@ -58,6 +43,22 @@
         :url="tileProvider.url"
         layer-type="base"
       />
+      <l-layer-group
+        ref="memoriesGroup"
+        :visible="showMemoryMarkers"
+        layer-type="overlay"
+        name="Спогади"
+      >
+        <!-- Эта группа будет содержать кластеризованные маркеры воспоминаний -->
+      </l-layer-group>
+      <l-layer-group
+        ref="panoramasGroup"
+        :visible="showPanoramaMarkers"
+        layer-type="overlay"
+        name="Панорами"
+      >
+        <!-- Эта группа будет содержать кластеризованные маркеры панорам -->
+      </l-layer-group>
       <LControlScale position="bottomright" :imperial="false" :metric="true" />
     </LMap>
   </section>
@@ -79,11 +80,14 @@ const props = defineProps({
 });
 
 const markerCoordinates = ref({ lat: null, lng: null });
+const markerClusterGroupPanoramas = ref(null);
+const markerClusterGroupMemories = ref(null);
 const center = ref([48.1304779, 37.7444687]);
-const markerClusterGroup = ref(null);
 const showPanoramaMarkers = ref(true);
 const showMemoryMarkers = ref(true);
 const config = useRuntimeConfig();
+const panoramasGroup = ref(null);
+const memoriesGroup = ref(null);
 const searchResults = ref(null);
 const resultMarker = ref(null);
 const fetchCoords = ref(null);
@@ -96,6 +100,15 @@ const zoom = ref(15);
 
 const mapboxApiKey = config.public.apiKeyMapbox;
 const baseURL = config.public.apiBase;
+
+const createPanoramaIcon = () => {
+  return L.divIcon({
+    html: createSvgIcon('#0000ff'),
+    className: 'custom-div-icon',
+    iconAnchor: [16, 32],
+    iconSize: [32, 32],
+  });
+};
 
 const tileProviders = ref([
   {
@@ -208,9 +221,20 @@ const createPanoramaPopupContent = (panorama) => {
 
 const onMapReady = () => {
   if (!map.value?.leafletObject) return;
-  markerClusterGroup.value = L.markerClusterGroup();
+
+  markerClusterGroupMemories.value = L.markerClusterGroup();
+  markerClusterGroupPanoramas.value = L.markerClusterGroup();
   updateMarkers();
-  map.value.leafletObject.addLayer(markerClusterGroup.value);
+  if (memoriesGroup.value?.leafletObject) {
+    memoriesGroup.value.leafletObject.addLayer(
+      markerClusterGroupMemories.value,
+    );
+  }
+  if (panoramasGroup.value?.leafletObject) {
+    panoramasGroup.value.leafletObject.addLayer(
+      markerClusterGroupPanoramas.value,
+    );
+  }
 };
 
 const plotGeoLocation = (coords) => {
@@ -356,9 +380,11 @@ const removeResult = () => {
 };
 
 const updateMarkers = () => {
-  if (!map.value?.leafletObject || !markerClusterGroup.value) return;
+  if (!markerClusterGroupMemories.value || !markerClusterGroupPanoramas.value)
+    return;
 
-  markerClusterGroup.value.clearLayers();
+  markerClusterGroupMemories.value.clearLayers();
+  markerClusterGroupPanoramas.value.clearLayers();
 
   if (showMemoryMarkers.value) {
     const memoryMarkers = markerMemoryData.value.map((memory) => {
@@ -366,26 +392,18 @@ const updateMarkers = () => {
       marker.bindPopup(memory.popupContent);
       return marker;
     });
-    markerClusterGroup.value.addLayers(memoryMarkers);
+    markerClusterGroupMemories.value.addLayers(memoryMarkers);
   }
 
   if (showPanoramaMarkers.value) {
     const panoramaMarkers = markerPanoramaData.value.map((panorama) => {
-      const icon = L.divIcon({
-        html: createSvgIcon('#0000ff'),
-        className: 'custom-div-icon',
-        iconAnchor: [16, 32],
-        iconSize: [32, 32],
-      });
-
       const marker = L.marker([panorama.latitude, panorama.longitude], {
-        icon: icon,
+        icon: createPanoramaIcon(),
       });
-
       marker.bindPopup(createPanoramaPopupContent(panorama));
       return marker;
     });
-    markerClusterGroup.value.addLayers(panoramaMarkers);
+    markerClusterGroupPanoramas.value.addLayers(panoramaMarkers);
   }
 };
 
