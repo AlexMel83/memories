@@ -5,6 +5,21 @@
         {{ panorama.title }}
       </h1>
       <div ref="streetViewContainer" class="street-view" />
+      <div
+        v-if="errorMessage"
+        class="error-message text-red-500 text-center mt-4"
+      >
+        {{ errorMessage }}
+      </div>
+      <div v-if="panorama.address" class="text-center mb-4">
+        {{ panorama.address }}
+      </div>
+      <div v-if="panorama.description" class="text-center mb-4">
+        {{ panorama.description }}
+      </div>
+      <div v-if="panorama.shooting_date" class="text-center mb-4">
+        {{ formatDate(panorama.shooting_date) }}
+      </div>
       <div class="pagination">
         <UButton
           :disabled="currentId <= 1"
@@ -19,6 +34,7 @@
     <div v-else class="loading">Загрузка панорамы...</div>
   </div>
 </template>
+
 <script setup>
 import { ref, onMounted, nextTick } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -28,24 +44,20 @@ const router = useRouter();
 const panorama = ref(null);
 const streetViewContainer = ref(null);
 const currentId = ref(parseInt(route.params.id));
-const { $api } = useNuxtApp();
+const errorMessage = ref('');
+const { $api, $loadGoogleMaps } = useNuxtApp();
 
-onMounted(async () => {
-  await loadPanorama();
-});
-
-const loadPanorama = async () => {
-  try {
-    const response = await $api.panoramas.getPanoramaById(currentId.value);
-    panorama.value = response.data[0];
-    await nextTick();
-    initStreetView();
-  } catch (error) {
-    console.error('Ошибка загрузки панорамы:', error);
-  }
+const formatDate = (dateString) => {
+  const options = {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  };
+  return new Date(dateString).toLocaleString('ru-RU', options);
 };
 
-const initStreetView = () => {
+const initStreetView = async () => {
+  await $loadGoogleMaps();
   if (panorama.value && streetViewContainer.value) {
     const location = {
       lat: parseFloat(panorama.value.latitude),
@@ -82,8 +94,22 @@ const initStreetView = () => {
       'Контейнер для панорамы не готов или данные панорамы отсутствуют.',
     );
   }
-  console.log(panorama.value);
 };
+
+const loadPanorama = async () => {
+  try {
+    const response = await $api.panoramas.getPanoramaById(currentId.value);
+    panorama.value = response.data[0];
+    await nextTick();
+    initStreetView();
+  } catch (error) {
+    console.error('Ошибка загрузки панорамы:', error);
+  }
+};
+
+onMounted(async () => {
+  await loadPanorama();
+});
 
 const previousPanorama = () => {
   if (currentId.value > 1) {

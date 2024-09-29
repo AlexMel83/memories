@@ -6,6 +6,7 @@ export default defineNuxtConfig({
   plugins: [
     '~/plugins/01.axios',
     '~/plugins/02.errorHandler.js',
+    '~/plugins/google-maps.js',
   ],
 
   devtools: { enabled: true },
@@ -40,11 +41,6 @@ export default defineNuxtConfig({
         { rel: 'stylesheet', href: 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css', integrity: 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=', crossorigin: '' },
       ],
       script: [
-        {
-          src: `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLEAPIS}`,
-          async: true,
-          defer: true,
-        },
       ],
     }
   },
@@ -56,7 +52,7 @@ export default defineNuxtConfig({
     public: {
       apiKeyMapbox: process.env.APIKEY_MAPBOX,
       apiBase: process.env.API_BASE || 'https://api.memory.pp.ua',
-      googleapis: process.env.GOOGLEAPIS,
+      googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
     },
     private: {
       // Значения здесь доступны только на стороне сервера

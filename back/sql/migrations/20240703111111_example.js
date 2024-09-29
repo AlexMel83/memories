@@ -88,8 +88,8 @@ export const up = async (knex) => {
       table.text('description').nullable();
       table.string('address').nullable();
       table.timestamp('shooting_date').defaultTo(knex.fn.now()).notNullable();
-      table.decimal('latitude_fact', 9, 7).notNullable();
-      table.decimal('longitude_fact', 9, 7).notNullable();
+      table.decimal('latitude_fact', 9, 7);
+      table.decimal('longitude_fact', 9, 7);
       table.decimal('latitude', 9, 7).notNullable();
       table.decimal('longitude', 9, 7).notNullable();
       table.string('view_mode', 10);
