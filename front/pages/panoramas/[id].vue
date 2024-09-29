@@ -19,10 +19,9 @@
     <div v-else class="loading">Загрузка панорамы...</div>
   </div>
 </template>
-
 <script setup>
 import { ref, onMounted, nextTick } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();
 const router = useRouter();
@@ -52,6 +51,7 @@ const initStreetView = () => {
       lat: parseFloat(panorama.value.latitude),
       lng: parseFloat(panorama.value.longitude),
     };
+
     const streetView = new google.maps.StreetViewPanorama(
       streetViewContainer.value,
       {
@@ -63,6 +63,7 @@ const initStreetView = () => {
         zoom: 0,
       },
     );
+
     streetView.addListener('zoom_changed', () => {
       const currentZoom = streetView.getZoom();
       console.log('Current zoom:', currentZoom);
@@ -70,6 +71,7 @@ const initStreetView = () => {
         streetView.setZoom(0);
       }
     });
+
     document.addEventListener('fullscreenchange', () => {
       if (document.fullscreenElement) {
         streetView.setZoom(0);
@@ -80,6 +82,7 @@ const initStreetView = () => {
       'Контейнер для панорамы не готов или данные панорамы отсутствуют.',
     );
   }
+  console.log(panorama.value);
 };
 
 const previousPanorama = () => {

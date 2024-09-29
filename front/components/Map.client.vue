@@ -163,8 +163,12 @@ const markerMemoryData = computed(() =>
 const markerPanoramaData = computed(() =>
   props.panoramas.map((panorama) => ({
     id: panorama.id,
-    latitude: panorama.latitude,
-    longitude: panorama.longitude,
+    latitude: panorama.latitude_fact
+      ? panorama.latitude_fact
+      : panorama.latitude,
+    longitude: panorama.longitude_fact
+      ? panorama.longitude_fact
+      : panorama.longitude,
     address: panorama.address,
     title: panorama.title,
     thumbnail_url: panorama.thumbnail_url,
@@ -397,9 +401,17 @@ const updateMarkers = () => {
 
   if (showPanoramaMarkers.value) {
     const panoramaMarkers = markerPanoramaData.value.map((panorama) => {
-      const marker = L.marker([panorama.latitude, panorama.longitude], {
-        icon: createPanoramaIcon(),
-      });
+      const marker = L.marker(
+        [
+          panorama.latitude_fact ? panorama.latitude_fact : panorama.latitude,
+          panorama.longitude_fact
+            ? panorama.longitude_fact
+            : panorama.longitude,
+        ],
+        {
+          icon: createPanoramaIcon(),
+        },
+      );
       marker.bindPopup(createPanoramaPopupContent(panorama));
       return marker;
     });
