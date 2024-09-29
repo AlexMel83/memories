@@ -29,7 +29,7 @@
       :zoom="zoom"
       @ready="onMapReady"
     >
-      <l-control-layers position="bottomleft" :collapsed="false" />
+      <l-control-layers position="bottomleft" :collapsed="true" />
       <LTileLayer
         v-for="tileProvider in tileProviders"
         :key="tileProvider.name"
