@@ -6,7 +6,7 @@
   >
     <!-- Кнопка для разворачивания карты -->
     <button
-      class="absolute top-2 right-2 z-[1000] bg-white text-black px-2 py-1 rounded shadow-md hover:bg-gray-100 w-auto max-w-[95px] whitespace-normal sm:max-w-full sm:px-1 sm:text-base text-sm text-left mt-12 xs:mt-0"
+      class="bg-white text-black dark:text-gray-900 hover:bg-primary-600 dark:hover:bg-primary-500 absolute top-2 right-2 z-[1000] px-2 py-1 rounded shadow-md hover:bg-gray-100 w-auto max-w-[95px] whitespace-normal sm:max-w-full sm:px-1 sm:text-base text-sm text-left mt-12 xs:mt-0"
       @click="toggleFullScreen"
     >
       {{ fullScreen ? 'Згорнути мапу' : 'Розгорнути мапу' }}

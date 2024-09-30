@@ -78,7 +78,7 @@
     </div>
     <!--Geolocation-->
     <div
-      class="py-1 px-1 flex items-center shadow-md rounded-md min-h-[32px]"
+      class="py-1 px-1 flex items-center shadow-md rounded-md min-h-[32px] cursor-pointer hover:bg-primary-600 dark:hover:bg-primary-500"
       :class="{ 'bg-slate-600': coords, 'bg-white': !coords }"
       @click="$emit('getGeoLocation')"
     >

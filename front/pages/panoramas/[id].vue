@@ -1,24 +1,29 @@
 <template>
   <div class="panorama-page">
     <div v-if="panorama" class="panorama-container">
-      <h1 class="text-3xl font-bold text-gray-900 text-center m-4">
+      <h1
+        class="text-3xl font-bold text-gray-900 text-center m-4 dark:text-white"
+      >
         {{ panorama.title }}
       </h1>
-      <div ref="streetViewContainer" class="street-view" />
+      <div ref="streetViewContainer" class="street-view mb-2" />
       <div
         v-if="errorMessage"
-        class="error-message text-red-500 text-center mt-4"
+        class="error-message text-red-500 text-center mt-4 dark:text-white"
       >
         {{ errorMessage }}
       </div>
-      <div v-if="panorama.address" class="text-center mb-4">
-        {{ panorama.address }}
+      <div v-if="panorama.address" class="text-center mb-4 dark:text-white">
+        Адреса: {{ panorama.address }}
       </div>
-      <div v-if="panorama.description" class="text-center mb-4">
-        {{ panorama.description }}
+      <div v-if="panorama.description" class="text-center mb-4 dark:text-white">
+        Опис: {{ panorama.description }}
       </div>
-      <div v-if="panorama.shooting_date" class="text-center mb-4">
-        {{ formatDate(panorama.shooting_date) }}
+      <div
+        v-if="panorama.shooting_date"
+        class="text-center mb-4 dark:text-white"
+      >
+        Дата зйомки: {{ formatDate(panorama.shooting_date) }}
       </div>
       <div class="pagination">
         <UButton
