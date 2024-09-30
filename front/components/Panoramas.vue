@@ -16,10 +16,10 @@
         <div
           v-for="panorama in filteredPanoramas"
           :key="panorama.id"
-          class="bg-white shadow-md rounded-lg"
+          class="bg-white dark:bg-slate-800 shadow-md rounded-lg"
         >
           <nuxt-link class="container" :to="'/panoramas/' + panorama.id">
-            <div class="photo">
+            <div class="photo rounded-t-lg">
               <img
                 v-if="panorama.thumbnail_url"
                 :src="panorama.thumbnail_url"
@@ -32,7 +32,10 @@
                 </h2>
               </div>
             </div>
-            <div v-auto-animate class="info-card">
+            <div
+              v-auto-animate
+              class="info-card dark:bg-slate-600 rounded-b-lg"
+            >
               <div v-if="panorama.description" class="description-container">
                 <p class="description">
                   {{ panorama.description }}
@@ -54,13 +57,24 @@
                   <span>{{ panorama.address }}</span>
                 </a>
               </div>
-              <div class="icons-container up">
-                <div class="time">
-                  <img
-                    src="~assets/spaces_images/time.svg"
-                    loading="lazy"
-                    alt="time icon"
-                  />
+              <div class="icons-container up rounded-lg p-1">
+                <div class="time dark:text-white">
+                  <svg
+                    class="mr-2"
+                    width="26"
+                    height="26"
+                    viewBox="0 0 26 26"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M13 8V13L16.75 16.75M24.25 13C24.25 19.2132 19.2132 24.25 13 24.25C6.7868 24.25 1.75 19.2132 1.75 13C1.75 6.7868 6.7868 1.75 13 1.75C19.2132 1.75 24.25 6.7868 24.25 13Z"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
                   <div flex>
                     Створено:{{ formatDate(panorama.created_at) }}
                     <div v-if="panorama.updated_at !== panorama.created_at">
@@ -119,8 +133,6 @@ const formatDate = (dateString) => {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
   };
   return new Date(dateString).toLocaleString('ru-RU', options);
 };
@@ -167,7 +179,7 @@ const toggleAccordion = () => {
   flex-direction: column;
   justify-content: center;
   border-radius: 20px;
-  background: var(--white-color);
+  /* background: var(--white-color); */
   width: 95%;
   margin: 10px auto;
   margin-bottom: 30px;
@@ -181,7 +193,7 @@ const toggleAccordion = () => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border-radius: 10px;
+  /* border-radius: 10px; */
   overflow: hidden;
   position: relative;
 }
@@ -226,7 +238,6 @@ const toggleAccordion = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(25px);
   color: var(--black-color);
 }

@@ -16,10 +16,10 @@
         <div
           v-for="memory in paginatedMemories"
           :key="memory.memory_id"
-          class="bg-white shadow-md rounded-lg"
+          class="bg-white dark:bg-slate-800 shadow-md rounded-lg"
         >
           <nuxt-link class="container" :to="'/memories/' + memory.memory_id">
-            <div class="photo">
+            <div class="photo rounded-t-lg">
               <img
                 v-if="memory.memory_photos.length"
                 :src="`${memory.memory_photos[0].url.includes('http') ? '' : baseURL}${memory.memory_photos[0].url}`"
@@ -32,7 +32,10 @@
                 </h2>
               </div>
             </div>
-            <div v-auto-animate class="info-card">
+            <div
+              v-auto-animate
+              class="info-card dark:text-white dark:bg-slate-600 rounded-b-lg"
+            >
               <div class="description-container">
                 <p class="description">
                   {{ memory.description }}
@@ -40,27 +43,49 @@
               </div>
               <div v-if="memory.address" class="map" @click.stop>
                 <a
+                  class="dark:text-white flex flex-row items-center mb-1"
                   :href="
                     'https://maps.google.com/?q=' +
                     encodeURIComponent(memory.address)
                   "
                   target="_blank"
                 >
-                  <img
-                    src="~assets/spaces_images/location-marker.png"
-                    loading="lazy"
-                    alt="local"
-                  />
+                  <svg
+                    class="mr-2"
+                    width="26"
+                    height="26"
+                    viewBox="0 0 26 26"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
                   <span>{{ memory.address }}</span>
                 </a>
               </div>
-              <div class="icons-container up">
+              <div class="icons-container up dark:text-white">
                 <div class="time">
-                  <img
-                    src="~assets/spaces_images/time.svg"
-                    loading="lazy"
-                    alt="time icon"
-                  />
+                  <svg
+                    class="mr-2"
+                    width="26"
+                    height="26"
+                    viewBox="0 0 26 26"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M13 8V13L16.75 16.75M24.25 13C24.25 19.2132 19.2132 24.25 13 24.25C6.7868 24.25 1.75 19.2132 1.75 13C1.75 6.7868 6.7868 1.75 13 1.75C19.2132 1.75 24.25 6.7868 24.25 13Z"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+
                   <div flex>
                     Створено:{{ formatDate(memory.created_at) }}
                     <div v-if="memory.updated_at !== memory.created_at">
@@ -166,8 +191,6 @@ const paginatedMemories = computed(() => {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  border-radius: 20px;
-  background: var(--white-color);
   width: 95%;
   margin: 10px auto;
   margin-bottom: 30px;
@@ -180,7 +203,6 @@ const paginatedMemories = computed(() => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border-radius: 10px;
   overflow: hidden;
   position: relative;
 }
@@ -215,9 +237,7 @@ const paginatedMemories = computed(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(25px);
-  color: var(--black-color);
 }
 
 .icons-container.up img {
@@ -233,7 +253,6 @@ const paginatedMemories = computed(() => {
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(25px);
   margin-bottom: 16px;
   padding: 4px 0;
