@@ -48,6 +48,13 @@ html {
   color: var(--text-color);
 }
 
+html,
+body {
+  overflow-y: scroll;
+  min-height: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
 button:hover,
 button:active {
   color: white !important;

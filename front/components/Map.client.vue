@@ -1,9 +1,16 @@
 <template>
   <section
     v-if="memories.length > 0 || panoramas.length > 0"
-    class="mapsection h-96 relative"
+    :class="['mapsection relative', fullScreen ? 'h-screen' : 'h-96']"
     name="image-map"
   >
+    <!-- Кнопка для разворачивания карты -->
+    <button
+      @click="toggleFullScreen"
+      class="absolute top-2 right-2 z-[1000] bg-white text-black px-2 py-1 rounded shadow-md hover:bg-gray-100 w-auto max-w-[95px] whitespace-normal sm:max-w-full sm:px-1 sm:text-base text-sm text-left mt-12 xs:mt-0"
+    >
+      {{ fullScreen ? 'Згорнути мапу' : 'Розгорнути мапу' }}
+    </button>
     <modal-geo-error
       v-if="geoError"
       :geo-error-msg="geoErrorMsg"
@@ -89,6 +96,7 @@ const config = useRuntimeConfig();
 const panoramasGroup = ref(null);
 const memoriesGroup = ref(null);
 const searchResults = ref(null);
+const fullScreen = ref(false);
 const resultMarker = ref(null);
 const fetchCoords = ref(null);
 const geoErrorMsg = ref(null);
@@ -100,6 +108,17 @@ const zoom = ref(15);
 
 const mapboxApiKey = config.public.apiKeyMapbox;
 const baseURL = config.public.apiBase;
+
+const toggleFullScreen = () => {
+  fullScreen.value = !fullScreen.value;
+
+  // После изменения размеров карты, нужно вызвать invalidateSize()
+  nextTick(() => {
+    if (map.value?.leafletObject) {
+      map.value.leafletObject.invalidateSize(); // Обновляем карту
+    }
+  });
+};
 
 const createPanoramaIcon = () => {
   return L.divIcon({
@@ -440,6 +459,14 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.mapsection.h-screen {
+  height: 80vh;
+}
+
+.mapsection.h-96 {
+  height: 24rem;
+}
+
 .custom-div-icon {
   background: none;
   border: none;
