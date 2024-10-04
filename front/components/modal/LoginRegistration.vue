@@ -177,7 +177,7 @@ watch(isOpen, (newValue) => {
       >
         <div class="flex items-center">
           <h3
-            class="flex-grow text-base font-semibold leading-6 text-gray-900 dark:text-[#999] text-center"
+            class="ml-10 flex-grow text-base font-semibold leading-6 text-gray-900 dark:text-[#999] text-center"
           >
             Увійти до мапи пам'яті
           </h3>
@@ -210,7 +210,6 @@ watch(isOpen, (newValue) => {
                 'has-value': state.email !== '' || emailActive,
                 'form-group': true,
                 'text-right': true,
-                'dark:text-[#999]': true,
               }"
             >
               <UInput
@@ -285,7 +284,7 @@ watch(isOpen, (newValue) => {
                       ? 'i-heroicons-eye-slash'
                       : 'i-heroicons-eye'
                   "
-                  class="password-toggle"
+                  class="password-toggle hover:bg-primary-600 dark:hover:bg-primary-500"
                   @click="handleTogglePasswordVisibility"
                 />
               </div>
@@ -346,13 +345,14 @@ watch(isOpen, (newValue) => {
                     ? 'i-heroicons-eye-slash'
                     : 'i-heroicons-eye'
                 "
-                class="password-toggle"
+                class="password-toggle dark:text-gray-900 hover:bg-primary-600 dark:hover:bg-primary-500"
                 @click="handleTogglePasswordVisibility"
               />
             </div>
           </UFormGroup>
           <UButton
             v-if="isEmailValid && state.password.length >= minPwd"
+            class="dark:text-white dark:bg-slate-600 hover:bg-primary-600 dark:hover:bg-primary-500"
             type="submit"
             color="black"
             :loading="isLoading"

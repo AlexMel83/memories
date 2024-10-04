@@ -25,11 +25,17 @@ const handleSocialLogin = async (provider) => {
 <template>
   <div class="wrapper-login-using">
     <div class="login-using m-2">
-      <div class="login-using-item" @click="handleSocialLogin('google')">
+      <div
+        class="login-using-item dark:text-white bg-slate-100 dark:bg-slate-600"
+        @click="handleSocialLogin('google')"
+      >
         <LogosGoogleIcon class="social-icon" />
         <span class="login-text">За допомогою<br />Google</span>
       </div>
-      <div class="login-using-item" @click="handleSocialLogin('facebook')">
+      <div
+        class="login-using-item dark:text-white bg-slate-100 dark:bg-slate-600"
+        @click="handleSocialLogin('facebook')"
+      >
         <LogosFacebook class="social-icon" />
         <span class="login-text">За допомогою<br />Facebook</span>
       </div>
@@ -60,7 +66,7 @@ const handleSocialLogin = async (provider) => {
   justify-content: flex-start;
   padding: 5px 10px;
   border-radius: 10px;
-  background-color: #f1f1f1;
+
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -79,6 +85,5 @@ const handleSocialLogin = async (provider) => {
 
 .login-text {
   font-size: 14px;
-  color: #333;
 }
 </style>
