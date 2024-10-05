@@ -1,5 +1,5 @@
 <template>
-  <div class="panorama-page">
+  <div>
     <div v-if="panorama" class="panorama-container">
       <h1
         class="text-3xl font-bold text-gray-900 text-center m-4 dark:text-white"
