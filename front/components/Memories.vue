@@ -18,7 +18,10 @@
           :key="memory.memory_id"
           class="bg-white dark:bg-slate-800 shadow-md rounded-lg"
         >
-          <nuxt-link class="container" :to="'/memories/' + memory.memory_id">
+          <nuxt-link
+            class="container rounded-b-lg"
+            :to="'/memories/' + memory.memory_id"
+          >
             <div class="photo rounded-t-lg">
               <img
                 v-if="memory.memory_photos.length"
