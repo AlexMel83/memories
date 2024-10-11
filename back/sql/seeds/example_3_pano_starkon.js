@@ -15,14 +15,13 @@ const panoramasData = [
     heading: 358.87,
     tilt: 29.41,
     pano_id: 'AF1QipMgKJQij3F9ZA2UvEMHioycdcGRFiIpP-u52KUw',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipMgKJQij3F9ZA2UvEMHioycdcGRFiIpP-u52KUw=w900-h600-k-no-pi60.589360822443-ya358.86659990277525-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Замок князей Острожских.jpg',
     image_width: 900,
     image_height: 600,
   },
   {
     user_id: 1,
-    title: 'Замок князей Острожских',
+    title: 'Замок князей Острожских 1',
     shooting_date: new Date('2021-01-01T00:00:00Z'),
     latitude: 49.7577553,
     longitude: 27.2283306,
@@ -31,8 +30,7 @@ const panoramasData = [
     heading: 1.29,
     tilt: 49.56,
     pano_id: 'AF1QipOa4i5jfYXZNZuvkkjfVRIuZUZm0ypQaQ1JIdYQ',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipOa4i5jfYXZNZuvkkjfVRIuZUZm0ypQaQ1JIdYQ=w900-h600-k-no-pi40.443065282690824-ya1.285500178910084-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Замок князей Острожских 1.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -47,8 +45,7 @@ const panoramasData = [
     heading: 242.45,
     tilt: 90.22,
     pano_id: 'AF1QipNauz-nYJ5LG3nsuULM1E7UNcmr-_EjhCmrwpE0',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipNauz-nYJ5LG3nsuULM1E7UNcmr-_EjhCmrwpE0=w900-h600-k-no-pi-0.22009761150472684-ya242.16954747764746-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Instrument-Shop.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -63,8 +60,7 @@ const panoramasData = [
     heading: 325.51,
     tilt: 85.2,
     pano_id: 'AF1QipM6HxeYKpiB7f3kuI35SKClGyy7TpCeH8dQrkc9',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipM6HxeYKpiB7f3kuI35SKClGyy7TpCeH8dQrkc9=w900-h600-k-no-pi4.799021927011481-ya326.72448298648914-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Дантур.jpg',
     image_width: 10000,
     image_height: 5000,
   },
@@ -79,8 +75,7 @@ const panoramasData = [
     heading: 182.57,
     tilt: 72.86,
     pano_id: 'AF1QipNdxiAalLCJeBLDVQTh6uxl9hg4X8dA41lpZzXl',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipNdxiAalLCJeBLDVQTh6uxl9hg4X8dA41lpZzXl=w900-h600-k-no-pi17.139506511407276-ya204.3966689866459-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Сауна Случ.jpg',
     image_width: 10000,
     image_height: 5000,
   },
@@ -95,8 +90,7 @@ const panoramasData = [
     heading: 256.14,
     tilt: 75.75,
     pano_id: 'AF1QipN73qQ-VZPOxNdPiC9PRemybxzT_VOnJedGeQEi',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipN73qQ-VZPOxNdPiC9PRemybxzT_VOnJedGeQEi=w900-h600-k-no-pi14.24996237761492-ya256.1387800801389-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Hotelʹ Sluch.jpg',
     image_width: 10000,
     image_height: 5000,
   },
@@ -111,8 +105,7 @@ const panoramasData = [
     heading: 137,
     tilt: 84.9,
     pano_id: 'AF1QipMx36UOmJhvxmfVyqyBhLg9mXRuyzc402mbHLY0',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipMx36UOmJhvxmfVyqyBhLg9mXRuyzc402mbHLY0=w900-h600-k-no-pi5.100698579779348-ya207.5070416250865-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Вікна двері ТОВ ГордаБуд.jpg',
     image_width: 10000,
     image_height: 5000,
   },
@@ -127,8 +120,7 @@ const panoramasData = [
     heading: 341.35,
     tilt: 94.07,
     pano_id: 'lLYUHpKOjpgOcgJlrddfKg',
-    thumbnail_url:
-      'https://streetviewpixels-pa.googleapis.com/v1/thumbnail?cb_client=maps_sv.tactile&w=900&h=600&pitch=-4.065509086571353&panoid=lLYUHpKOjpgOcgJlrddfKg&yaw=341.34648233362856',
+    thumbnail_url: '/_nuxt/public/panoimg/ЦНАП.jpg',
     image_width: 13312,
     image_height: 6656,
   },
@@ -143,8 +135,7 @@ const panoramasData = [
     heading: 340.82,
     tilt: 91.37,
     pano_id: 'AF1QipNFEWw123lZRd7CeUTDwc3sA4QzlrA2v83KMJHZ',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipNFEWw123lZRd7CeUTDwc3sA4QzlrA2v83KMJHZ=w900-h600-k-no-pi-1.3703767597165069-ya268.9739757697253-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Мототехніка Старокостянтинів.jpg',
     image_width: 10000,
     image_height: 5000,
   },
@@ -159,8 +150,7 @@ const panoramasData = [
     heading: 209.4,
     tilt: 87.29,
     pano_id: 'AF1QipOJ-Avee4cpUZ_4fJq7ywt43sRUHzVwkGKHfepJ',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipOJ-Avee4cpUZ_4fJq7ywt43sRUHzVwkGKHfepJ=w900-h600-k-no-pi2.7099999999999937-ya357.4-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Office Centre.jpg',
     image_width: 11264,
     image_height: 5632,
   },
@@ -175,8 +165,7 @@ const panoramasData = [
     heading: 221.84,
     tilt: 88.27,
     pano_id: 'AF1QipOfwNYXxKOSwD79THyIe-3GWyP3IIM2Ib2soQwZ',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipOfwNYXxKOSwD79THyIe-3GWyP3IIM2Ib2soQwZ=w900-h600-k-no-pi1.7274168154856397-ya223.0102149253349-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Зоомагазин ФОП Бухтоярова Е.А..jpg',
     image_width: 10000,
     image_height: 5000,
   },
@@ -191,8 +180,7 @@ const panoramasData = [
     heading: 281.28,
     tilt: 90.62,
     pano_id: 'AF1QipNw6OiF6j_d883xq5u1dRXfrAOT33yW_kH99j3q',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipNw6OiF6j_d883xq5u1dRXfrAOT33yW_kH99j3q=w900-h600-k-no-pi-0.6158385561304556-ya333.0620142605147-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/СТО Гараж.jpg',
     image_width: 10000,
     image_height: 5000,
   },

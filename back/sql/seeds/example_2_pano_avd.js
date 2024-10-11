@@ -16,7 +16,7 @@ const panoramasData = [
     tilt: 105.0,
     pano_id: 'AF1QipM_VHqdi0dZQY_KG5CdL2hRWNH1vJUth0dZWrOr',
     thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipM_VHqdi0dZQY_KG5CdL2hRWNH1vJUth0dZWrOr=w900-h600-k-no-pi1.3339376733836872-ya2.1846702323134934-ro0-fo100',
+      '/_nuxt/public/panoimg/Памятник-самолет рядом с ДК вид слева.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -31,8 +31,7 @@ const panoramasData = [
     heading: 273.62,
     tilt: 90.65,
     pano_id: 'AF1QipOtBNnPRItB33f5uyQbp9unElqQDafH_uZ-x9KF',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipOtBNnPRItB33f5uyQbp9unElqQDafH_uZ-x9KF=w900-h600-k-no-pi-0.6536917302199043-ya76.62342733872305-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Авдіївський пляж Блакитні озера.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -48,7 +47,7 @@ const panoramasData = [
     tilt: 80.0,
     pano_id: 'AF1QipMmwTp49GEAk-rfyE_OX_Vej5zE9QFV4b3bLUeV',
     thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipMmwTp49GEAk-rfyE_OX_Vej5zE9QFV4b3bLUeV=w900-h600-k-no-pi9.001770940598163-ya130.1755948405591-ro0-fo100',
+      '/_nuxt/public/panoimg/Народный Музей истории г.Авдеевка 1.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -64,7 +63,7 @@ const panoramasData = [
     tilt: 90,
     pano_id: 'AF1QipPnwi4IPyREMBJDiyNkjCZR-c9P_nkGY9OfrMbz',
     thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipPnwi4IPyREMBJDiyNkjCZR-c9P_nkGY9OfrMbz=w900-h600-k-no-pi-13.986047485245365-ya209.40411122423217-ro0-fo100',
+      '/_nuxt/public/panoimg/ЧАО Авдеевский коксохимический завод.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -79,8 +78,7 @@ const panoramasData = [
     heading: 1.41,
     tilt: 109.19,
     pano_id: 'AF1QipNabCooV1K8Xn4yR_L-WsoFlxECn-39BJlcTe-w',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipNabCooV1K8Xn4yR_L-WsoFlxECn-39BJlcTe-w=w900-h600-k-no-pi-19.188963528769364-ya1.4060929746717203-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Мурал учителю.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -95,8 +93,7 @@ const panoramasData = [
     heading: 70.0,
     tilt: 95.39,
     pano_id: 'AF1QipPI80WnYTKQF0fTT3UPSDn41_hbQehzusU09OKB',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipPI80WnYTKQF0fTT3UPSDn41_hbQehzusU09OKB=w900-h600-k-no-pi-5.388752469548876-ya90.82248607848818-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Муралы по Менделеева.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -127,8 +124,7 @@ const panoramasData = [
     heading: 18.2,
     tilt: 89.78,
     pano_id: 'AF1QipMIQScy8JChqNYxuE4gynxXthsz9nBFNylPRDVL',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipMIQScy8JChqNYxuE4gynxXthsz9nBFNylPRDVL=w900-h600-k-no-pi0.21627432311673545-ya18.204668158424635-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Мурал на 7 школе.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -144,7 +140,7 @@ const panoramasData = [
     tilt: 90.0,
     pano_id: 'AF1QipN2wysmWQctLFc6ZSZNs5h0wgg6SBFIiGXeQ3SR',
     thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipN2wysmWQctLFc6ZSZNs5h0wgg6SBFIiGXeQ3SR=w900-h600-k-no-pi1.010087574467832-ya351.2398906000293-ro0-fo100',
+      '/_nuxt/public/panoimg/Храм Святителя Николая Чудотворца.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -160,7 +156,7 @@ const panoramasData = [
     tilt: 74.21,
     pano_id: 'AF1QipNEka50_IFgwVM81hJ7ccaQRR4V6fJSKFV44ltb',
     thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipNEka50_IFgwVM81hJ7ccaQRR4V6fJSKFV44ltb=w900-h600-k-no-pi15.79088743729821-ya185.13544415465844-ro0-fo100',
+      '/_nuxt/public/panoimg/Народный Музей истории г.Авдеевка 2.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -175,8 +171,7 @@ const panoramasData = [
     heading: 150.0,
     tilt: 105.0,
     pano_id: 'AF1QipM2ogA06fW8Hf8enH4qY0hnZMS66F1OeEIeD6d7',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipM2ogA06fW8Hf8enH4qY0hnZMS66F1OeEIeD6d7=w900-h600-k-no-pi-2.324985286472682-ya358.4085809784458-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Памятник-самолет рядом с ДК.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -192,7 +187,7 @@ const panoramasData = [
     tilt: 95.0,
     pano_id: 'AF1QipN7SN-_thtyyT7q3bQFhPjYf8NsTdhJgf8P92Bw',
     thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipN7SN-_thtyyT7q3bQFhPjYf8NsTdhJgf8P92Bw=w900-h600-k-no-pi6.120228400486283-ya3.619455917563016-ro0-fo100',
+      '/_nuxt/public/panoimg/Дворец культуры техники и спорта АКХЗ.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -207,8 +202,7 @@ const panoramasData = [
     heading: 115.0,
     tilt: 100.0,
     pano_id: 'AF1QipOwp2cuEhwvuMhjrfcp8yt6-7FxTCYXFYy-bgqR',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipOwp2cuEhwvuMhjrfcp8yt6-7FxTCYXFYy-bgqR=w900-h600-k-no-pi-3.923793773223238-ya53.92859890122763-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Бывшая детская площадка Замок.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -225,8 +219,7 @@ const panoramasData = [
     heading: 260.19,
     tilt: 90.76,
     pano_id: 'AF1QipOIX6f_gPAKCxZUcDjvGH3Qr1gu_aCpv0TivNzj',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipOIX6f_gPAKCxZUcDjvGH3Qr1gu_aCpv0TivNzj=w900-h600-k-no-pi-0.7556488078000712-ya353.1869707910696-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Городская елка ДК.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -241,8 +234,7 @@ const panoramasData = [
     heading: 71.08,
     tilt: 100.0,
     pano_id: 'AF1QipO0hTC6KdgPSxIiEKIjGS3UiMHjAoHZjEuBxgGd',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipO0hTC6KdgPSxIiEKIjGS3UiMHjAoHZjEuBxgGd=w900-h600-k-no-pi3.664026199252419-ya359.08288606013457-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Школа №5.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -257,8 +249,7 @@ const panoramasData = [
     heading: 350.35,
     tilt: 95.89,
     pano_id: 'AF1QipN2iTPs8JnfcczhAVCtg26wTyAw4wrOizzWb6Hg',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipN2iTPs8JnfcczhAVCtg26wTyAw4wrOizzWb6Hg=w900-h600-k-no-pi-5.8869658450269355-ya277.34520832850245-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Стадион Коксохимик.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -273,8 +264,7 @@ const panoramasData = [
     heading: 353.17,
     tilt: 98.06,
     pano_id: 'AF1QipNHxuhnZfEF4XPNaDOlyUV6ngs_AmWB_jG0EHDE',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipNHxuhnZfEF4XPNaDOlyUV6ngs_AmWB_jG0EHDE=w900-h600-k-no-pi-8.059838019162669-ya353.17487175251927-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Мурал подстанция Менделева.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -289,8 +279,7 @@ const panoramasData = [
     heading: 149.16,
     tilt: 90.36,
     pano_id: 'AF1QipMpNSP8BRcorwsLhzOfS4aSXpJPq6Fvs8q6P4pD',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipMpNSP8BRcorwsLhzOfS4aSXpJPq6Fvs8q6P4pD=w900-h600-k-no-pi-0.3632450777657681-ya349.1631065323213-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Стелла Ilove Авдіївка.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -306,8 +295,7 @@ const panoramasData = [
     heading: 354.06,
     tilt: 114.06,
     pano_id: 'AF1QipPOMz-Vdwc5Z2m4J2S47YZVYqikU44kBX3mgc2w',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipPOMz-Vdwc5Z2m4J2S47YZVYqikU44kBX3mgc2w=w900-h600-k-no-pi-24.063141182501866-ya354.0619290754809-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Мурал козаку Мамаю на Гагарина.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -323,8 +311,7 @@ const panoramasData = [
     heading: 181.3,
     tilt: 120.37,
     pano_id: 'AF1QipP7radNKLBntDaxkaQJ6Ut7-K39RiqYHI53CX93',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipP7radNKLBntDaxkaQJ6Ut7-K39RiqYHI53CX93=w900-h600-k-no-pi-30.373467783035792-ya181.29986113100733-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Мурал Гагарина 8.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -340,8 +327,7 @@ const panoramasData = [
     heading: 162.09,
     tilt: 103.09,
     pano_id: 'AF1QipPmiTBgK6nCb3PeXMRTCD8Muted0UWOzSokoSE-',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipPmiTBgK6nCb3PeXMRTCD8Muted0UWOzSokoSE-=w900-h600-k-no-pi-13.091050692598941-ya162.0938421396891-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Мурал Гагарина 2.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -357,7 +343,7 @@ const panoramasData = [
     tilt: 88.43,
     pano_id: 'AF1QipMVVbvPYsvNEXcEvmvuTQZZuqWXHK6ZjitIfK6N',
     thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipMVVbvPYsvNEXcEvmvuTQZZuqWXHK6ZjitIfK6N=w900-h600-k-no-pi1.5665141230766295-ya112.69003712915315-ro0-fo100',
+      '/_nuxt/public/panoimg/Авдеевский городской Стадион Зима.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -372,8 +358,7 @@ const panoramasData = [
     heading: 266.94,
     tilt: 82.46,
     pano_id: 'AF1QipNQZrMVccyH1p6f8-8pDB3l5gxRIsLiS7zY_qJg',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipNQZrMVccyH1p6f8-8pDB3l5gxRIsLiS7zY_qJg=w900-h600-k-no-pi7.535931562824231-ya293.9407359601178-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Стадион возле школы №6.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -388,8 +373,7 @@ const panoramasData = [
     heading: 70.67,
     tilt: 100.84,
     pano_id: 'AF1QipOeumwOonEegiDOxgsq3Khe8ONONG2IAjzH6TFA',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipOeumwOonEegiDOxgsq3Khe8ONONG2IAjzH6TFA=w900-h600-k-no-pi-10.836025032490738-ya1.6665397630361127-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Общеобразовательная школа №6.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -405,7 +389,7 @@ const panoramasData = [
     tilt: 101.82,
     pano_id: 'AF1QipPjfqh2km2t9nHLAcTrAbji1_p7z0VnRUjslNLm',
     thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipPjfqh2km2t9nHLAcTrAbji1_p7z0VnRUjslNLm=w900-h600-k-no-pi-11.821978774676623-ya93.88523197241318-ro0-fo100',
+      '/_nuxt/public/panoimg/Общеобразовательная школа №6 осень.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -422,8 +406,7 @@ const panoramasData = [
     heading: 70.55,
     tilt: 88.83,
     pano_id: 'AF1QipPsFO_zFuN6wiAIttE_R08rPRRjFLmPZHShOmFo',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipPsFO_zFuN6wiAIttE_R08rPRRjFLmPZHShOmFo=w900-h600-k-no-pi1.174736154217939-ya0.5506335810193974-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Памятник Тарасу Шевченко.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -439,13 +422,13 @@ const panoramasData = [
     tilt: 88.92,
     pano_id: 'AF1QipOZFg86Xa9wYm210Q7mjXPoCO8g8zqfgp8CycVo',
     thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipOZFg86Xa9wYm210Q7mjXPoCO8g8zqfgp8CycVo=w900-h600-k-no-pi1.0797644211726407-ya27.903251980145143-ro0-fo100',
+      '/_nuxt/public/panoimg/Авдіївська центральна міська поліклініка.jpg',
     image_width: 900,
     image_height: 600,
   },
   {
     user_id: 1,
-    title: '"Тропа Здоровья"',
+    title: 'Тропа Здоровья',
     shooting_date: new Date('2020-05-01T00:00:00Z'),
     latitude: 48.1392561,
     longitude: 37.7365305,
@@ -454,8 +437,7 @@ const panoramasData = [
     heading: 342.85,
     tilt: 88.36,
     pano_id: 'AF1QipOYG-6u7kfkLD0dRqn49IM5vlG15gIxj4GommF0',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipOYG-6u7kfkLD0dRqn49IM5vlG15gIxj4GommF0=w900-h600-k-no-pi1.6366414613052456-ya6.8530376785059275-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Тропа Здоровья.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -470,8 +452,7 @@ const panoramasData = [
     heading: 117.29,
     tilt: 85.44,
     pano_id: 'AF1QipN7otNsCjTTL1YOEgDeosEieCaLMNtZR1V94nCA',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipN7otNsCjTTL1YOEgDeosEieCaLMNtZR1V94nCA=w900-h600-k-no-pi4.556638269863512-ya58.285733768665935-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/АКХЗ какой то цех.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -487,7 +468,7 @@ const panoramasData = [
     tilt: 95.79,
     pano_id: 'AF1QipP8VkW6-BEYGVOY4tFivFatN_0_CsscOZdn7ilu',
     thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipP8VkW6-BEYGVOY4tFivFatN_0_CsscOZdn7ilu=w900-h600-k-no-pi-5.793447895835101-ya356.22730730393545-ro0-fo100',
+      '/_nuxt/public/panoimg/Авдіївський карьєр Блакитні озера.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -503,7 +484,7 @@ const panoramasData = [
     tilt: 80.77,
     pano_id: 'AF1QipPx_raGSOiwo6SaaGO9xFrGGZ4GfPyYLQDs3gdq',
     thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipPx_raGSOiwo6SaaGO9xFrGGZ4GfPyYLQDs3gdq=w900-h600-k-no-pi9.229927327559011-ya49.30380832493526-ro0-fo100',
+      '/_nuxt/public/panoimg/Авдіївський пляж Блакитні озера 2.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -519,7 +500,7 @@ const panoramasData = [
     tilt: 67.04,
     pano_id: 'AF1QipN8UXWX8iaDvEJtO60O3goxk6i8QHMM9xV6BNdp',
     thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipN8UXWX8iaDvEJtO60O3goxk6i8QHMM9xV6BNdp=w900-h600-k-no-pi22.957757842341962-ya335.4813628478455-ro0-fo100',
+      '/_nuxt/public/panoimg/вдіївський пляж Блакитні озера земснаряд.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -535,7 +516,7 @@ const panoramasData = [
     tilt: 79.11,
     pano_id: 'AF1QipPv1re9HyoVjZMFAarfOaozdCbtYfASYEJsmdPI',
     thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipPv1re9HyoVjZMFAarfOaozdCbtYfASYEJsmdPI=w900-h600-k-no-pi10.885764099739475-ya275.30253386363114-ro0-fo100',
+      '/_nuxt/public/panoimg/Авдіївський пляж Блакитні озера земснаряд пантони.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -550,8 +531,7 @@ const panoramasData = [
     heading: 190.49,
     tilt: 82.98,
     pano_id: 'AF1QipODbfD7jCWWFYHsPbuItOEiTgneKMBW4jq1lkMt',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipODbfD7jCWWFYHsPbuItOEiTgneKMBW4jq1lkMt=w900-h600-k-no-pi7.01709865739565-ya37.494373659605884-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Дикий пляж Блакитні озера.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -566,8 +546,7 @@ const panoramasData = [
     heading: 24.22,
     tilt: 88.67,
     pano_id: 'AF1QipM2kKQXHPB0EpHhzzTOlAYMBsNO6RV7hiQTwUJ4',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipM2kKQXHPB0EpHhzzTOlAYMBsNO6RV7hiQTwUJ4=w900-h600-k-no-pi1.3282848795476525-ya13.223050539472297-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Кладбище на песочном.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -582,8 +561,7 @@ const panoramasData = [
     heading: 10.43,
     tilt: 98.79,
     pano_id: 'AF1QipOCO7e6JRmk3A-5R3lglEmi-U5BHYwcMLLT7RjI',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipOCO7e6JRmk3A-5R3lglEmi-U5BHYwcMLLT7RjI=w900-h600-k-no-pi-8.790770389842436-ya260.43459977083853-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Мост возле ЖД.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -598,8 +576,7 @@ const panoramasData = [
     heading: 81.15,
     tilt: 92.5,
     pano_id: 'AF1QipPBPCplSC6OMHWW3wQbcs2IbglCcx-wXCPXYZ51',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipPBPCplSC6OMHWW3wQbcs2IbglCcx-wXCPXYZ51=w900-h600-k-no-pi-2.4970035832911606-ya45.1495183965057-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Мост возле ЖД 2.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -614,8 +591,7 @@ const panoramasData = [
     heading: 189.15,
     tilt: 95.51,
     pano_id: 'AF1QipPKj0ZSsisQF4QS2l7IyFB-nkpsdVpvvyOhjhdm',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipPKj0ZSsisQF4QS2l7IyFB-nkpsdVpvvyOhjhdm=w900-h600-k-no-pi-5.505260284475952-ya19.154256258037606-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Памятник солдату парк ЖД.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -630,8 +606,7 @@ const panoramasData = [
     heading: 284.81,
     tilt: 91.91,
     pano_id: 'AF1QipPswstqu8wimVy8tPn3-L2LM1AeQOl6Q5Hx3dFK',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipPswstqu8wimVy8tPn3-L2LM1AeQOl6Q5Hx3dFK=w900-h600-k-no-pi-1.9070940787947421-ya342.8109821562713-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Парк ЖД.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -646,8 +621,7 @@ const panoramasData = [
     heading: 329.76,
     tilt: 86.96,
     pano_id: 'AF1QipMG9_Ix1dtk8P4hW9zVkJqKRvVZK117Ni-QgL8I',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipMG9_Ix1dtk8P4hW9zVkJqKRvVZK117Ni-QgL8I=w900-h600-k-no-pi3.035753557290832-ya317.7586861398987-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Дорога рядом с ЖД станцией.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -662,8 +636,7 @@ const panoramasData = [
     heading: 256.05,
     tilt: 84.28,
     pano_id: 'AF1QipOYJ71UCnKziM5lFB6907wCJ0QQS6H2zHXnf7Sf',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipOYJ71UCnKziM5lFB6907wCJ0QQS6H2zHXnf7Sf=w900-h600-k-no-pi5.724897664442921-ya183.0495228410711-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Переход ЖД возле пятиэтажки.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -678,8 +651,7 @@ const panoramasData = [
     heading: 201.12,
     tilt: 71.69,
     pano_id: 'AF1QipNwPBgtKZQUIhJIayxjYXZpwQk4pG1KEU2Diuiy',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipNwPBgtKZQUIhJIayxjYXZpwQk4pG1KEU2Diuiy=w900-h600-k-no-pi18.310818226192197-ya92.1218885525011-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Переход ЖД возле семафора.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -694,8 +666,7 @@ const panoramasData = [
     heading: 111.67,
     tilt: 100.0,
     pano_id: 'AF1QipOmivmBo0pFSP42-F5_Pdc8rsRWV9FyhqTl-3iO',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipOmivmBo0pFSP42-F5_Pdc8rsRWV9FyhqTl-3iO=w900-h600-k-no-pi-1.6225274834903587-ya38.669344677189116-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/ЖД переход семафор-четырнаха.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -710,8 +681,7 @@ const panoramasData = [
     heading: 158.71,
     tilt: 117.79,
     pano_id: 'AF1QipNRZMUKJipnhBnQPjJDKAJW4OV-94tQJVJKg9T2',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipNRZMUKJipnhBnQPjJDKAJW4OV-94tQJVJKg9T2=w900-h600-k-no-pi-27.793396902218348-ya36.71348834582466-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Авдіївска Промка.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -726,8 +696,7 @@ const panoramasData = [
     heading: 321.63,
     tilt: 95.0,
     pano_id: 'AF1QipOFoHGJPLbRZUQ2tq-bN-zzXL_1rUgVROQzQURZ',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipOFoHGJPLbRZUQ2tq-bN-zzXL_1rUgVROQzQURZ=w900-h600-k-no-pi3.7888741103127046-ya284.6347115009731-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Стекляшка.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -742,8 +711,7 @@ const panoramasData = [
     heading: 111.48,
     tilt: 100.0,
     pano_id: 'AF1QipPfLPAH2O0eefXVZMBZXlKwP9V05fQ4e-O2kVnH',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipPfLPAH2O0eefXVZMBZXlKwP9V05fQ4e-O2kVnH=w900-h600-k-no-pi1.1848260772233914-ya177.4841408724911-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Поле рядом с садиком Ивушка.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -758,8 +726,7 @@ const panoramasData = [
     heading: 108.47,
     tilt: 86.27,
     pano_id: 'AF1QipPs_o5EEwdVVZuMZs7-CiOpdD_xD_bX8aBRgI_e',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipPs_o5EEwdVVZuMZs7-CiOpdD_xD_bX8aBRgI_e=w900-h600-k-no-pi3.727825726924209-ya103.46883330976965-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Угол Ул. 9 Квартал д. 10.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -774,8 +741,7 @@ const panoramasData = [
     heading: 1.11,
     tilt: 100.2,
     pano_id: 'AF1QipO3PiBZu8tkk2jb8JCwBNQpcVypboGT4cipI6Fr',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipO3PiBZu8tkk2jb8JCwBNQpcVypboGT4cipI6Fr=w900-h600-k-no-pi-10.19547553802235-ya175.10763668981608-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Водяне ставок.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -790,8 +756,7 @@ const panoramasData = [
     heading: 317.36,
     tilt: 90.29,
     pano_id: 'AF1QipO-U1LIHqdz_5Xa4QGGZGQloogMnqv931QlSeor',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipO-U1LIHqdz_5Xa4QGGZGQloogMnqv931QlSeor=w900-h600-k-no-pi-0.29014449670458475-ya229.36100095813583-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Водяне поле.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -806,8 +771,7 @@ const panoramasData = [
     heading: 45.06,
     tilt: 96.38,
     pano_id: 'AF1QipMbogxfnfgdprTmNFYtnP1raSkeiuFPM0joaEE_',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipMbogxfnfgdprTmNFYtnP1raSkeiuFPM0joaEE_=w900-h600-k-no-pi-6.380799978776068-ya197.05533096814284-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Первомайське 1.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -822,8 +786,7 @@ const panoramasData = [
     heading: 286.28,
     tilt: 100.0,
     pano_id: 'AF1QipMOkJDEgTsvqIc3q_qjLowNplOt4BaiBhU5-RUp',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipMOkJDEgTsvqIc3q_qjLowNplOt4BaiBhU5-RUp=w900-h600-k-no-pi5.418957086670048-ya239.28274323800832-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Первомайське 2.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -838,8 +801,7 @@ const panoramasData = [
     heading: 337.12,
     tilt: 77.43,
     pano_id: 'AF1QipNJ5t_utBpsz6HEiiiXRGjBroA4Ngh6oP4qSrzC',
-    thumbnail_url:
-      'https://lh5.ggpht.com/p/AF1QipNJ5t_utBpsz6HEiiiXRGjBroA4Ngh6oP4qSrzC=w900-h600-k-no-pi12.574658602994404-ya320.1235321022773-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Нетайлово.jpg',
     image_width: 900,
     image_height: 600,
   },
@@ -855,7 +817,7 @@ const panoramasData = [
     tilt: 99.4,
     pano_id: 'AF1QipM5cIgM0bDNsDbZMj87qEhtQI53EvNpzozgt4kJ',
     thumbnail_url:
-      'https://lh5.googleusercontent.com/p/AF1QipM5cIgM0bDNsDbZMj87qEhtQI53EvNpzozgt4kJ=w365-h260-k-no-pi-0-ya307-ro-0-fo100',
+      '/_nuxt/public/panoimg/Карьер дорога на авдіївський пляж.jpg',
     image_width: 8704,
     image_height: 4352,
   },
@@ -870,8 +832,7 @@ const panoramasData = [
     heading: 84.69,
     tilt: 93.4,
     pano_id: 'AF1QipMabkLQv4jMiWvkDc5c9OUKj3V_7OvIx4GoXLCa',
-    thumbnail_url:
-      'https://lh5.googleusercontent.com/p/AF1QipMabkLQv4jMiWvkDc5c9OUKj3V_7OvIx4GoXLCa=w365-h260-k-no-pi0-ya311-ro-0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Карьер дачи.jpg',
     image_width: 8704,
     image_height: 4352,
   },
@@ -886,8 +847,7 @@ const panoramasData = [
     heading: 258.56,
     tilt: 99.92,
     pano_id: 'AF1QipOAFqCQVZkd6r5VMoAHAHI8pyyL08lq-1TisYhc',
-    thumbnail_url:
-      'https://lh5.googleusercontent.com/p/AF1QipOAFqCQVZkd6r5VMoAHAHI8pyyL08lq-1TisYhc=w365-h260-k-no-pi-10-ya207-ro-0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Пту 43.jpg',
     image_width: 8704,
     image_height: 4352,
   },
@@ -902,8 +862,7 @@ const panoramasData = [
     heading: 71.95,
     tilt: 86.74,
     pano_id: 'AF1QipOoA3nRJdTPWYjNqDb921SXMCexOH-3dX_q_Ebh',
-    thumbnail_url:
-      'https://lh5.googleusercontent.com/p/AF1QipOoA3nRJdTPWYjNqDb921SXMCexOH-3dX_q_Ebh=w365-h260-k-no-pi-0-ya107.00001-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Заброшеный цех жбк.jpg',
     image_width: 8704,
     image_height: 4352,
   },
@@ -918,8 +877,7 @@ const panoramasData = [
     heading: 283.51,
     tilt: 129.2,
     pano_id: 'AF1QipOn-03iIdvEJW_P5ZiVaQLYTxqtqwrllrLuB7m-',
-    thumbnail_url:
-      'https://lh5.googleusercontent.com/p/AF1QipOn-03iIdvEJW_P5ZiVaQLYTxqtqwrllrLuB7m-=w365-h260-k-no-pi-20-ya7.000002-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Гаражи возле больницы.jpg',
     image_width: 8704,
     image_height: 4352,
   },
@@ -934,8 +892,7 @@ const panoramasData = [
     heading: 74.72,
     tilt: 98.34,
     pano_id: 'AF1QipPnivCGfFlLB5XreiDDdh6gAfb_LEiRaZxLunli',
-    thumbnail_url:
-      'https://lh5.googleusercontent.com/p/AF1QipPnivCGfFlLB5XreiDDdh6gAfb_LEiRaZxLunli=w365-h260-k-no-pi0-ya350-ro-0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Дорога в сторону ДК.jpg',
     image_width: 8704,
     image_height: 4352,
   },
@@ -950,8 +907,7 @@ const panoramasData = [
     heading: 44.18,
     tilt: 93.11,
     pano_id: 'AF1QipPMfJeE2X7hs5xs5Aq55W0Gq3rIjEJ45VsVLI1c',
-    thumbnail_url:
-      'https://lh5.googleusercontent.com/p/AF1QipPMfJeE2X7hs5xs5Aq55W0Gq3rIjEJ45VsVLI1c=w365-h260-k-no-pi20-ya219-ro-0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Дорога на песочный карьер.jpg',
     image_width: 9216,
     image_height: 4342,
   },
@@ -966,8 +922,7 @@ const panoramasData = [
     heading: 2.13,
     tilt: 86.52,
     pano_id: 'AF1QipN5BgTi5Bxf0o2DF6j9Eauu72g6K7MekJ52yz9f',
-    thumbnail_url:
-      'https://lh5.googleusercontent.com/p/AF1QipN5BgTi5Bxf0o2DF6j9Eauu72g6K7MekJ52yz9f=w365-h260-k-no-pi0-ya95-ro-0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Дорога с кладбища на песочном.jpg',
     image_width: 8704,
     image_height: 4352,
   },
@@ -982,8 +937,7 @@ const panoramasData = [
     heading: 18.23,
     tilt: 97.03,
     pano_id: 'AF1QipPglm0u0t83Rz2Hm-cKL3pDA_OlyIi-JxH1P3RQ',
-    thumbnail_url:
-      'https://lh5.googleusercontent.com/p/AF1QipPglm0u0t83Rz2Hm-cKL3pDA_OlyIi-JxH1P3RQ=w365-h260-k-no-pi0-ya352-ro-0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Карьер рельсы.jpg',
     image_width: 8704,
     image_height: 4352,
   },
@@ -998,8 +952,7 @@ const panoramasData = [
     heading: 262.9,
     tilt: 86.63,
     pano_id: 'AF1QipNT9Z_EBRrtiuLYAHY2rVmNJvS8sBIU8KhefZ1N',
-    thumbnail_url:
-      'https://lh5.googleusercontent.com/p/AF1QipNT9Z_EBRrtiuLYAHY2rVmNJvS8sBIU8KhefZ1N=w365-h260-k-no-pi0-ya115.00001-ro-0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Карьер возле пляжа.jpg',
     image_width: 8704,
     image_height: 4352,
   },
@@ -1014,8 +967,7 @@ const panoramasData = [
     heading: 345.56,
     tilt: 98.63,
     pano_id: 'AF1QipNjki8VY6DT4Q_8uE0vvLZse9d1aIvL7VnkvzEQ',
-    thumbnail_url:
-      'https://lh5.googleusercontent.com/p/AF1QipNjki8VY6DT4Q_8uE0vvLZse9d1aIvL7VnkvzEQ=w365-h260-k-no-pi-10-ya292-ro-0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Карьер рельсы 2.jpg',
     image_width: 8704,
     image_height: 4352,
   },
@@ -1030,8 +982,7 @@ const panoramasData = [
     heading: 209.64,
     tilt: 79.64,
     pano_id: 'AF1QipOrIghVtw4ksb-WMAoJDHH9F-DIrEmzkLvG7K8_',
-    thumbnail_url:
-      'https://lh5.googleusercontent.com/p/AF1QipOrIghVtw4ksb-WMAoJDHH9F-DIrEmzkLvG7K8_=w365-h260-k-no-pi-10-ya359-ro-0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Дорога на черную сотню.jpg',
     image_width: 10240,
     image_height: 5120,
   },
@@ -1046,8 +997,7 @@ const panoramasData = [
     heading: 61.39,
     tilt: 83.16,
     pano_id: 'AF1QipOJNwP4eCmYuFqQWtYZxI9WSPICXw4C3iKAwKNg',
-    thumbnail_url:
-      'https://lh5.googleusercontent.com/p/AF1QipOJNwP4eCmYuFqQWtYZxI9WSPICXw4C3iKAwKNg=w365-h260-k-no-pi-20-ya84-ro-0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Черная сотня.jpg',
     image_width: 10240,
     image_height: 5120,
   },
@@ -1062,8 +1012,7 @@ const panoramasData = [
     heading: 22.21,
     tilt: 82.7,
     pano_id: 'AF1QipPeeZ7yx-JVoZLNNydpQ4Gf3TH2Qc92llbbF-Xs',
-    thumbnail_url:
-      'https://lh5.googleusercontent.com/p/AF1QipPeeZ7yx-JVoZLNNydpQ4Gf3TH2Qc92llbbF-Xs=w203-h100-k-no-pi-0-ya208.64076-ro0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Внутри ДК.jpg',
     image_width: 5660,
     image_height: 2830,
   },
@@ -1078,8 +1027,7 @@ const panoramasData = [
     heading: 357.43,
     tilt: 79.72,
     pano_id: 'AF1QipPWe0MiU78ugajb4lJR7dk1x58Cq1tmnf6u2NhQ',
-    thumbnail_url:
-      'https://lh5.googleusercontent.com/p/AF1QipPWe0MiU78ugajb4lJR7dk1x58Cq1tmnf6u2NhQ=w203-h100-k-no-pi-0-ya5.68045-ro-0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Внутри ДК 2.jpg',
     image_width: 5660,
     image_height: 2830,
   },
@@ -1094,8 +1042,7 @@ const panoramasData = [
     heading: 348.51,
     tilt: 92.14,
     pano_id: 'AF1QipP1gzthL-mSHC_0eFvI0glnyGufCOYVhI_w7udN',
-    thumbnail_url:
-      'https://lh5.googleusercontent.com/p/AF1QipP1gzthL-mSHC_0eFvI0glnyGufCOYVhI_w7udN=w203-h100-k-no-pi-0-ya127.85852-ro-0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Библиотека ДК.jpg',
     image_width: 5660,
     image_height: 2830,
   },
@@ -1110,8 +1057,7 @@ const panoramasData = [
     heading: 264.65,
     tilt: 92.07,
     pano_id: 'AF1QipPiLewbu2vLACsyLNETshPkN9fibtUokHrMpv_S',
-    thumbnail_url:
-      'https://lh5.googleusercontent.com/p/AF1QipPiLewbu2vLACsyLNETshPkN9fibtUokHrMpv_S=w203-h100-k-no-pi-0-ya184.28615-ro-0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Дк холл.jpg',
     image_width: 5660,
     image_height: 2830,
   },
@@ -1126,8 +1072,7 @@ const panoramasData = [
     heading: 81.17,
     tilt: 84.05,
     pano_id: 'AF1QipMYpICK6xbeZFqT9TYjECz7hRuTyVjDgOIUBkNU',
-    thumbnail_url:
-      'https://lh5.googleusercontent.com/p/AF1QipMYpICK6xbeZFqT9TYjECz7hRuTyVjDgOIUBkNU=w203-h100-k-no-pi-0-ya336.37006-ro-0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Дк спортзал ринг.jpg',
     image_width: 5660,
     image_height: 2830,
   },
@@ -1142,8 +1087,7 @@ const panoramasData = [
     heading: 80.66,
     tilt: 88.99,
     pano_id: 'AF1QipM59NDpviMhy-h9RUw6s_1dJ0h0RzSHbyJRDEnq',
-    thumbnail_url:
-      'https://lh5.googleusercontent.com/p/AF1QipM59NDpviMhy-h9RUw6s_1dJ0h0RzSHbyJRDEnq=w203-h100-k-no-pi0-ya357.00815-ro-0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Дк спортзал.jpg',
     image_width: 5660,
     image_height: 2830,
   },
@@ -1158,8 +1102,7 @@ const panoramasData = [
     heading: 275.62,
     tilt: 83.63,
     pano_id: 'AF1QipOA6DMSgtMwE7hS2kIo7w6SNCEo989kKSw8WzlQ',
-    thumbnail_url:
-      'https://lh5.googleusercontent.com/p/AF1QipOA6DMSgtMwE7hS2kIo7w6SNCEo989kKSw8WzlQ=w203-h100-k-no-pi-0-ya80.874306-ro-0-fo100',
+    thumbnail_url: '/_nuxt/public/panoimg/Старый детский замок.jpg',
     image_width: 8704,
     image_height: 4352,
   },
