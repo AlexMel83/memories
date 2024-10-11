@@ -25,10 +25,17 @@
             <div class="photo rounded-t-lg">
               <img
                 v-if="panorama.thumbnail_url"
-                :src="panorama.thumbnail_url"
+                :src="getThumbnailUrl(panorama.thumbnail_url)"
                 loading="lazy"
               />
-              <img v-else src="./../public/default-memory.png" />
+              <img
+                v-else
+                :src="
+                  isDocker
+                    ? 'default-memory.png'
+                    : './../public/' + 'default-memory.png'
+                "
+              />
               <div class="title">
                 <h2 class="memory-title">
                   {{ panorama.title }}
@@ -122,6 +129,12 @@
 
 <script setup>
 const isExpanded = ref(true);
+// Получаем конфигурацию через useRuntimeConfig
+const config = useRuntimeConfig();
+const isDocker = config.public.isDocker === 'true';
+// Логируем для проверки
+console.log('Is Docker:', isDocker);
+console.log(config.public);
 
 const props = defineProps({
   panoramas: {
@@ -160,6 +173,10 @@ const filteredPanoramas = computed(() => {
     )
     .slice(startIndex, endIndex);
 });
+
+const getThumbnailUrl = (thumbnailUrl) => {
+  return isDocker ? thumbnailUrl : `./_nuxt/public${thumbnailUrl}`;
+};
 
 const toggleAccordion = () => {
   isExpanded.value = !isExpanded.value;

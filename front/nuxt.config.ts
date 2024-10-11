@@ -53,6 +53,7 @@ export default defineNuxtConfig({
       apiKeyMapbox: process.env.APIKEY_MAPBOX,
       apiBase: process.env.API_BASE || 'https://api.memory.pp.ua',
       googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
+      isDocker: process.env.NUXT_PUBLIC_IS_DOCKER || 'false',
     },
     private: {
       // Значения здесь доступны только на стороне сервера

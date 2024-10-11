@@ -23,12 +23,25 @@
             :to="'/memories/' + memory.memory_id"
           >
             <div class="photo rounded-t-lg">
-              <img
+              <!-- <img
                 v-if="memory.memory_photos.length"
                 :src="`${memory.memory_photos[0].url.includes('http') ? '' : baseURL}${memory.memory_photos[0].url}`"
                 loading="lazy"
+              /> -->
+              <img
+                v-if="memory.memory_photos.length"
+                :src="getThumbnailUrl(memory.memory_photos[0].url)"
+                loading="lazy"
               />
-              <img v-else src="./../public/default-memory.png" loading="lazy" />
+              <img
+                v-else
+                :src="
+                  isDocker
+                    ? 'default-memory.png'
+                    : './../public/' + 'default-memory.png'
+                "
+              />
+              <!-- <img v-else src="./../public/default-memory.png" loading="lazy" /> -->
               <div class="title">
                 <h2 class="memory-title">
                   {{ memory.title }}
@@ -120,6 +133,8 @@
 </template>
 
 <script setup>
+const config = useRuntimeConfig();
+const isDocker = config.public.isDocker === 'true';
 const isExpanded = ref(true);
 const perPage = 9;
 const currentPage = ref(1);
@@ -137,6 +152,11 @@ const props = defineProps({
     default: '',
   },
 });
+
+const getThumbnailUrl = (thumbnailUrl) => {
+  return isDocker ? thumbnailUrl : `./_nuxt/public${thumbnailUrl}`;
+};
+
 const toggleAccordion = () => {
   isExpanded.value = !isExpanded.value;
 };
