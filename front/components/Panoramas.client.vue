@@ -129,12 +129,8 @@
 
 <script setup>
 const isExpanded = ref(true);
-// Получаем конфигурацию через useRuntimeConfig
 const config = useRuntimeConfig();
-const isDocker = config.public.isDocker === 'true';
-// Логируем для проверки
-console.log('Is Docker:', isDocker);
-console.log(config.public);
+const isDocker = config.public.isDocker;
 
 const props = defineProps({
   panoramas: {

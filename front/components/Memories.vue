@@ -134,7 +134,7 @@
 
 <script setup>
 const config = useRuntimeConfig();
-const isDocker = config.public.isDocker === 'true';
+const isDocker = config.public.isDocker;
 const isExpanded = ref(true);
 const perPage = 9;
 const currentPage = ref(1);

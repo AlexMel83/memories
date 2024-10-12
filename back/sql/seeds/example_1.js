@@ -122,123 +122,123 @@ const memoriesData = [
 const memoryPhotosData = [
   {
     memory_id: 1,
-    url: '/_nuxt/public/memoryimg/main-photo-1.jpg',
+    url: '/memoryimg/main-photo-1.jpg',
   },
   {
     memory_id: 1,
-    url: '/_nuxt/public/memoryimg/cow-1-space-1.jpg',
+    url: '/memoryimg/cow-1-space-1.jpg',
   },
   {
     memory_id: 1,
-    url: '/_nuxt/public/memoryimg/cow-1-space-2.jpg',
+    url: '/memoryimg/cow-1-space-2.jpg',
   },
   {
     memory_id: 1,
-    url: '/_nuxt/public/memoryimg/cow-1-space-3.jpg',
+    url: '/memoryimg/cow-1-space-3.jpg',
   },
   {
     memory_id: 1,
-    url: '/_nuxt/public/memoryimg/cow-1-space-4.jpg',
+    url: '/memoryimg/cow-1-space-4.jpg',
   },
   {
     memory_id: 1,
-    url: '/_nuxt/public/memoryimg/cow-1-space-5.jpg',
+    url: '/memoryimg/cow-1-space-5.jpg',
   },
   {
     memory_id: 2,
-    url: '/_nuxt/public/memoryimg/main-photo-2.jpg',
+    url: '/memoryimg/main-photo-2.jpg',
   },
   {
     memory_id: 2,
-    url: '/_nuxt/public/memoryimg/cow-2-space-1.jpg',
+    url: '/memoryimg/cow-2-space-1.jpg',
   },
   {
     memory_id: 2,
-    url: '/_nuxt/public/memoryimg/cow-2-space-2.jpg',
+    url: '/memoryimg/cow-2-space-2.jpg',
   },
   {
     memory_id: 2,
-    url: '/_nuxt/public/memoryimg/cow-2-space-3.jpg',
+    url: '/memoryimg/cow-2-space-3.jpg',
   },
   {
     memory_id: 2,
-    url: '/_nuxt/public/memoryimg/cow-2-space-4.jpg',
+    url: '/memoryimg/cow-2-space-4.jpg',
   },
   {
     memory_id: 2,
-    url: '/_nuxt/public/memoryimg/cow-2-space-5.jpg',
+    url: '/memoryimg/cow-2-space-5.jpg',
   },
   {
     memory_id: 3,
-    url: '/_nuxt/public/memoryimg/main-photo-3.jpg',
+    url: '/memoryimg/main-photo-3.jpg',
   },
   {
     memory_id: 3,
-    url: '/_nuxt/public/memoryimg/cow-3-space-1.jpg',
+    url: '/memoryimg/cow-3-space-1.jpg',
   },
   {
     memory_id: 3,
-    url: '/_nuxt/public/memoryimg/cow-3-space-2.jpg',
+    url: '/memoryimg/cow-3-space-2.jpg',
   },
   {
     memory_id: 3,
-    url: '/_nuxt/public/memoryimg/cow-3-space-4.jpg',
+    url: '/memoryimg/cow-3-space-4.jpg',
   },
   {
     memory_id: 3,
-    url: '/_nuxt/public/memoryimg/cow-3-space-5.jpg',
+    url: '/memoryimg/cow-3-space-5.jpg',
   },
   {
     memory_id: 3,
-    url: '/_nuxt/public/memoryimg/cow-3-space-6.jpg',
+    url: '/memoryimg/cow-3-space-6.jpg',
   },
   {
     memory_id: 4,
-    url: '/_nuxt/public/memoryimg/main-photo-4.jpg',
+    url: '/memoryimg/main-photo-4.jpg',
   },
   {
     memory_id: 4,
-    url: '/_nuxt/public/memoryimg/cow-4-space-1.jpg',
+    url: '/memoryimg/cow-4-space-1.jpg',
   },
   {
     memory_id: 4,
-    url: '/_nuxt/public/memoryimg/cow-4-space-3.jpg',
+    url: '/memoryimg/cow-4-space-3.jpg',
   },
   {
     memory_id: 4,
-    url: '/_nuxt/public/memoryimg/cow-4-space-4.jpg',
+    url: '/memoryimg/cow-4-space-4.jpg',
   },
   {
     memory_id: 4,
-    url: '/_nuxt/public/memoryimg/cow-4-space-5.jpg',
+    url: '/memoryimg/cow-4-space-5.jpg',
   },
   {
     memory_id: 4,
-    url: '/_nuxt/public/memoryimg/cow-4-space-7.jpg',
+    url: '/memoryimg/cow-4-space-7.jpg',
   },
   {
     memory_id: 5,
-    url: '/_nuxt/public/memoryimg/main-photo-5.jpg',
+    url: '/memoryimg/main-photo-5.jpg',
   },
   {
     memory_id: 6,
-    url: '/_nuxt/public/memoryimg/main-photo-6.jpg',
+    url: '/memoryimg/main-photo-6.jpg',
   },
   {
     memory_id: 6,
-    url: '/_nuxt/public/memoryimg/cow-6-space-1.jpg',
+    url: '/memoryimg/cow-6-space-1.jpg',
   },
   {
     memory_id: 6,
-    url: '/_nuxt/public/memoryimg/cow-6-space-2.jpg',
+    url: '/memoryimg/cow-6-space-2.jpg',
   },
   {
     memory_id: 6,
-    url: '/_nuxt/public/memoryimg/cow-6-space-3.jpg',
+    url: '/memoryimg/cow-6-space-3.jpg',
   },
   {
     memory_id: 6,
-    url: '/_nuxt/public/memoryimg/cow-6-space-4.jpg',
+    url: '/memoryimg/cow-6-space-4.jpg',
   },
 ];
 
