@@ -10,7 +10,6 @@ const uuidRegex =
   /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
 const emailRegex = /\(email\)=\(([^)]+)\)/;
 const {
-  CLIENT_URL,
   API_BASE,
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
