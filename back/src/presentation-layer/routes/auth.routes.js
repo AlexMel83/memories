@@ -86,9 +86,13 @@ export default function (app) {
   app.get('/social-login/:provider', async (req, res, next) => {
     try {
       const provider = req.params.provider;
-      const { url, codeVerifier } =
-        await socialLoginService.generateAuthUrl(provider);
+      const origin = req.get('origin') || req.get('referer') || CLIENT_URL;
+      const { url, codeVerifier } = await socialLoginService.generateAuthUrl(
+        provider,
+        origin,
+      );
       req.session.codeVerifier = codeVerifier;
+      req.session.origin = origin;
       req.session.save((err) => {
         if (err) {
           console.error('Session save error:', err);
@@ -105,10 +109,19 @@ export default function (app) {
     const provider = req.params.provider;
     const code = req.query.code;
     const codeVerifier = req.session.codeVerifier;
+    const origin = req.session.origin || CLIENT_URL;
+    delete req.session.codeVerifier;
+    delete req.session.origin;
     if (!code || !codeVerifier) {
       return res.json(ApiError.BadRequest('Invalid code or code verifier'));
     }
-    await socialLoginService.handleCallback(provider, code, codeVerifier, res);
+    await socialLoginService.handleCallback(
+      provider,
+      code,
+      codeVerifier,
+      res,
+      origin,
+    );
   });
 
   app.post('/auth-user/:link', async (req, res, next) => {

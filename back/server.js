@@ -23,6 +23,7 @@ const server = http.createServer(app);
 const allowedOrigins = [
   ...(CLIENT_URL.split(',') || 'http://localhost:3000'),
   'https://memory.pp.ua',
+  'https://static.memory.pp.ua',
   PAYMENT_DOMEN || 'https://www.liqpay.ua',
   'http://localhost:3000',
 ];
