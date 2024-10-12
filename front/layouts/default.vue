@@ -131,10 +131,6 @@ onUnmounted(() => {
   flex: 1;
 }
 
-.grecaptcha-badge {
-  display: none !important;
-}
-
 #scrollToTop {
   position: fixed;
   bottom: 65px;

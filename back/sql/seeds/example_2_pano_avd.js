@@ -488,7 +488,7 @@ const panoramasData = [
     heading: 263.48,
     tilt: 67.04,
     pano_id: 'AF1QipN8UXWX8iaDvEJtO60O3goxk6i8QHMM9xV6BNdp',
-    thumbnail_url: '/panoimg/вдіївський пляж Блакитні озера земснаряд.jpg',
+    thumbnail_url: '/panoimg/Авдіївський пляж "Блакитні озера" земснаряд.jpg',
     image_width: 900,
     image_height: 600,
   },
