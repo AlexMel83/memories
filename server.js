@@ -24,6 +24,8 @@ const allowedOrigins = [
   ...(CLIENT_URL.split(',') || 'http://localhost:3000'),
   'https://memory.pp.ua',
   'https://dev.memory.pp.ua',
+  'http://localhost:8788',
+  'http://127.0.0.1:8788',
   PAYMENT_DOMEN || 'https://www.liqpay.ua',
   'http://localhost:3000',
 ];
@@ -36,6 +38,7 @@ const corsOptions = {
       callback(new Error('Not allowed by CORS'));
     }
   },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
   exposedHeaders: ['Access-Control-Allow-Credentials'],
 };
