@@ -24,9 +24,6 @@
   },
   "ignorePatterns": [
     ".nuxt/**",
-    "front/.nuxt/**",
-    "front/.output/**",
-    "front/build/**",
     "dist/**"
   ]
 }
