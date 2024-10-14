@@ -8,6 +8,8 @@ const panoramasFields = [
   'panoramas.description',
   'panoramas.address',
   'panoramas.shooting_date',
+  'panoramas.latitude_fact',
+  'panoramas.longitude_fact',
   'panoramas.latitude',
   'panoramas.longitude',
   'panoramas.view_mode',

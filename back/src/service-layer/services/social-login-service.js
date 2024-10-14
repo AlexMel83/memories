@@ -10,7 +10,6 @@ const uuidRegex =
   /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
 const emailRegex = /\(email\)=\(([^)]+)\)/;
 const {
-  CLIENT_URL,
   API_BASE,
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
@@ -52,17 +51,17 @@ class SocialLoginService {
     return this.strategies[provider];
   }
 
-  async generateAuthUrl(provider) {
+  async generateAuthUrl(provider, origin) {
     try {
       const strategy = this.getStrategy(provider);
-      return await strategy.generateAuthUrl();
+      return await strategy.generateAuthUrl(origin);
     } catch (error) {
       console.error(`Failed to generate auth URL for ${provider}:`, error);
       throw new Error(`Authentication service unaviable for ${provider}`);
     }
   }
 
-  async handleCallback(provider, code, codeVerifier, res) {
+  async handleCallback(provider, code, codeVerifier, res, origin) {
     const trx = await knex.transaction();
     try {
       const strategy = this.getStrategy(provider);
@@ -76,7 +75,7 @@ class SocialLoginService {
         res,
       );
       res.cookie('refreshToken', tokens.refreshToken, rFcookieOptions);
-      const frontendRedirectUri = `${CLIENT_URL}/callback/${user.activationlink}`;
+      const frontendRedirectUri = `${origin}/callback/${user.activationlink}`;
       await trx.commit();
       return res.redirect(frontendRedirectUri);
     } catch (error) {
@@ -84,7 +83,7 @@ class SocialLoginService {
       console.error(`Error in ${provider} callback:`, error);
       if (error.name === 'TypeError' && error.code === 'ERR_NETWORK') {
         return res.redirect(
-          `${CLIENT_URL}?error=${encodeURIComponent('Network error: Please check your internet connection')}`,
+          `${origin}?error=${encodeURIComponent('Network error: Please check your internet connection')}`,
         );
       }
       if (error && typeof error === 'object' && error.detail) {
@@ -93,12 +92,12 @@ class SocialLoginService {
           const email = match[1];
           const errorMessage = email;
           return res.redirect(
-            `${CLIENT_URL}?email=${email}&error=${encodeURIComponent(errorMessage)}`,
+            `${origin}?email=${email}&error=${encodeURIComponent(errorMessage)}`,
           );
         }
       }
       return res.redirect(
-        `${CLIENT_URL}?error=${encodeURIComponent('An error occurred during authentication')}`,
+        `${origin}?error=${encodeURIComponent('An error occurred during authentication')}`,
       );
     }
   }

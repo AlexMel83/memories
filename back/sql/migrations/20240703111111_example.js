@@ -88,16 +88,18 @@ export const up = async (knex) => {
       table.text('description').nullable();
       table.string('address').nullable();
       table.timestamp('shooting_date').defaultTo(knex.fn.now()).notNullable();
-      table.decimal('latitude', 9, 7).notNullable(); // Широта
-      table.decimal('longitude', 9, 7).notNullable(); // Долгота
-      table.string('view_mode', 10); // Режим вида (например: '3a')
-      table.decimal('yaw', 5, 2); // Угол обзора камеры
-      table.decimal('heading', 6, 2); // Направление камеры
-      table.decimal('tilt', 5, 2); // Угол наклона камеры
-      table.string('pano_id', 50); // Идентификатор панорамы
-      table.text('thumbnail_url'); // URL миниатюры
-      table.integer('image_width'); // Ширина изображения
-      table.integer('image_height'); // Высота изображения
+      table.decimal('latitude_fact', 9, 7);
+      table.decimal('longitude_fact', 9, 7);
+      table.decimal('latitude', 9, 7).notNullable();
+      table.decimal('longitude', 9, 7).notNullable();
+      table.string('view_mode', 10);
+      table.decimal('yaw', 5, 2);
+      table.decimal('heading', 6, 2);
+      table.decimal('tilt', 5, 2);
+      table.string('pano_id', 50);
+      table.text('thumbnail_url');
+      table.integer('image_width');
+      table.integer('image_height');
       table.timestamp('created_at').defaultTo(knex.fn.now()).notNullable();
       table.timestamp('updated_at').defaultTo(knex.fn.now()).notNullable();
     });

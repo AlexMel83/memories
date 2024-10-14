@@ -27,14 +27,14 @@
               <img :src="item" class="w-full" draggable="false" />
             </UCarousel>
           </div>
-          <h1 class="text-3xl font-bold mb-4">
+          <h1 class="text-3xl font-bold mb-4 dark:text-white">
             {{ memory.title }}
           </h1>
-          <p class="text-lg mb-6">
+          <p class="text-lg mb-6 dark:text-white">
             {{ memory.description }}
           </p>
           <!-- Дополнительная информация -->
-          <div class="info">
+          <div class="info dark:text-white">
             <p>
               <strong>Адреса:</strong> {{ memory.address || 'Адрес не указан' }}
             </p>

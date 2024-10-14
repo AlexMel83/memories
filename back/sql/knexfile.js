@@ -12,11 +12,13 @@ const {
   POSTGRES_HOST,
 } = process.env;
 
+const DB_HOST = IS_DOCKER ? 'postgres' : POSTGRES_HOST;
+
 /**
  * @type {Object.<string, import('knex').Knex.Config>}
  */
 console.log('Loaded environment variables:');
-console.log(`POSTGRES_HOST: ${POSTGRES_HOST}`);
+console.log(`POSTGRES_HOST: ${DB_HOST}`);
 console.log(`POSTGRES_PORT: ${POSTGRES_PORT}`);
 console.log(`POSTGRES_USER: ${POSTGRES_USER}`);
 console.log(`POSTGRES_PASSWORD: ${POSTGRES_PASSWORD ? '****' : 'undefined'}`);
@@ -25,7 +27,7 @@ export default {
   development: {
     client: 'postgresql',
     connection: {
-      host: POSTGRES_HOST,
+      host: DB_HOST,
       port: POSTGRES_PORT,
       user: POSTGRES_USER,
       password: POSTGRES_PASSWORD,

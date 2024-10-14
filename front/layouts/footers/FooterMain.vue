@@ -15,10 +15,10 @@
             >
           </div>
           <div class="phone-number">
-            <a href="tel:+380987654321" class="sharing-item">
+            <a href="tel:+380954664190" class="sharing-item">
               <img src="~assets/icon_phone.png" alt="icon" />
             </a>
-            <a href="tel:+380987654321">+38 098 765-43-21</a>
+            <a href="tel:+380954664190">+38 095 466-41-90</a>
           </div>
         </div>
         <div class="sharing">
@@ -55,13 +55,14 @@
           </a>
         </div>
       </div>
-      <div class="additional-links">
+      <div class="additional-links text-center">
         <nuxt-link to="/donation-service-terms" class="terms-link">
           Умови використання
         </nuxt-link>
         <nuxt-link to="/privacy-policy" class="terms-link">
           Політика конфіденційності
         </nuxt-link>
+        <nuxt-link to="/howtohelp" class="terms-link"> Як допомогти </nuxt-link>
       </div>
       <div class="developers">
         <nuxt-link to="/" class="developers-link">
@@ -71,9 +72,9 @@
             width="50"
             height="50"
           />
-          <p>
-            Розроблено AlexMel83 ©<br />
-            всі права захищені 2024
+          <p class="text-center">
+            Розроблено Олександром Мелешко <br />
+            всі права захищені 2024 ©
           </p>
         </nuxt-link>
       </div>
@@ -171,6 +172,7 @@ export default {
 }
 
 .additional-links {
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
 }

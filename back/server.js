@@ -23,11 +23,11 @@ const server = http.createServer(app);
 const allowedOrigins = [
   ...(CLIENT_URL.split(',') || 'http://localhost:3000'),
   'https://memory.pp.ua',
+  'https://dev.memory.pp.ua',
   PAYMENT_DOMEN || 'https://www.liqpay.ua',
   'http://localhost:3000',
 ];
 
-console.log(CLIENT_URL);
 const corsOptions = {
   origin: (origin, callback) => {
     if (allowedOrigins.includes(origin) || !origin) {

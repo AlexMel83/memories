@@ -3,7 +3,7 @@
     class="w-auto absolute top-[15px] left-[30px] md:left-[60px] z-[2] flex gap-4 px-6 pb-8 md:px-0 md:py-0 bg-transparent"
   >
     <!--Search-->
-    <div class="relative flex-1 md:min-w-[350px]">
+    <div class="relative flex-1 max-w-[225px] sm:min-w-[350px]">
       <UInput
         v-model="searchQuery"
         :ui="{ icon: { trailing: { pointer: '' } } }"
@@ -30,7 +30,7 @@
         <!--Results-->
         <div
           v-if="searchQuery && searchResults"
-          class="max-h-[200px] overflow-y-auto overflow-x-hidden bg-white rounded-md"
+          class="max-h-[150px] overflow-y-auto overflow-x-hidden bg-white rounded-md"
         >
           <!--Loading-->
           <LoadingSpinner v-if="!searchData" />
@@ -78,7 +78,7 @@
     </div>
     <!--Geolocation-->
     <div
-      class="py-1 px-1 flex items-center shadow-md rounded-md min-h-[32px]"
+      class="py-1 px-1 flex items-center shadow-md rounded-md min-h-[32px] cursor-pointer hover:bg-primary-600 dark:hover:bg-primary-500"
       :class="{ 'bg-slate-600': coords, 'bg-white': !coords }"
       @click="$emit('getGeoLocation')"
     >

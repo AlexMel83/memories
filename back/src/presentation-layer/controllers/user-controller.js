@@ -195,21 +195,18 @@ class UserController {
   async updateUser(req, res) {
     const fields = req.body;
     const userData = req.user;
-    if (!fields.id) {
-      fields.id = userData.id;
-    }
     let userDataBase = null;
     userDataBase = await userModel.getUsersByConditions({
       id: userData.id,
     });
     if (!userDataBase.length) {
       return res.json(
-        ApiError.NotFound(`user with email: ${fields.email} was not found`),
+        ApiError.NotFound(`user with id: ${userData.id} was not found`),
       );
     }
     if (fields.email && userDataBase[0].role === admin) {
       userDataBase = await userModel.getUsersByConditions({
-        email: userData.email,
+        email: fields.email,
       });
     }
     let updatedUser = {};
@@ -218,7 +215,7 @@ class UserController {
     }
     const payload = {
       id: userDataBase[0].id,
-      email: fields.email,
+      email: userData.email,
       password: fields?.password ?? userDataBase[0].password,
       name: fields?.name ?? userDataBase[0].name,
       surname: fields?.surname ?? userDataBase[0].surname,

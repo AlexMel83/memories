@@ -1,10 +1,30 @@
 <template>
-  <div class="panorama-page">
+  <div>
     <div v-if="panorama" class="panorama-container">
-      <h1 class="text-3xl font-bold text-gray-900 text-center m-4">
+      <h1
+        class="text-3xl font-bold text-gray-900 text-center m-4 dark:text-white"
+      >
         {{ panorama.title }}
       </h1>
-      <div ref="streetViewContainer" class="street-view" />
+      <div ref="streetViewContainer" class="street-view mb-2" />
+      <div
+        v-if="errorMessage"
+        class="error-message text-red-500 text-center mt-4 dark:text-white"
+      >
+        {{ errorMessage }}
+      </div>
+      <div v-if="panorama.address" class="text-center mb-4 dark:text-white">
+        Адреса: {{ panorama.address }}
+      </div>
+      <div v-if="panorama.description" class="text-center mb-4 dark:text-white">
+        Опис: {{ panorama.description }}
+      </div>
+      <div
+        v-if="panorama.shooting_date"
+        class="text-center mb-4 dark:text-white"
+      >
+        Дата зйомки: {{ formatDate(panorama.shooting_date) }}
+      </div>
       <div class="pagination">
         <UButton
           :disabled="currentId <= 1"
@@ -22,18 +42,64 @@
 
 <script setup>
 import { ref, onMounted, nextTick } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();
 const router = useRouter();
 const panorama = ref(null);
 const streetViewContainer = ref(null);
 const currentId = ref(parseInt(route.params.id));
-const { $api } = useNuxtApp();
+const errorMessage = ref('');
+const { $api, $loadGoogleMaps } = useNuxtApp();
 
-onMounted(async () => {
-  await loadPanorama();
-});
+const formatDate = (dateString) => {
+  const options = {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  };
+  return new Date(dateString).toLocaleString('ru-RU', options);
+};
+
+const initStreetView = async () => {
+  await $loadGoogleMaps();
+  if (panorama.value && streetViewContainer.value) {
+    const location = {
+      lat: parseFloat(panorama.value.latitude),
+      lng: parseFloat(panorama.value.longitude),
+    };
+
+    const streetView = new google.maps.StreetViewPanorama(
+      streetViewContainer.value,
+      {
+        position: location,
+        pov: {
+          heading: parseFloat(panorama.value.heading) || 0,
+          pitch: parseFloat(panorama.value.tilt) - 90 || 0,
+        },
+        zoom: 0,
+      },
+    );
+
+    streetView.addListener('zoom_changed', () => {
+      const currentZoom = streetView.getZoom();
+      console.log('Current zoom:', currentZoom);
+      if (document.fullscreenElement && currentZoom !== 0) {
+        streetView.setZoom(0);
+      }
+    });
+
+    document.addEventListener('fullscreenchange', () => {
+      if (document.fullscreenElement) {
+        streetView.setZoom(0);
+      }
+    });
+  } else {
+    console.warn(
+      'Контейнер для панорамы не готов или данные панорамы отсутствуют.',
+    );
+  }
+};
 
 const loadPanorama = async () => {
   try {
@@ -46,41 +112,9 @@ const loadPanorama = async () => {
   }
 };
 
-const initStreetView = () => {
-  if (panorama.value && streetViewContainer.value) {
-    const location = {
-      lat: parseFloat(panorama.value.latitude),
-      lng: parseFloat(panorama.value.longitude),
-    };
-    const streetView = new google.maps.StreetViewPanorama(
-      streetViewContainer.value,
-      {
-        position: location,
-        pov: {
-          heading: parseFloat(panorama.value.heading) || 0,
-          pitch: parseFloat(panorama.value.tilt) - 90 || 0,
-        },
-        zoom: 0,
-      },
-    );
-    streetView.addListener('zoom_changed', () => {
-      const currentZoom = streetView.getZoom();
-      console.log('Current zoom:', currentZoom);
-      if (document.fullscreenElement && currentZoom !== 0) {
-        streetView.setZoom(0);
-      }
-    });
-    document.addEventListener('fullscreenchange', () => {
-      if (document.fullscreenElement) {
-        streetView.setZoom(0);
-      }
-    });
-  } else {
-    console.warn(
-      'Контейнер для панорамы не готов или данные панорамы отсутствуют.',
-    );
-  }
-};
+onMounted(async () => {
+  await loadPanorama();
+});
 
 const previousPanorama = () => {
   if (currentId.value > 1) {

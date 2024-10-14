@@ -7,6 +7,8 @@ export interface Panorama {
   description: string;
   address: string;
   shooting_date: string;
+  latitude_fact: string;
+  longitude_fact: string;
   latitude: string;
   longitude: string;
   view_mode: string;

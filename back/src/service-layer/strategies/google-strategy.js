@@ -23,7 +23,7 @@ export default class GoogleStrategy {
     }
   }
 
-  async generateAuthUrl() {
+  async generateAuthUrl(origin) {
     await this.init();
     const codeVerifier = generators.codeVerifier();
     const codeChallenge = generators.codeChallenge(codeVerifier);
@@ -34,7 +34,7 @@ export default class GoogleStrategy {
       code_challenge_method: 'S256',
       state: generators.state(),
     });
-    return { url, codeVerifier };
+    return { url, codeVerifier, origin };
   }
 
   async handleCallback(code, codeVerifier) {

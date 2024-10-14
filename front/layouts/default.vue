@@ -97,9 +97,6 @@ onUnmounted(() => {
 </script>
 
 <style>
-html {
-  overflow-y: scroll;
-}
 /* Стилизация полосы прокрутки для WebKit браузеров (Chrome, Safari) */
 ::-webkit-scrollbar {
   width: 10px;
@@ -127,20 +124,11 @@ html {
 .page-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Это обеспечит, что контейнер занимает как минимум всю высоту viewport */
+  min-height: 100vh;
 }
 
 .content-wrap {
-  flex: 1; /* Это позволит контенту расширяться и занимать доступное пространство */
-}
-
-/* .other-page {
-  margin: 0 auto;
-  font-family: 'Inter', sans-serif;
-} */
-
-.grecaptcha-badge {
-  display: none !important;
+  flex: 1;
 }
 
 #scrollToTop {

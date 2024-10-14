@@ -1,9 +1,16 @@
 <template>
   <section
     v-if="memories.length > 0 || panoramas.length > 0"
-    class="mapsection h-96 relative"
+    :class="['mapsection relative', fullScreen ? 'h-screen' : 'h-96']"
     name="image-map"
   >
+    <!-- Кнопка для разворачивания карты -->
+    <button
+      class="bg-white text-black dark:text-gray-900 hover:bg-primary-600 dark:hover:bg-primary-500 absolute top-2 right-2 z-[1000] px-2 py-1 rounded shadow-md hover:bg-gray-100 w-auto max-w-[95px] whitespace-normal sm:max-w-full sm:px-1 sm:text-base text-sm text-left mt-12 xs:mt-0"
+      @click="toggleFullScreen"
+    >
+      {{ fullScreen ? 'Згорнути мапу' : 'Розгорнути мапу' }}
+    </button>
     <modal-geo-error
       v-if="geoError"
       :geo-error-msg="geoErrorMsg"
@@ -29,7 +36,7 @@
       :zoom="zoom"
       @ready="onMapReady"
     >
-      <l-control-layers position="bottomleft" />
+      <l-control-layers position="bottomleft" :collapsed="true" />
       <LTileLayer
         v-for="tileProvider in tileProviders"
         :key="tileProvider.name"
@@ -43,6 +50,22 @@
         :url="tileProvider.url"
         layer-type="base"
       />
+      <l-layer-group
+        ref="memoriesGroup"
+        :visible="showMemoryMarkers"
+        layer-type="overlay"
+        name="Спогади"
+      >
+        <!-- Эта группа будет содержать кластеризованные маркеры воспоминаний -->
+      </l-layer-group>
+      <l-layer-group
+        ref="panoramasGroup"
+        :visible="showPanoramaMarkers"
+        layer-type="overlay"
+        name="Панорами"
+      >
+        <!-- Эта группа будет содержать кластеризованные маркеры панорам -->
+      </l-layer-group>
       <LControlScale position="bottomright" :imperial="false" :metric="true" />
     </LMap>
   </section>
@@ -64,10 +87,16 @@ const props = defineProps({
 });
 
 const markerCoordinates = ref({ lat: null, lng: null });
+const markerClusterGroupPanoramas = ref(null);
+const markerClusterGroupMemories = ref(null);
 const center = ref([48.1304779, 37.7444687]);
-const markerClusterGroup = ref(null);
+const showPanoramaMarkers = ref(true);
+const showMemoryMarkers = ref(true);
 const config = useRuntimeConfig();
+const panoramasGroup = ref(null);
+const memoriesGroup = ref(null);
 const searchResults = ref(null);
+const fullScreen = ref(false);
 const resultMarker = ref(null);
 const fetchCoords = ref(null);
 const geoErrorMsg = ref(null);
@@ -79,6 +108,26 @@ const zoom = ref(15);
 
 const mapboxApiKey = config.public.apiKeyMapbox;
 const baseURL = config.public.apiBase;
+
+const toggleFullScreen = () => {
+  fullScreen.value = !fullScreen.value;
+
+  // После изменения размеров карты, нужно вызвать invalidateSize()
+  nextTick(() => {
+    if (map.value?.leafletObject) {
+      map.value.leafletObject.invalidateSize(); // Обновляем карту
+    }
+  });
+};
+
+const createPanoramaIcon = () => {
+  return L.divIcon({
+    html: createSvgIcon('#0000ff'),
+    className: 'custom-div-icon',
+    iconAnchor: [16, 32],
+    iconSize: [32, 32],
+  });
+};
 
 const tileProviders = ref([
   {
@@ -133,8 +182,12 @@ const markerMemoryData = computed(() =>
 const markerPanoramaData = computed(() =>
   props.panoramas.map((panorama) => ({
     id: panorama.id,
-    latitude: panorama.latitude,
-    longitude: panorama.longitude,
+    latitude: panorama.latitude_fact
+      ? panorama.latitude_fact
+      : panorama.latitude,
+    longitude: panorama.longitude_fact
+      ? panorama.longitude_fact
+      : panorama.longitude,
     address: panorama.address,
     title: panorama.title,
     thumbnail_url: panorama.thumbnail_url,
@@ -191,9 +244,20 @@ const createPanoramaPopupContent = (panorama) => {
 
 const onMapReady = () => {
   if (!map.value?.leafletObject) return;
-  markerClusterGroup.value = L.markerClusterGroup();
+
+  markerClusterGroupMemories.value = L.markerClusterGroup();
+  markerClusterGroupPanoramas.value = L.markerClusterGroup();
   updateMarkers();
-  map.value.leafletObject.addLayer(markerClusterGroup.value);
+  if (memoriesGroup.value?.leafletObject) {
+    memoriesGroup.value.leafletObject.addLayer(
+      markerClusterGroupMemories.value,
+    );
+  }
+  if (panoramasGroup.value?.leafletObject) {
+    panoramasGroup.value.leafletObject.addLayer(
+      markerClusterGroupPanoramas.value,
+    );
+  }
 };
 
 const plotGeoLocation = (coords) => {
@@ -249,8 +313,8 @@ const createCustomIcon = (lat, lng) => {
   marker.on('moveend', (event) => {
     const newLatLng = event.target.getLatLng();
     markerCoordinates.value = {
-      lat: newLatLng.lat.toFixed(4),
-      lng: newLatLng.lng.toFixed(4),
+      lat: newLatLng.lat.toFixed(7),
+      lng: newLatLng.lng.toFixed(7),
     };
     marker.setPopupContent(
       createCoordinatesPopupContent(markerCoordinates.value),
@@ -262,24 +326,6 @@ const createCustomIcon = (lat, lng) => {
 
   return marker;
 };
-
-// const createPanoramaIcon = () => {
-//   const icon = L.divIcon({
-//     html: `
-//       <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 512 512">
-//         <path fill="#E5E4DF" d="M256 0c141.4 0 256 114.6 256 256S397.4 512 256 512S0 397.3 0 256C0 114.6 114.6 0 256 0"/>
-//         <path fill="#00B1FF" d="M256 80c97.2 0 176 78.8 176 176s-78.8 176-176 176S80 353.2 80 256S158.8 80 256 80"/>
-//         <path fill="#2B3B47" d="M256 160c53 0 96 43 96 96s-43 96-96 96s-96-43-96-96s43-96 96-96"/>
-//         <path fill="#D4EDF6" d="M327.9 160c22.1 0 40 17.9 40 40s-17.9 40-40 40s-40-17.9-40-40s18-40 40-40"/>
-//         <path fill="#D6DBDE" d="M349.2 233.7c-6.5-27.3-24.5-50-48.7-62.7c-7.7 7.3-12.6 17.5-12.6 29c0 22.1 17.9 40 40 40c7.9-.1 15.2-2.4 21.3-6.3"/>
-//       </svg>
-//     `,
-//     className: 'custom-div-icon',
-//     iconAnchor: [16, 32],
-//     iconSize: [32, 32],
-//   });
-//   return icon;
-// };
 
 const createSvgIcon = (color = '#ef4444') => `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${color}" class="custom-map-pin">
@@ -357,41 +403,48 @@ const removeResult = () => {
 };
 
 const updateMarkers = () => {
-  if (!map.value?.leafletObject || !markerClusterGroup.value) return;
+  if (!markerClusterGroupMemories.value || !markerClusterGroupPanoramas.value)
+    return;
 
-  markerClusterGroup.value.clearLayers();
+  markerClusterGroupMemories.value.clearLayers();
+  markerClusterGroupPanoramas.value.clearLayers();
 
-  const memoryMarkers = markerMemoryData.value.map((memory) => {
-    const marker = L.marker([memory.latitude, memory.longitude]);
-    marker.bindPopup(memory.popupContent);
-    return marker;
-  });
-
-  const panoramaMarkers = markerPanoramaData.value.map((panorama) => {
-    // const marker = L.marker([panorama.latitude, panorama.longitude], {
-    //   icon: createPanoramaIcon(),
-    // });
-
-    const icon = L.divIcon({
-      html: createSvgIcon('#0000ff'),
-      className: 'custom-div-icon',
-      iconAnchor: [16, 32],
-      iconSize: [32, 32],
+  if (showMemoryMarkers.value) {
+    const memoryMarkers = markerMemoryData.value.map((memory) => {
+      const marker = L.marker([memory.latitude, memory.longitude]);
+      marker.bindPopup(memory.popupContent);
+      return marker;
     });
+    markerClusterGroupMemories.value.addLayers(memoryMarkers);
+  }
 
-    const marker = L.marker([panorama.latitude, panorama.longitude], {
-      icon: icon, // Используем созданную кастомную иконку
+  if (showPanoramaMarkers.value) {
+    const panoramaMarkers = markerPanoramaData.value.map((panorama) => {
+      const marker = L.marker(
+        [
+          panorama.latitude_fact ? panorama.latitude_fact : panorama.latitude,
+          panorama.longitude_fact
+            ? panorama.longitude_fact
+            : panorama.longitude,
+        ],
+        {
+          icon: createPanoramaIcon(),
+        },
+      );
+      marker.bindPopup(createPanoramaPopupContent(panorama));
+      return marker;
     });
-
-    marker.bindPopup(createPanoramaPopupContent(panorama));
-    return marker;
-  });
-
-  markerClusterGroup.value.addLayers([...memoryMarkers, ...panoramaMarkers]);
+    markerClusterGroupPanoramas.value.addLayers(panoramaMarkers);
+  }
 };
 
 watch(
-  () => [...props.memories, ...props.panoramas],
+  () => [
+    showMemoryMarkers.value,
+    showPanoramaMarkers.value,
+    props.memories,
+    props.panoramas,
+  ],
   () => {
     updateMarkers();
   },
@@ -406,6 +459,14 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.mapsection.h-screen {
+  height: 80vh;
+}
+
+.mapsection.h-96 {
+  height: 24rem;
+}
+
 .custom-div-icon {
   background: none;
   border: none;
