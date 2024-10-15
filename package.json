@@ -7,28 +7,24 @@
   "scripts": {
     "lint": "eslint . && prettier -w .",
     "test": "node --test .",
-    "precommit": "eslint --config .eslintrc.json --fix \"front/**/*.{js,cjs,ts,vue}\" \"back/**/*.{js,cjs,ts}\" --ignore-pattern \"front/.nuxt/**\" && prettier --write \"front/**/*.{js,cjs,ts,vue,css}\" \"back/**/*.{js,cjs,ts,css}\"",
+    "precommit": "eslint --config .eslintrc.json --fix \"**/*.{js,cjs,ts}\" --ignore-pattern \"**/*.spec.{js,cjs,ts}\" && prettier --write \"**/*.{js,cjs,ts,css}\"",
     "prepare": "husky install",
-    "dev": "cross-env NODE_ENV=development nodemon ./back/server.js",
-    "start": "cross-env NODE_ENV=production node ./back/server.js",
-    "db:clean": "cd ./back/sql/&& knex --knexfile knex migrate:rollback",
-    "db:setup": "cd ./back/sql/ && knex migrate:latest && knex seed:run",
-    "devdb:clean": "cd ./back/sql/ && cross-env NODE_ENV=development ./back/sql/knex migrate:rollback",
-    "devdb:setup": "cd ./back/sql/ && cross-env NODE_ENV=development ./back/sql/knex migrate:latest && cross-env NODE_ENV=development knex seed:run",
-    "knex": "knex --knexfile ./back/sql/knexfile.js",
-    "dev:f": "concurrently \"npm run dev --prefix ./front\" \"npm run dev\""
+    "dev": "cross-env NODE_ENV=development nodemon ./server.js",
+    "start": "cross-env NODE_ENV=production node ./server.js",
+    "db:clean": "cd ./sql/&& knex --knexfile knex migrate:rollback",
+    "db:setup": "cd ./sql/ && knex migrate:latest && knex seed:run",
+    "devdb:clean": "cd ./sql/ && cross-env NODE_ENV=development ./sql/knex migrate:rollback",
+    "devdb:setup": "cd ./sql/ && cross-env NODE_ENV=development ./sql/knex migrate:latest && cross-env NODE_ENV=development knex seed:run",
+    "knex": "knex --knexfile ./sql/knexfile.js"
   },
   "author": "AlexMel83",
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.23.2",
+    "@babel/eslint-parser": "^7.24.6",
     "@eslint/js": "^9.9.0",
-    "@nuxt/types": "^2.18.1",
-    "@nuxt/typescript-build": "^3.0.2",
     "@typescript-eslint/eslint-plugin": "^8.1.0",
     "@typescript-eslint/parser": "^8.1.0",
-    "@vue/eslint-config-standard": "^8.0.1",
-    "concurrently": "^8.2.2",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
@@ -36,12 +32,9 @@
     "husky": "^9.1.4",
     "lint-staged": "^15.2.7",
     "nodemon": "^3.0.1",
-    "prettier": "^3.3.3",
-    "vue-eslint-parser": "^9.4.3"
+    "prettier": "^3.3.3"
   },
   "dependencies": {
-    "@babel/eslint-parser": "^7.24.6",
-    "@vee-validate/yup": "^4.13.2",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -51,8 +44,6 @@
     "express": "^4.18.2",
     "express-session": "^1.18.0",
     "express-validator": "^7.0.1",
-    "geodata": "^0.0.1",
-    "husky": "^9.1.4",
     "ipsp-js-sdk": "^2.0.11-alpha.1",
     "jsonwebtoken": "^9.0.2",
     "knex": "^3.1.0",
@@ -66,7 +57,7 @@
     "openid-client": "^5.6.5",
     "pg": "^8.11.3",
     "set-value": "^4.1.0",
-    "update": "^0.4.2",
+    "update": "^0.7.4",
     "uuid": "^10.0.0"
   }
 }

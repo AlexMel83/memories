@@ -37,24 +37,5 @@ services:
       - postgres
     restart: always
 
-  nuxt:
-    container_name: memories_app
-    build:
-      context: ./front
-      dockerfile: Dockerfile
-    environment:
-      - NUXT_PUBLIC_IS_DOCKER=true
-    env_file:
-      - ./front/.env
-    volumes:
-      - ./front:/app
-      - /app/node_modules
-    ports:
-      - ${NUXT_PORT}:3000
-    command: sh -c "npm run build && npm run start"
-    depends_on:
-      - api
-    restart: always
-
 volumes:
   pgdata:
