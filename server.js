@@ -8,6 +8,8 @@ import * as dotenv from 'dotenv';
 import express from 'express';
 import http from 'http';
 import cors from 'cors';
+import RedisStore from 'connect-redis';
+import Redis from 'ioredis';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -30,6 +32,11 @@ const allowedOrigins = [
   'http://localhost:3000',
 ];
 
+const redisClient = new Redis({
+  host: process.env.REDIS_HOST || 'localhost',
+  port: process.env.REDIS_PORT || 6379,
+});
+
 const corsOptions = {
   origin: (origin, callback) => {
     if (allowedOrigins.includes(origin) || !origin) {
@@ -49,11 +56,13 @@ app.use('/uploads', express.static('uploads'));
 app.use(cookieParser());
 app.use(
   session({
+    store: new RedisStore({ client: redisClient }),
     secret: JWT_AC_SECRET || 'secret',
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: {
       secure: process.env.NODE_ENV === 'production',
+      httpOnly: true,
       maxAge: sessionMaxAge,
     },
   }),

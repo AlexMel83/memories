@@ -106,6 +106,7 @@ export default function (app) {
           console.error('Session save error:', err);
           return next(err);
         }
+        console.log('Session saved successfully');
         res.json({ url });
       });
     } catch (e) {
