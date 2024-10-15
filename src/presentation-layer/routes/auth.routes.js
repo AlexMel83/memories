@@ -5,6 +5,8 @@ import ApiError from '../../middlewares/exceptions/api-errors.js';
 import userController from '../controllers/user-controller.js';
 import { body, param } from 'express-validator';
 
+const { CLIENT_URL } = process.env;
+
 const phoneRegex = /^380\d{9}$/;
 const validateUser = [
   body('id')
@@ -93,6 +95,12 @@ export default function (app) {
       );
       req.session.codeVerifier = codeVerifier;
       req.session.origin = origin;
+      console.log(
+        'SocLogin: Code verifier, origin, url:',
+        codeVerifier,
+        origin,
+        url,
+      ); //1-soclogin
       req.session.save((err) => {
         if (err) {
           console.error('Session save error:', err);
@@ -112,6 +120,12 @@ export default function (app) {
     const origin = req.session.origin || CLIENT_URL;
     delete req.session.codeVerifier;
     delete req.session.origin;
+    console.log(
+      'SocCallback: Codeverifier, code, origin:',
+      codeVerifier,
+      code,
+      origin,
+    ); //2-soccallback
     if (!code || !codeVerifier) {
       return res.json(ApiError.BadRequest('Invalid code or code verifier'));
     }
