@@ -22,35 +22,34 @@ export default class FacebookStrategy {
   }
 
   async handleCallback(code, state) {
-    const { codeVerifier } = JSON.parse(
-      Buffer.from(state, 'base64').toString(),
-    );
-
-    console.log('Handling Facebook callback');
-    console.log('Code:', code);
-    console.log('Code Verifier:', codeVerifier);
-
-    const authLink = uuidv4();
-    const tokenUrl = `https://graph.facebook.com/v20.0/oauth/access_token?client_id=${this.clientId}&redirect_uri=${encodeURIComponent(this.redirectUri)}&client_secret=${this.clientSecret}&code=${code}`;
-
     try {
-      const tokenResponse = await fetch(tokenUrl, {
-        method: 'GET',
-      });
+      const decodedState = Buffer.from(state, 'base64').toString();
+      const parsedState = JSON.parse(decodedState);
+
+      const { codeVerifier, origin } = parsedState; // Извлечение codeVerifier и origin из state
+      console.log('Code Verifier:', codeVerifier);
+      console.log('Origin:', origin);
+
+      if (!codeVerifier || !origin) {
+        throw new Error('Invalid state: Missing codeVerifier or origin');
+      }
+
+      const authLink = uuidv4();
+      const tokenUrl = `https://graph.facebook.com/v20.0/oauth/access_token?client_id=${this.clientId}&redirect_uri=${encodeURIComponent(this.redirectUri)}&client_secret=${this.clientSecret}&code=${code}`;
+      const tokenResponse = await fetch(tokenUrl, { method: 'GET' });
       if (!tokenResponse.ok) {
         throw new Error('Failed to fetch access token');
       }
       const tokenData = await tokenResponse.json();
       console.log('Token Data:', tokenData);
+
+      // Запрос на получение информации о пользователе
       const userInfoUrl = `https://graph.facebook.com/me?fields=id,name,email,picture&access_token=${tokenData.access_token}`;
-      const userInfoResponse = await fetch(userInfoUrl, {
-        method: 'GET',
-      });
+      const userInfoResponse = await fetch(userInfoUrl, { method: 'GET' });
       if (!userInfoResponse.ok) {
         throw new Error('Failed to fetch user info');
       }
       const userInfo = await userInfoResponse.json();
-
       console.log('User Info:', userInfo);
 
       let user = await UserModel.getUsersByConditions({
