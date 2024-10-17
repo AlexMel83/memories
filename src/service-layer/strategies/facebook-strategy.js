@@ -25,6 +25,12 @@ export default class FacebookStrategy {
   async handleCallback(code, codeVerifier) {
     const authLink = uuidv4();
     console.log('codeVerifier', codeVerifier);
+    console.log(
+      'clientId, secret, redirectUri',
+      this.clientId,
+      this.clientSecret,
+      this.redirectUri,
+    );
     try {
       const tokenResponse = await fetch(
         `${this.tokenUrl}?client_id=${this.clientId}&client_secret=${this.clientSecret}&redirect_uri=${encodeURIComponent(this.redirectUri)}&code=${code}`,
@@ -34,7 +40,10 @@ export default class FacebookStrategy {
       );
 
       if (!tokenResponse.ok) {
-        throw new Error('Ошибка при получении токена доступа');
+        const errorData = await tokenResponse.json();
+        throw new Error(
+          `Ошибка при получении токена доступа: ${errorData.error || 'Неизвестная ошибка'}`,
+        );
       }
 
       const tokenData = await tokenResponse.json();
