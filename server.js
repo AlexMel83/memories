@@ -77,7 +77,7 @@ app.use(
     }),
     secret: JWT_AC_SECRET || 'secret',
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
     cookie: {
       secure: process.env.NODE_ENV === 'production',
       httpOnly: true,
