@@ -16,8 +16,18 @@ const __dirname = dirname(__filename);
 dotenv.config({
   path: __dirname + `./.${process.env.NODE_ENV}.env`,
 });
-const { IS_DOCKER, PORT, CLIENT_URL, PAYMENT_DOMEN, JWT_AC_SECRET, JWT_RF_MA } =
-  process.env;
+const {
+  IS_DOCKER,
+  POSTGRES_HOST,
+  POSTGRES_PORT,
+  POSTGRES_USER,
+  POSTGRES_PASSWORD,
+  PORT,
+  CLIENT_URL,
+  PAYMENT_DOMEN,
+  JWT_AC_SECRET,
+  JWT_RF_MA,
+} = process.env;
 const sessionMaxAge = parseInt(JWT_RF_MA || 2592000000, 10);
 const app = express();
 const server = http.createServer(app);
