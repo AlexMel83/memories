@@ -95,11 +95,19 @@ export default function (app) {
       );
       req.session.codeVerifier = codeVerifier;
       req.session.origin = origin;
+      console.log(
+        'SocLogin: Code verifier, origin, url:',
+        codeVerifier,
+        origin,
+        url,
+      ); //1-soclogin
+      console.log('Before saving session:', req.session);
       req.session.save((err) => {
         if (err) {
           console.error('Session save error:', err);
           return next(err);
         }
+        console.log('Session after save:', req.session);
         res.json({ url });
       });
     } catch (e) {
@@ -111,10 +119,17 @@ export default function (app) {
     const provider = req.params.provider;
     const code = req.query.code;
     const session = req.session;
+    console.log('SocCallback session:', session);
     const codeVerifier = session.codeVerifier;
     const origin = session.origin || CLIENT_URL;
     delete session.codeVerifier;
     delete session.origin;
+    console.log(
+      'SocCallback: Codeverifier, code, origin:',
+      codeVerifier,
+      code,
+      origin,
+    ); //2-soccallback
     if (!code || !codeVerifier) {
       return res.json(ApiError.BadRequest('Invalid code or code verifier'));
     }
