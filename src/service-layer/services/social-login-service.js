@@ -71,8 +71,8 @@ class SocialLoginService {
       const { codeVerifier, origin } = JSON.parse(
         Buffer.from(state, 'base64').toString(),
       );
-      frontendRedirectUri = `${origin}/callback/${user.activationlink}`;
       const user = await strategy.handleCallback(code, codeVerifier);
+      frontendRedirectUri = `${origin}/callback/${user.activationlink}`;
       const tokens = tokenService.generateTokens({ ...user });
       await tokenService.saveToken(
         user.id,
