@@ -7,8 +7,8 @@ export default class FacebookStrategy {
     this.clientId = clientId;
     this.clientSecret = clientSecret;
     this.redirectUri = redirectUri;
-    this.authUrl = 'https://www.facebook.com/v14.0/dialog/oauth';
-    this.tokenUrl = 'https://graph.facebook.com/v14.0/oauth/access_token';
+    this.authUrl = 'https://www.facebook.com/v20.0/dialog/oauth';
+    this.tokenUrl = 'https://graph.facebook.com/v20.0/oauth/access_token';
     this.userInfoUrl = 'https://graph.facebook.com/me';
   }
 
