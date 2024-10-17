@@ -1,5 +1,5 @@
 import UserModel from '../../data-layer/models/user-model.js';
-import { Issuer, generators } from 'openid-client';
+import { generators } from 'openid-client';
 import { v4 as uuidv4 } from 'uuid';
 
 export default class FacebookStrategy {
@@ -7,52 +7,55 @@ export default class FacebookStrategy {
     this.clientId = clientId;
     this.clientSecret = clientSecret;
     this.redirectUri = redirectUri;
-    this.issuer = null;
-    this.client = null;
-  }
-
-  async init() {
-    if (!this.client) {
-      this.issuer = await Issuer.discover('https://www.facebook.com'); // Проверьте правильный URL для Facebook OpenID
-      this.client = new this.issuer.Client({
-        client_id: this.clientId,
-        client_secret: this.clientSecret,
-        redirect_uris: [this.redirectUri],
-        response_types: ['code'],
-      });
-    }
+    this.authUrl = 'https://www.facebook.com/v14.0/dialog/oauth';
+    this.tokenUrl = 'https://graph.facebook.com/v14.0/oauth/access_token';
+    this.userInfoUrl = 'https://graph.facebook.com/me';
   }
 
   async generateAuthUrl(origin) {
-    await this.init();
     const codeVerifier = generators.codeVerifier();
     const codeChallenge = generators.codeChallenge(codeVerifier);
     const state = Buffer.from(
       JSON.stringify({ codeVerifier, origin }),
     ).toString('base64');
-    const url = this.client.authorizationUrl({
-      scope: 'openid email public_profile',
-      code_challenge: codeChallenge,
-      code_challenge_method: 'S256',
-      state: state,
-    });
+    const url = `${this.authUrl}?client_id=${this.clientId}&scope=email,public_profile&response_type=code&redirect_uri=${encodeURIComponent(this.redirectUri)}&code_challenge=${codeChallenge}&code_challenge_method=S256&state=${state}`;
     return { url, state };
   }
+
   async handleCallback(code, codeVerifier) {
-    await this.init();
     const authLink = uuidv4();
 
     try {
-      const tokenSet = await this.client.callback(
-        this.redirectUri,
-        { code },
-        { code_verifier: codeVerifier },
+      const tokenResponse = await fetch(
+        `${this.tokenUrl}?client_id=${this.clientId}&client_secret=${this.clientSecret}&redirect_uri=${encodeURIComponent(this.redirectUri)}&code=${code}`,
+        {
+          method: 'GET',
+        },
       );
 
-      const userInfo = await this.client.userinfo(tokenSet.access_token);
+      if (!tokenResponse.ok) {
+        throw new Error('Ошибка при получении токена доступа');
+      }
+
+      const tokenData = await tokenResponse.json();
+      const accessToken = tokenData.access_token;
+
+      // Получение информации о пользователе
+      const userInfoResponse = await fetch(
+        `${this.userInfoUrl}?access_token=${accessToken}&fields=id,name,email,first_name,last_name,picture`,
+        {
+          method: 'GET',
+        },
+      );
+
+      if (!userInfoResponse.ok) {
+        throw new Error('Ошибка при получении информации о пользователе');
+      }
+
+      const userInfo = await userInfoResponse.json();
 
       let user = await UserModel.getUsersByConditions({
-        facebook_id: userInfo.sub,
+        facebook_id: userInfo.id,
       });
 
       if (user) {
@@ -65,13 +68,13 @@ export default class FacebookStrategy {
         user = await UserModel.createOrUpdateUser({
           email: userInfo.email || '',
           role: 'user',
-          name: userInfo.given_name || userInfo.name.split(' ')[0],
-          surname: userInfo.family_name || userInfo.name.split(' ')[1],
-          picture: userInfo.picture,
+          name: userInfo.first_name || userInfo.name.split(' ')[0],
+          surname: userInfo.last_name || userInfo.name.split(' ')[1],
+          picture: userInfo.picture.data.url,
           activationlink: authLink,
           isactivated: true,
           social_login: true,
-          facebook_id: userInfo.sub,
+          facebook_id: userInfo.id,
         });
       }
       return user[0];
