@@ -1,7 +1,6 @@
 import socialLoginService from '../../service-layer/services/social-login-service.js';
 import validateMiddleware from '../../middlewares/validate-middleware.js';
 import authMiddleware from '../../middlewares/auth-middleware.js';
-// import ApiError from '../../middlewares/exceptions/api-errors.js';
 import userController from '../controllers/user-controller.js';
 import { body, param } from 'express-validator';
 
@@ -61,13 +60,7 @@ export default function (app) {
     userController.activate,
   );
   app.get('/refresh', userController.refresh);
-  app.get(
-    '/users',
-    authMiddleware,
-    // query("id").notEmpty().withMessage("Id is required"),
-    validateMiddleware,
-    userController.getUser,
-  );
+  app.get('/users', authMiddleware, validateMiddleware, userController.getUser);
 
   app.put(
     '/users',
@@ -122,19 +115,6 @@ export default function (app) {
     if (!code || !state) {
       return res.status(400).json({ error: 'Invalid code or state' });
     }
-    // const session = req.session;
-    // console.log('SocCallback session:', session);
-    // const codeVerifier = session.codeVerifier;
-    // const origin = session.origin || CLIENT_URL;
-    // console.log(
-    //   'SocCallback: Codeverifier, code, origin:',
-    //   codeVerifier,
-    //   code,
-    //   origin,
-    // ); //2-soccallback
-    // if (!code || !codeVerifier) {
-    //   return res.json(ApiError.BadRequest('Invalid code or code verifier'));
-    // }
     await socialLoginService.handleCallback(provider, code, state, res);
   });
 
