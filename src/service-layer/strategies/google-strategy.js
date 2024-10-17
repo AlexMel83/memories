@@ -27,48 +27,66 @@ export default class GoogleStrategy {
     await this.init();
     const codeVerifier = generators.codeVerifier();
     const codeChallenge = generators.codeChallenge(codeVerifier);
+    const state = generators.state();
     const url = this.client.authorizationUrl({
       scope:
         'openid email profile phone https://www.googleapis.com/auth/user.phonenumbers.read',
       code_challenge: codeChallenge,
       code_challenge_method: 'S256',
-      state: generators.state(),
+      state: state,
     });
+    console.log('Generated Auth URL:', url);
+    console.log('Code Verifier:', codeVerifier);
+    console.log('State:', state);
     return { url, codeVerifier, origin };
   }
 
   async handleCallback(code, codeVerifier) {
     await this.init();
     const authLink = uuidv4();
-    const tokenSet = await this.client.callback(
-      this.redirectUri,
-      { code },
-      { code_verifier: codeVerifier },
-    );
-    const userInfo = await this.client.userinfo(tokenSet.access_token);
-    let user = await UserModel.getUsersByConditions({
-      google_id: userInfo.sub,
-    });
-    if (user) {
-      user = await UserModel.createOrUpdateUser({
-        id: user[0].id,
-        email: user[0].email,
-        activationlink: authLink,
-      });
-    } else {
-      user = await UserModel.createOrUpdateUser({
-        email: userInfo.email ? userInfo.email : '',
-        role: 'user',
-        name: userInfo.given_name || userInfo.name.split(' ')[0],
-        surname: userInfo.family_name || userInfo.name.split(' ')[1],
-        phone: userInfo.phone_number,
-        picture: userInfo.picture,
-        activationlink: authLink,
-        isactivated: true,
-        social_login: true,
+
+    console.log('Handling Google callback');
+    console.log('Code:', code);
+    console.log('Code Verifier:', codeVerifier);
+
+    try {
+      const tokenSet = await this.client.callback(
+        this.redirectUri,
+        { code },
+        { code_verifier: codeVerifier },
+      );
+      console.log('Token Set:', tokenSet);
+
+      const userInfo = await this.client.userinfo(tokenSet.access_token);
+      console.log('User Info:', userInfo);
+
+      let user = await UserModel.getUsersByConditions({
         google_id: userInfo.sub,
       });
+      if (user) {
+        user = await UserModel.createOrUpdateUser({
+          id: user[0].id,
+          email: user[0].email,
+          activationlink: authLink,
+        });
+      } else {
+        user = await UserModel.createOrUpdateUser({
+          email: userInfo.email ? userInfo.email : '',
+          role: 'user',
+          name: userInfo.given_name || userInfo.name.split(' ')[0],
+          surname: userInfo.family_name || userInfo.name.split(' ')[1],
+          phone: userInfo.phone_number,
+          picture: userInfo.picture,
+          activationlink: authLink,
+          isactivated: true,
+          social_login: true,
+          google_id: userInfo.sub,
+        });
+      }
+      return user[0];
+    } catch (error) {
+      console.error('Error in Google callback:', error);
+      throw error;
     }
-    return user[0];
   }
 }

@@ -74,31 +74,34 @@ class SocialLoginService {
         trx,
         res,
       );
-      res.cookie('refreshToken', tokens.refreshToken, rFcookieOptions);
+      res.cookie('refreshToken', tokens.refreshToken, {
+        ...rFcookieOptions,
+        domain: '.memory.pp.ua',
+      });
       const frontendRedirectUri = `${origin}/callback/${user.activationlink}`;
       await trx.commit();
-      return res.redirect(frontendRedirectUri);
+
+      const redirectUri = new URL(frontendRedirectUri);
+      redirectUri.searchParams.append('accessToken', tokens.accessToken);
+      redirectUri.searchParams.append('refreshToken', tokens.refreshToken);
+      return res.redirect(redirectUri.toString());
     } catch (error) {
       await trx.rollback();
       console.error(`Error in ${provider} callback:`, error);
+
+      let errorMessage = 'An error occurred during authentication';
       if (error.name === 'TypeError' && error.code === 'ERR_NETWORK') {
-        return res.redirect(
-          `${origin}?error=${encodeURIComponent('Network error: Please check your internet connection')}`,
-        );
-      }
-      if (error && typeof error === 'object' && error.detail) {
+        errorMessage = 'Network error: Please check your internet connection';
+      } else if (error && typeof error === 'object' && error.detail) {
         const match = error.detail.match(emailRegex);
         if (match) {
           const email = match[1];
-          const errorMessage = email;
-          return res.redirect(
-            `${origin}?email=${email}&error=${encodeURIComponent(errorMessage)}`,
-          );
+          errorMessage = `Email already exists: ${email}`;
         }
       }
-      return res.redirect(
-        `${origin}?error=${encodeURIComponent('An error occurred during authentication')}`,
-      );
+      const errorUrl = new URL(origin);
+      errorUrl.searchParams.append('error', errorMessage);
+      return res.redirect(errorUrl.toString());
     }
   }
 

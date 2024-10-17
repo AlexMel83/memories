@@ -62,6 +62,7 @@ const corsOptions = {
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization'],
   exposedHeaders: ['Access-Control-Allow-Credentials'],
 };
 
@@ -77,14 +78,15 @@ app.use(
     }),
     secret: JWT_AC_SECRET || 'secret',
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: {
       secure: process.env.NODE_ENV === 'production',
       httpOnly: true,
       maxAge: sessionMaxAge,
-      domain: '.memory.pp.ua', // Добавьте эту строку
-      sameSite: 'lax', // Добавьте эту строку
+      domain: '.memory.pp.ua',
+      sameSite: 'lax',
     },
+    name: 'sessionId',
   }),
 );
 
@@ -93,8 +95,12 @@ routeInit(app, express);
 app.use(errorMiddleware);
 
 app.use((req, res, next) => {
-  console.log(`${req.method} request to ${req.url}`);
-  console.log('Session at start of request:', req.session);
+  console.log('Session ID:', req.sessionID);
+  console.log('Session data:', req.session);
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+  console.log('Query:', req.query);
+  console.log('Body:', req.body);
+  console.log('Headers:', req.headers);
   next();
 });
 
