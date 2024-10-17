@@ -118,26 +118,24 @@ export default function (app) {
   app.get('/social-login/:provider/callback', async (req, res) => {
     const provider = req.params.provider;
     const code = req.query.code;
-    const session = req.session;
-    console.log('SocCallback session:', session);
-    const codeVerifier = session.codeVerifier;
-    const origin = session.origin || CLIENT_URL;
-    console.log(
-      'SocCallback: Codeverifier, code, origin:',
-      codeVerifier,
-      code,
-      origin,
-    ); //2-soccallback
-    if (!code || !codeVerifier) {
-      return res.json(ApiError.BadRequest('Invalid code or code verifier'));
+    const state = req.query.state;
+    if (!code || !state) {
+      return res.status(400).json({ error: 'Invalid code or state' });
     }
-    await socialLoginService.handleCallback(
-      provider,
-      code,
-      codeVerifier,
-      res,
-      origin,
-    );
+    // const session = req.session;
+    // console.log('SocCallback session:', session);
+    // const codeVerifier = session.codeVerifier;
+    // const origin = session.origin || CLIENT_URL;
+    // console.log(
+    //   'SocCallback: Codeverifier, code, origin:',
+    //   codeVerifier,
+    //   code,
+    //   origin,
+    // ); //2-soccallback
+    // if (!code || !codeVerifier) {
+    //   return res.json(ApiError.BadRequest('Invalid code or code verifier'));
+    // }
+    await socialLoginService.handleCallback(provider, code, state, res);
   });
 
   app.post('/auth-user/:link', async (req, res, next) => {

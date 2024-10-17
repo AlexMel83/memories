@@ -27,7 +27,9 @@ export default class GoogleStrategy {
     await this.init();
     const codeVerifier = generators.codeVerifier();
     const codeChallenge = generators.codeChallenge(codeVerifier);
-    const state = generators.state();
+    const state = Buffer.from(
+      JSON.stringify({ codeVerifier, origin }),
+    ).toString('base64');
     const url = this.client.authorizationUrl({
       scope:
         'openid email profile phone https://www.googleapis.com/auth/user.phonenumbers.read',
@@ -36,9 +38,8 @@ export default class GoogleStrategy {
       state: state,
     });
     console.log('Generated Auth URL:', url);
-    console.log('Code Verifier:', codeVerifier);
     console.log('State:', state);
-    return { url, codeVerifier, origin };
+    return { url, state };
   }
 
   async handleCallback(code, codeVerifier) {
