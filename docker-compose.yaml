@@ -17,15 +17,6 @@ services:
       - ./pgdata:/var/lib/postgresql/data
     restart: always
 
-  redis:
-    container_name: redis
-    image: redis:7-alpine
-    expose:
-      - 6379
-    ports:
-      - 6379:6379
-    restart: always
-
   api:
     container_name: memories_api
     build:
@@ -34,8 +25,6 @@ services:
       - .env
     environment:
       - IS_DOCKER=true
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
     volumes:
       - ./:/app
       - /app/node_modules
@@ -46,7 +35,6 @@ services:
     command: sh -c "npm run db:setup && npm run start"
     depends_on:
       - postgres
-      - redis
     restart: always
 
 volumes:

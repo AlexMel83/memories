@@ -6,6 +6,11 @@ export const up = async (knex) => {
   await knex.raw('CREATE EXTENSION IF NOT EXISTS postgis;');
   const trx = await knex.transaction();
   try {
+    await trx.schema.createTable('session', (table) => {
+      table.string('sid').primary().notNullable();
+      table.json('sess').notNullable();
+      table.timestamp('expire').notNullable();
+    });
     await trx.schema.createTable('users', (table) => {
       table.increments('id').primary().notNullable();
       table.string('email', 100).nullable().unique().index();
@@ -118,6 +123,7 @@ export const up = async (knex) => {
 export const down = async (knex) => {
   const trx = await knex.transaction();
   try {
+    await trx.schema.dropTableIfExists('session');
     await trx.schema.dropTableIfExists('tokens');
     await trx.schema.dropTableIfExists('comments');
     await trx.schema.dropTableIfExists('favorite_memories');

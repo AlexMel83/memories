@@ -8,15 +8,15 @@ import * as dotenv from 'dotenv';
 import express from 'express';
 import http from 'http';
 import cors from 'cors';
-import RedisStore from 'connect-redis';
-import Redis from 'ioredis';
+import pg from 'pg';
+import pgSession from 'connect-pg-simple';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 dotenv.config({
   path: __dirname + `./.${process.env.NODE_ENV}.env`,
 });
-const { PORT, CLIENT_URL, PAYMENT_DOMEN, JWT_AC_SECRET, JWT_RF_MA } =
+const { IS_DOCKER, PORT, CLIENT_URL, PAYMENT_DOMEN, JWT_AC_SECRET, JWT_RF_MA } =
   process.env;
 const sessionMaxAge = parseInt(JWT_RF_MA || 2592000000, 10);
 const app = express();
@@ -32,9 +32,13 @@ const allowedOrigins = [
   'http://localhost:3000',
 ];
 
-const redisClient = new Redis({
-  host: process.env.REDIS_HOST || 'localhost',
-  port: process.env.REDIS_PORT || 6379,
+const DB_HOST = IS_DOCKER ? 'postgres' : POSTGRES_HOST;
+const pgPool = new pg.Pool({
+  host: DB_HOST || 'localhost',
+  port: POSTGRES_PORT || 5432,
+  user: POSTGRES_USER,
+  password: POSTGRES_PASSWORD,
+  database: POSTGRES_DB,
 });
 
 const corsOptions = {
@@ -56,7 +60,10 @@ app.use('/uploads', express.static('uploads'));
 app.use(cookieParser());
 app.use(
   session({
-    store: new RedisStore({ client: redisClient }),
+    store: new (pgSession(session))({
+      pool: pgPool,
+      tableName: 'session',
+    }),
     secret: JWT_AC_SECRET || 'secret',
     resave: false,
     saveUninitialized: false,
