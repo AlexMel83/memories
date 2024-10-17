@@ -24,7 +24,7 @@ export default class FacebookStrategy {
 
   async handleCallback(code, codeVerifier) {
     const authLink = uuidv4();
-
+    console.log('codeVerifier', codeVerifier);
     try {
       const tokenResponse = await fetch(
         `${this.tokenUrl}?client_id=${this.clientId}&client_secret=${this.clientSecret}&redirect_uri=${encodeURIComponent(this.redirectUri)}&code=${code}`,
