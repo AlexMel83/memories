@@ -101,12 +101,13 @@ export default function (app) {
         origin,
         url,
       ); //1-soclogin
+      console.log('Before saving session:', req.session);
       req.session.save((err) => {
         if (err) {
           console.error('Session save error:', err);
           return next(err);
         }
-        console.log('Session saved successfully');
+        console.log('Session after save:', req.session);
         res.json({ url });
       });
     } catch (e) {
