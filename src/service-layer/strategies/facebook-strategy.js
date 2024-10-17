@@ -1,5 +1,5 @@
 import UserModel from '../../data-layer/models/user-model.js';
-import { generators } from 'openid-client';
+import { Issuer, generators } from 'openid-client';
 import { v4 as uuidv4 } from 'uuid';
 
 export default class FacebookStrategy {
@@ -7,53 +7,52 @@ export default class FacebookStrategy {
     this.clientId = clientId;
     this.clientSecret = clientSecret;
     this.redirectUri = redirectUri;
+    this.issuer = null;
+    this.client = null;
+  }
+
+  async init() {
+    if (!this.client) {
+      this.issuer = await Issuer.discover('https://www.facebook.com'); // Проверьте правильный URL для Facebook OpenID
+      this.client = new this.issuer.Client({
+        client_id: this.clientId,
+        client_secret: this.clientSecret,
+        redirect_uris: [this.redirectUri],
+        response_types: ['code'],
+      });
+    }
   }
 
   async generateAuthUrl(origin) {
+    await this.init();
     const codeVerifier = generators.codeVerifier();
+    const codeChallenge = generators.codeChallenge(codeVerifier);
     const state = Buffer.from(
       JSON.stringify({ codeVerifier, origin }),
     ).toString('base64');
-    const url = `https://www.facebook.com/v20.0/dialog/oauth?client_id=${this.clientId}&redirect_uri=${encodeURIComponent(this.redirectUri)}&state=${state}&scope=public_profile,email`;
-    console.log('Generated Facebook Auth URL:', url);
-    console.log('State:', state);
-
+    const url = this.client.authorizationUrl({
+      scope: 'openid email public_profile',
+      code_challenge: codeChallenge,
+      code_challenge_method: 'S256',
+      state: state,
+    });
     return { url, state };
   }
+  async handleCallback(code, codeVerifier) {
+    await this.init();
+    const authLink = uuidv4();
 
-  async handleCallback(code, state) {
     try {
-      const decodedState = Buffer.from(state, 'base64').toString();
-      const parsedState = JSON.parse(decodedState);
+      const tokenSet = await this.client.callback(
+        this.redirectUri,
+        { code },
+        { code_verifier: codeVerifier },
+      );
 
-      const { codeVerifier, origin } = parsedState; // Извлечение codeVerifier и origin из state
-      console.log('Code Verifier:', codeVerifier);
-      console.log('Origin:', origin);
-
-      if (!codeVerifier || !origin) {
-        throw new Error('Invalid state: Missing codeVerifier or origin');
-      }
-
-      const authLink = uuidv4();
-      const tokenUrl = `https://graph.facebook.com/v20.0/oauth/access_token?client_id=${this.clientId}&redirect_uri=${encodeURIComponent(this.redirectUri)}&client_secret=${this.clientSecret}&code=${code}`;
-      const tokenResponse = await fetch(tokenUrl, { method: 'GET' });
-      if (!tokenResponse.ok) {
-        throw new Error('Failed to fetch access token');
-      }
-      const tokenData = await tokenResponse.json();
-      console.log('Token Data:', tokenData);
-
-      // Запрос на получение информации о пользователе
-      const userInfoUrl = `https://graph.facebook.com/me?fields=id,name,email,picture&access_token=${tokenData.access_token}`;
-      const userInfoResponse = await fetch(userInfoUrl, { method: 'GET' });
-      if (!userInfoResponse.ok) {
-        throw new Error('Failed to fetch user info');
-      }
-      const userInfo = await userInfoResponse.json();
-      console.log('User Info:', userInfo);
+      const userInfo = await this.client.userinfo(tokenSet.access_token);
 
       let user = await UserModel.getUsersByConditions({
-        facebook_id: userInfo.id,
+        facebook_id: userInfo.sub,
       });
 
       if (user) {
@@ -64,18 +63,17 @@ export default class FacebookStrategy {
         });
       } else {
         user = await UserModel.createOrUpdateUser({
-          email: userInfo.email ? userInfo.email : '',
+          email: userInfo.email || '',
           role: 'user',
-          name: userInfo.name.split(' ')[0],
-          surname: userInfo.name.split(' ')[1],
-          picture: userInfo.picture.data.url,
+          name: userInfo.given_name || userInfo.name.split(' ')[0],
+          surname: userInfo.family_name || userInfo.name.split(' ')[1],
+          picture: userInfo.picture,
           activationlink: authLink,
           isactivated: true,
           social_login: true,
-          facebook_id: userInfo.id,
+          facebook_id: userInfo.sub,
         });
       }
-
       return user[0];
     } catch (error) {
       console.error('Error in Facebook callback:', error);
