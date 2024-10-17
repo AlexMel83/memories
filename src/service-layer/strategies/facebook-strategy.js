@@ -19,7 +19,7 @@ export default class FacebookStrategy {
     console.log('Generated Facebook Auth URL:', url);
     console.log('State:', state);
 
-    return { url, state };
+    return { url, state, codeVerifier };
   }
 
   async handleCallback(code, codeVerifier) {
