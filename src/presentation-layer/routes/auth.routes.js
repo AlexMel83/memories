@@ -1,7 +1,7 @@
 import socialLoginService from '../../service-layer/services/social-login-service.js';
 import validateMiddleware from '../../middlewares/validate-middleware.js';
 import authMiddleware from '../../middlewares/auth-middleware.js';
-import ApiError from '../../middlewares/exceptions/api-errors.js';
+// import ApiError from '../../middlewares/exceptions/api-errors.js';
 import userController from '../controllers/user-controller.js';
 import { body, param } from 'express-validator';
 
