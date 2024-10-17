@@ -104,7 +104,7 @@ class SocialLoginService {
           errorMessage = `Email already exists: ${email}`;
         }
       }
-      const errorUrl = new URL(origin);
+      const errorUrl = new URL(frontendRedirectUri);
       errorUrl.searchParams.append('error', errorMessage);
       return res.redirect(errorUrl.toString());
     }
