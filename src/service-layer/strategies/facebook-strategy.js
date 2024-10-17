@@ -22,10 +22,11 @@ export default class FacebookStrategy {
     return { url, state };
   }
 
-  async handleCallback(code) {
+  async handleCallback(code, codeVerifier) {
     console.log('Handling Facebook callback');
     console.log('Code:', code);
     console.log('Code Verifier:', codeVerifier);
+
     try {
       const tokenResponse = await fetch(
         `https://graph.facebook.com/v20.0/oauth/access_token?client_id=${this.clientId}&client_secret=${this.clientSecret}&redirect_uri=${this.redirectUri}&code=${code}`,

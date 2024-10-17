@@ -64,12 +64,14 @@ class SocialLoginService {
 
   async handleCallback(provider, code, state, res) {
     const trx = await knex.transaction();
+    let frontendRedirectUri;
     try {
       const strategy = this.getStrategy(provider);
 
       const { codeVerifier, origin } = JSON.parse(
         Buffer.from(state, 'base64').toString(),
       );
+      frontendRedirectUri = `${origin}/callback/${user.activationlink}`;
       const user = await strategy.handleCallback(code, codeVerifier);
       const tokens = tokenService.generateTokens({ ...user });
       await tokenService.saveToken(
@@ -83,7 +85,7 @@ class SocialLoginService {
         ...rFcookieOptions,
         domain: '.memory.pp.ua',
       });
-      const frontendRedirectUri = `${origin}/callback/${user.activationlink}`;
+
       await trx.commit();
 
       const redirectUri = new URL(frontendRedirectUri);
@@ -103,6 +105,9 @@ class SocialLoginService {
           const email = match[1];
           errorMessage = `Email already exists: ${email}`;
         }
+      }
+      if (!frontendRedirectUri) {
+        frontendRedirectUri = `${process.env.CLIENT_URL}/error`; // Определяем default URI для ошибки
       }
       const errorUrl = new URL(frontendRedirectUri);
       errorUrl.searchParams.append('error', errorMessage);
