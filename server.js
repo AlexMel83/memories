@@ -82,6 +82,8 @@ app.use(
       secure: process.env.NODE_ENV === 'production',
       httpOnly: true,
       maxAge: sessionMaxAge,
+      domain: '.memory.pp.ua', // Добавьте эту строку
+      sameSite: 'lax', // Добавьте эту строку
     },
   }),
 );
@@ -92,6 +94,7 @@ app.use(errorMiddleware);
 
 app.use((req, res, next) => {
   console.log(`${req.method} request to ${req.url}`);
+  console.log('Session at start of request:', req.session);
   next();
 });
 
