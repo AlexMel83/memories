@@ -95,12 +95,11 @@ routeInit(app, express);
 app.use(errorMiddleware);
 
 app.use((req, res, next) => {
-  console.log('Session ID:', req.sessionID);
-  console.log('Session data:', req.session);
   console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
   console.log('Query:', req.query);
   console.log('Body:', req.body);
-  console.log('Headers:', req.headers);
+  console.log('Cookies:', req.cookies);
+  console.log('Session:', req.session);
   next();
 });
 

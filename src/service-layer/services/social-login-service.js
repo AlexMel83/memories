@@ -54,7 +54,13 @@ class SocialLoginService {
   async generateAuthUrl(provider, origin) {
     try {
       const strategy = this.getStrategy(provider);
-      return await strategy.generateAuthUrl(origin);
+      const { url, codeVerifier } = await strategy.generateAuthUrl(origin);
+      const authUrl = new URL(url);
+
+      console.log('Generated Auth URL:', authUrl.toString());
+      console.log('Code Verifier:', codeVerifier);
+
+      return { url: authUrl.toString(), codeVerifier };
     } catch (error) {
       console.error(`Failed to generate auth URL for ${provider}:`, error);
       throw new Error(`Authentication service unaviable for ${provider}`);
@@ -65,6 +71,10 @@ class SocialLoginService {
     const trx = await knex.transaction();
     try {
       const strategy = this.getStrategy(provider);
+
+      const codeVerifier = res.req.query.codeVerifier;
+      console.log('Received Code Verifier:', codeVerifier);
+
       const user = await strategy.handleCallback(code, codeVerifier);
       const tokens = tokenService.generateTokens({ ...user });
       await tokenService.saveToken(
