@@ -122,8 +122,6 @@ export default function (app) {
     console.log('SocCallback session:', session);
     const codeVerifier = session.codeVerifier;
     const origin = session.origin || CLIENT_URL;
-    delete session.codeVerifier;
-    delete session.origin;
     console.log(
       'SocCallback: Codeverifier, code, origin:',
       codeVerifier,
