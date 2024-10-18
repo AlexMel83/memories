@@ -40,8 +40,9 @@ export default class FacebookStrategy {
       // );
 
       const tokenResponse = await fetch(
-        `https://graph.facebook.com/v20.0/oauth/access_token?client_id=${this.clientId}&client_secret=${this.clientSecret}&redirect_uri=${this.redirectUri}&code=${code}`,
+        `https://graph.facebook.com/v20.0/oauth/access_token?client_id=${this.clientId}&client_secret=${this.clientSecret}&redirect_uri=${this.redirectUri}&code=${code}&code_verifier=${codeVerifier}`,
       );
+
       const tokenData = await tokenResponse.json();
       if (tokenData.error) {
         throw new Error(tokenData.error.message);
