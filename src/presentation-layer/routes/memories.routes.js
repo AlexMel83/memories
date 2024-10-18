@@ -29,4 +29,11 @@ export default function (app) {
     validateMiddleware,
     memoriesController.getMemories,
   );
+
+  app.post(
+    '/memories',
+    validateQueryMemory,
+    validateMiddleware,
+    memoriesController.createMemory,
+  );
 }

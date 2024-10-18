@@ -31,6 +31,20 @@ class MemoriesController {
       return res.json(ApiError.IntServError(error.message));
     }
   }
+
+  async createMemory(req, res) {
+    const memory = req.body;
+    try {
+      const response = await memoriesModel.createMemory(memory);
+      if (!response) {
+        return res.json(ApiError.BadRequest('Memory not created'));
+      }
+      return res.json(response);
+    } catch (error) {
+      console.error(error);
+      return res.json(ApiError.IntServError(error.message));
+    }
+  }
 }
 
 export default new MemoriesController();

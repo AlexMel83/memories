@@ -112,4 +112,17 @@ export default {
       throw error;
     }
   },
+
+  async createMemory(memory, trx = knex) {
+    try {
+      const result = await trx(memoriesTable).insert(memory);
+      if (!result.length) {
+        return null;
+      }
+      return result[0];
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
 };
