@@ -32,12 +32,20 @@ export default class FacebookStrategy {
       this.redirectUri,
     );
     try {
+      // const tokenResponse = await fetch(
+      //   `${this.tokenUrl}?client_id=${this.clientId}&client_secret=${this.clientSecret}&redirect_uri=${encodeURIComponent(this.redirectUri)}&code=${code}`,
+      //   {
+      //     method: 'GET',
+      //   },
+      // );
+
       const tokenResponse = await fetch(
-        `${this.tokenUrl}?client_id=${this.clientId}&client_secret=${this.clientSecret}&redirect_uri=${encodeURIComponent(this.redirectUri)}&code=${code}`,
-        {
-          method: 'GET',
-        },
+        `https://graph.facebook.com/v20.0/oauth/access_token?client_id=${this.clientId}&client_secret=${this.clientSecret}&redirect_uri=${this.redirectUri}&code=${code}`,
       );
+      const tokenData = await tokenResponse.json();
+      if (tokenData.error) {
+        throw new Error(tokenData.error.message);
+      }
 
       if (!tokenResponse.ok) {
         const errorData = await tokenResponse.json();
@@ -45,28 +53,22 @@ export default class FacebookStrategy {
           `Ошибка при получении токена доступа: ${errorData.error || 'Неизвестная ошибка'}`,
         );
       }
-
-      const tokenData = await tokenResponse.json();
-      const accessToken = tokenData.access_token;
+      const { access_token } = tokenData;
 
       // Получение информации о пользователе
       const userInfoResponse = await fetch(
-        `${this.userInfoUrl}?access_token=${accessToken}&fields=id,name,email,first_name,last_name,picture`,
-        {
-          method: 'GET',
-        },
+        `https://graph.facebook.com/me?fields=id,name,email,picture&access_token=${access_token}`,
       );
-
-      if (!userInfoResponse.ok) {
-        throw new Error('Ошибка при получении информации о пользователе');
-      }
-
       const userInfo = await userInfoResponse.json();
-
+      if (userInfo.error) {
+        throw new Error(userInfo.error.message);
+      }
+      console.log('userInfo', userInfo);
       let user = await UserModel.getUsersByConditions({
         facebook_id: userInfo.id,
       });
 
+      console.log('user', user);
       if (user) {
         user = await UserModel.createOrUpdateUser({
           id: user[0].id,
