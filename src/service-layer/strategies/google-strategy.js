@@ -37,30 +37,19 @@ export default class GoogleStrategy {
       code_challenge_method: 'S256',
       state: state,
     });
-    console.log('Generated Auth URL:', url);
-    console.log('State:', state);
     return { url, state };
   }
 
   async handleCallback(code, codeVerifier) {
     await this.init();
     const authLink = uuidv4();
-
-    console.log('Handling Google callback');
-    console.log('Code:', code);
-    console.log('Code Verifier:', codeVerifier);
-
     try {
       const tokenSet = await this.client.callback(
         this.redirectUri,
         { code },
         { code_verifier: codeVerifier },
       );
-      console.log('Token Set:', tokenSet);
-
       const userInfo = await this.client.userinfo(tokenSet.access_token);
-      console.log('User Info:', userInfo);
-
       let user = await UserModel.getUsersByConditions({
         google_id: userInfo.sub,
       });

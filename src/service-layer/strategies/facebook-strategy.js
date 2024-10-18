@@ -24,30 +24,14 @@ export default class FacebookStrategy {
 
   async handleCallback(code, codeVerifier) {
     const authLink = uuidv4();
-    console.log('codeVerifier', codeVerifier);
-    console.log(
-      'clientId, secret, redirectUri',
-      this.clientId,
-      this.clientSecret,
-      this.redirectUri,
-    );
     try {
-      // const tokenResponse = await fetch(
-      //   `${this.tokenUrl}?client_id=${this.clientId}&client_secret=${this.clientSecret}&redirect_uri=${encodeURIComponent(this.redirectUri)}&code=${code}`,
-      //   {
-      //     method: 'GET',
-      //   },
-      // );
-
       const tokenResponse = await fetch(
-        `https://graph.facebook.com/v20.0/oauth/access_token?client_id=${this.clientId}&client_secret=${this.clientSecret}&redirect_uri=${this.redirectUri}&code=${code}&code_verifier=${codeVerifier}`,
+        `${this.tokenUrl}?client_id=${this.clientId}&client_secret=${this.clientSecret}&redirect_uri=${this.redirectUri}&code=${code}&code_verifier=${codeVerifier}`,
       );
-
       const tokenData = await tokenResponse.json();
       if (tokenData.error) {
         throw new Error(tokenData.error.message);
       }
-
       if (!tokenResponse.ok) {
         const errorData = await tokenResponse.json();
         throw new Error(
@@ -55,8 +39,6 @@ export default class FacebookStrategy {
         );
       }
       const { access_token } = tokenData;
-
-      // Получение информации о пользователе
       const userInfoResponse = await fetch(
         `https://graph.facebook.com/me?fields=id,name,email,picture&access_token=${access_token}`,
       );
@@ -64,12 +46,9 @@ export default class FacebookStrategy {
       if (userInfo.error) {
         throw new Error(userInfo.error.message);
       }
-      console.log('userInfo', userInfo);
       let user = await UserModel.getUsersByConditions({
         facebook_id: userInfo.id,
       });
-
-      console.log('user', user);
       if (user) {
         user = await UserModel.createOrUpdateUser({
           id: user[0].id,

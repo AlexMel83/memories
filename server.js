@@ -96,10 +96,6 @@ app.use(errorMiddleware);
 
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
-  console.log('Query:', req.query);
-  console.log('Body:', req.body);
-  console.log('Cookies:', req.cookies);
-  console.log('Session:', req.session);
   next();
 });
 
