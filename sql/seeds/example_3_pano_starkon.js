@@ -6,7 +6,7 @@
 const panoramasData = [
   {
     user_id: 1,
-    title: 'Замок князей Острожских',
+    title: 'Замок князів Острозьких',
     shooting_date: new Date('2021-01-01T00:00:00Z'),
     latitude: 49.7580948,
     longitude: 27.2269745,
@@ -21,7 +21,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Замок князей Острожских 1',
+    title: 'Замок князів Острозьких 1',
     shooting_date: new Date('2021-01-01T00:00:00Z'),
     latitude: 49.7577553,
     longitude: 27.2283306,

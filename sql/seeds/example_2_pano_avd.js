@@ -6,7 +6,7 @@
 const panoramasData = [
   {
     user_id: 1,
-    title: 'Памятник-самолет рядом с ДК вид слева',
+    title: 'Пам.ятник-літак поруч із ПК вид зліва',
     shooting_date: new Date('2020-08-01T00:00:00Z'),
     latitude: 48.1243642,
     longitude: 37.7392798,
@@ -36,7 +36,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Народный Музей истории г.Авдеевка 1',
+    title: 'Народний Музей історії м.Авдіївка 1',
     shooting_date: new Date('2020-11-01T00:00:00Z'),
     latitude: 48.1332586,
     longitude: 37.7424614,
@@ -51,7 +51,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'ЧАО Авдеевский коксохимический завод',
+    title: 'ПрАТ Авдіївський коксохімічний завод',
     shooting_date: new Date('2018-03-01T00:00:00Z'),
     latitude: 48.1652616,
     longitude: 37.7062301,
@@ -66,7 +66,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Мурал учителю',
+    title: 'Мурал вчителю',
     shooting_date: new Date('2020-11-01T00:00:00Z'),
     latitude: 48.1272223,
     longitude: 37.7480645,
@@ -81,7 +81,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Муралы по Менделеева',
+    title: 'Мурали по Менделєєва',
     shooting_date: new Date('2020-11-01T00:00:00Z'),
     latitude: 48.1301579,
     longitude: 37.7455533,
@@ -96,7 +96,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Мурал на 7 школе',
+    title: 'Мурал на 7 школі',
     shooting_date: new Date('2020-11-01T00:00:00Z'),
     latitude: 48.1327187,
     longitude: 37.7360945,
@@ -111,7 +111,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Храм Святителя Николая Чудотворца',
+    title: 'Храм Святителя Миколая Чудотворця',
     shooting_date: new Date('2020-08-01T00:00:00Z'),
     latitude: 48.1488208,
     longitude: 37.735366,
@@ -126,7 +126,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Народный Музей истории г.Авдеевка 2',
+    title: 'Народний Музей історії м.Авдіївка 2',
     shooting_date: new Date('2020-11-01T00:00:00Z'),
     latitude: 48.1332604,
     longitude: 37.7424385,
@@ -141,7 +141,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Памятник-самолет рядом с ДК',
+    title: 'Пам.ятник-літак поруч із ПК',
     shooting_date: new Date('2020-06-01T00:00:00Z'),
     latitude: 48.124649,
     longitude: 37.7396545,
@@ -156,7 +156,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Дворец культуры техники и спорта АКХЗ',
+    title: 'Палац культури техніки та спорту АКХЗ',
     shooting_date: new Date('2020-06-01T00:00:00Z'),
     latitude: 48.1247711,
     longitude: 37.7389984,
@@ -171,7 +171,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Бывшая детская площадка "Замок"',
+    title: 'Колишній дитячий майданчик "Замок"',
     shooting_date: new Date('2021-03-01T00:00:00Z'),
     latitude: 48.1255525,
     longitude: 37.7379349,
@@ -186,7 +186,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Городская елка ДК',
+    title: 'Міська ялинка ДК',
     shooting_date: new Date('2021-01-01T00:00:00Z'),
     latitude_fact: 48.1249054,
     longitude_fact: 37.7397291,
@@ -218,7 +218,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Мурал подстанция Менделева',
+    title: 'Мурал підстанція Менделєва',
     shooting_date: new Date('2020-12-01T00:00:00Z'),
     latitude: 48.1300583,
     longitude: 37.7452768,
@@ -250,7 +250,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Мурал козаку Мамаю на Гагарина',
+    title: 'Мурал козаку Мамаю на Гагаріна',
     shooting_date: new Date('2020-11-01T00:00:00Z'),
     address: 'Донецька область, Авдіївка, Гагаріна, 14',
     latitude: 48.1308849,
@@ -266,7 +266,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Мурал Гагарина 8',
+    title: 'Мурал Гагаріна 8',
     shooting_date: new Date('2020-11-01T00:00:00Z'),
     address: 'Донецька область, Авдіївка, Гагаріна, 8',
     latitude: 48.1306953,
@@ -282,7 +282,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Мурал Гагарина 2',
+    title: 'Мурал Гагаріна 2',
     shooting_date: new Date('2020-11-01T00:00:00Z'),
     address: 'Донецька область, Авдіївка, Гагаріна, 2',
     latitude: 48.130434,
@@ -313,7 +313,7 @@ const panoramasData = [
   // },
   {
     user_id: 1,
-    title: 'Стадион возле школы №6',
+    title: 'Стадіон біля школи №6',
     shooting_date: new Date('2021-01-01T00:00:00Z'),
     latitude: 48.1321144,
     longitude: 37.744877,
@@ -328,7 +328,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Общеобразовательная школа №6',
+    title: 'Загальноосвітня школа №6',
     shooting_date: new Date('2021-01-01T00:00:00Z'),
     latitude: 48.1326141,
     longitude: 37.7433853,
@@ -343,7 +343,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Общеобразовательная школа №6 осень',
+    title: 'Загальноосвітня школа №6 осінь',
     shooting_date: new Date('2021-01-11T00:00:00Z'),
     latitude: 48.1326512,
     longitude: 37.7431099,
@@ -358,7 +358,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Памятник Тарасу Шевченко',
+    title: 'Пам.ятник Тарасу Шевченко',
     shooting_date: new Date('2021-01-01T00:00:00Z'),
     latitude_fact: 48.1324115,
     longitude_fact: 37.7413429,
@@ -390,7 +390,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Тропа Здоровья',
+    title: 'Стежка Здоров.я',
     shooting_date: new Date('2020-05-01T00:00:00Z'),
     latitude: 48.1392561,
     longitude: 37.7365305,
@@ -405,7 +405,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'АКХЗ какой то цех',
+    title: 'АКХЗ якийсь цех',
     shooting_date: new Date('2022-01-01T00:00:00Z'),
     latitude: 48.1691957,
     longitude: 37.7034061,
@@ -495,7 +495,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Кладбище на песочном',
+    title: 'Цвинтар на пісочному',
     shooting_date: new Date('2020-06-01T00:00:00Z'),
     latitude: 48.1493835,
     longitude: 37.7533455,
@@ -510,7 +510,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Мост возле ЖД',
+    title: 'Міст біля залізничного вокзалу',
     shooting_date: new Date('2020-06-01T00:00:00Z'),
     latitude: 48.1494598,
     longitude: 37.7312469,
@@ -525,7 +525,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Мост возле ЖД 2',
+    title: 'Міст біля залізничного вокзалу 2',
     shooting_date: new Date('2020-06-01T00:00:00Z'),
     latitude: 48.1494752,
     longitude: 37.7308943,
@@ -540,7 +540,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Памятник солдату парк ЖД',
+    title: 'Пам.ятник солдату парк ЖД',
     shooting_date: new Date('2020-11-01T00:00:00Z'),
     latitude: 48.1500587,
     longitude: 37.7360497,
@@ -570,7 +570,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Дорога рядом с ЖД станцией',
+    title: 'Дорога поряд із залізничною станцією',
     shooting_date: new Date('2020-06-01T00:00:00Z'),
     latitude: 48.1434593,
     longitude: 37.7397156,
@@ -585,7 +585,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Переход ЖД возле пятиэтажки',
+    title: 'Перехід залізниці біля п.ятиповерхівки',
     shooting_date: new Date('2020-06-01T00:00:00Z'),
     latitude: 48.1393954,
     longitude: 37.7466876,
@@ -600,7 +600,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Переход ЖД возле семафора',
+    title: 'Перехід залізниці біля семафору',
     shooting_date: new Date('2020-06-01T00:00:00Z'),
     latitude: 48.1378403,
     longitude: 37.7486343,
@@ -615,7 +615,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'ЖД переход семафор-четырнаха',
+    title: 'Залізничний перехід семафор-чотирнаха',
     shooting_date: new Date('2021-03-01T00:00:00Z'),
     latitude: 48.1349796,
     longitude: 37.7508584,
@@ -660,7 +660,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Поле рядом с садиком Ивушка',
+    title: 'Поле поруч із садком Івушка',
     shooting_date: new Date('2021-01-01T00:00:00Z'),
     latitude: 48.1291542,
     longitude: 37.735424,
@@ -675,7 +675,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Угол Ул. 9 Квартал д. 10',
+    title: 'Кут Вул. 9 Квартал буд. 10',
     shooting_date: new Date('2020-11-01T00:00:00Z'),
     latitude: 48.1284485,
     longitude: 37.7352295,
@@ -812,7 +812,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Заброшеный цех жбк',
+    title: 'Закинутий цех жбк',
     shooting_date: new Date('2021-03-01T00:00:00Z'),
     latitude: 48.1432198,
     longitude: 37.7436332,
@@ -827,7 +827,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Гаражи возле больницы',
+    title: 'Гаражі біля лікарні',
     shooting_date: new Date('2021-03-01T00:00:00Z'),
     latitude: 48.1333307,
     longitude: 37.7320759,
@@ -842,7 +842,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Дорога в сторону ДК',
+    title: 'Дорога у бік ДК',
     shooting_date: new Date('2021-01-01T00:00:00Z'),
     latitude: 48.1278305,
     longitude: 37.7353592,
@@ -859,7 +859,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Дорога на песочный карьер',
+    title: 'Дорога на пісочний карьєр',
     shooting_date: new Date('2020-06-01T00:00:00Z'),
     latitude: 48.1528206,
     longitude: 37.7545471,
@@ -874,7 +874,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Дорога с кладбища на песочном',
+    title: 'Дорога з цвинтаря на пісочному',
     shooting_date: new Date('2020-06-01T00:00:00Z'),
     latitude: 48.1493835,
     longitude: 37.7533456,
@@ -889,7 +889,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Карьер рельсы',
+    title: 'Карьер рельси',
     shooting_date: new Date('2020-06-01T00:00:00Z'),
     latitude: 48.1539574,
     longitude: 37.758564,
@@ -904,7 +904,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Карьер рельсы 2',
+    title: 'Карьер рельси 2',
     shooting_date: new Date('2020-06-01T00:00:00Z'),
     latitude: 48.1540031,
     longitude: 37.7391129,
@@ -921,7 +921,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Дорога на черную сотню',
+    title: 'Дорога на чорну сотню',
     shooting_date: new Date('2020-05-01T00:00:00Z'),
     latitude: 48.1391144,
     longitude: 37.7370262,
@@ -936,7 +936,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Черная сотня',
+    title: 'Черна сотня',
     shooting_date: new Date('2020-04-01T00:00:00Z'),
     latitude: 48.1364878,
     longitude: 37.7339147,
@@ -951,7 +951,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Внутри ДК',
+    title: 'Усередині ПК',
     shooting_date: new Date('2021-03-01T00:00:00Z'),
     latitude: 48.124784,
     longitude: 37.7386483,
@@ -966,7 +966,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Внутри ДК 2',
+    title: 'Усередині ПК 2',
     shooting_date: new Date('2021-03-01T00:00:00Z'),
     latitude: 48.1247108,
     longitude: 37.7386674,
@@ -981,7 +981,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Библиотека ДК',
+    title: 'Бібліотека ПК',
     shooting_date: new Date('2021-03-01T00:00:00Z'),
     latitude: 48.1248729,
     longitude: 37.7386101,
@@ -996,7 +996,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Дк холл',
+    title: 'ПК холл',
     shooting_date: new Date('2021-03-01T00:00:00Z'),
     latitude: 48.1248702,
     longitude: 37.7384572,
@@ -1011,7 +1011,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Дк спортзал ринг',
+    title: 'ПК спортзал рінг',
     shooting_date: new Date('2021-03-01T00:00:00Z'),
     latitude: 48.1247348,
     longitude: 37.7378783,
@@ -1026,7 +1026,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Дк спортзал',
+    title: 'ПК спортзал',
     shooting_date: new Date('2021-03-01T00:00:00Z'),
     latitude: 48.1248579,
     longitude: 37.7379054,
@@ -1041,7 +1041,7 @@ const panoramasData = [
   },
   {
     user_id: 1,
-    title: 'Старый детский замок',
+    title: 'Старий дитячий замок',
     shooting_date: new Date('2020-06-01T00:00:00Z'),
     latitude: 48.1261406,
     longitude: 37.7380676,
