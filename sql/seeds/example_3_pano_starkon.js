@@ -184,10 +184,90 @@ const panoramasData = [
     image_width: 10000,
     image_height: 5000,
   },
+  {
+    user_id: 1,
+    title: 'Ринок',
+    shooting_date: new Date('2020-09-01T00:00:00Z'),
+    latitude: 49.7626107,
+    longitude: 27.2209805,
+    view_mode: '3a',
+    yaw: 75,
+    heading: 221.96,
+    tilt: 74.82,
+    pano_id: 'AF1QipNhFHFlv3JBPkNXWqEVGdvi4HkZjJve7XC6Pn_w',
+    thumbnail_url:
+      'https://lh5.googleusercontent.com/p/AF1QipNhFHFlv3JBPkNXWqEVGdvi4HkZjJve7XC6Pn_w=w900-h600-k-no-pi0-ya01.96-ro0-fo100',
+    image_width: 8704,
+    image_height: 4352,
+  },
+  {
+    user_id: 1,
+    title: 'Замок князів острожських 2',
+    shooting_date: new Date('2020-08-01T00:00:00Z'),
+    latitude: 49.7575932,
+    longitude: 27.2272535,
+    view_mode: '3a',
+    yaw: 75,
+    heading: 335.74,
+    tilt: 101.18,
+    pano_id: 'AF1QipMJZbXByUgKAWMam979VAo4-VpVgZjrDmFf79r8',
+    thumbnail_url:
+      'https://lh5.googleusercontent.com/p/AF1QipMJZbXByUgKAWMam979VAo4-VpVgZjrDmFf79r8=w900-h600-k-no-pi0-ya10.74-ro0-fo100',
+    image_width: 6144,
+    image_height: 3072,
+  },
+  {
+    user_id: 1,
+    title: 'Замок князів острожських 3',
+    shooting_date: new Date('2017-05-01T00:00:00Z'),
+    latitude: 49.7581367,
+    longitude: 27.226736,
+    view_mode: '3a',
+    yaw: 75,
+    heading: 129.03,
+    tilt: 90.32,
+    pano_id: 'AF1QipPuYW1nK56_NOjjKlE4AYj6HCRXQP6z6jjexSvA',
+    thumbnail_url:
+      'https://lh5.googleusercontent.com/p/AF1QipPuYW1nK56_NOjjKlE4AYj6HCRXQP6z6jjexSvA=w900-h600-k-no-pi0-ya90.03-ro0-fo100',
+    image_width: 8704,
+    image_height: 4352,
+  },
+  {
+    user_id: 1,
+    title: 'Церква біля базару',
+    shooting_date: new Date('2020-08-01T00:00:00Z'),
+    latitude: 49.7614823,
+    longitude: 27.2210449,
+    view_mode: '3a',
+    yaw: 75,
+    heading: 223.13,
+    tilt: 100.96,
+    pano_id: 'AF1QipMOM8blitfqgrfYSrGBRU9v1IO-KB-tjb8S933t',
+    thumbnail_url:
+      'https://lh5.googleusercontent.com/p/AF1QipMOM8blitfqgrfYSrGBRU9v1IO-KB-tjb8S933t=w900-h600-k-no-pi0-ya323.13-ro0-fo100',
+    image_width: 8704,
+    image_height: 4352,
+  },
+  {
+    user_id: 1,
+    title: 'Меморіал слави',
+    shooting_date: new Date('2020-08-01T00:00:00Z'),
+    latitude: 49.7553268,
+    longitude: 27.2095387,
+    view_mode: '3a',
+    yaw: 75,
+    heading: 334.15,
+    tilt: 101.05,
+    pano_id: 'AF1QipNn7JnI3jNQW1_dT7HMTAypwCtcvmjWPvTYINDu',
+    thumbnail_url:
+      'https://lh5.googleusercontent.com/p/AF1QipNn7JnI3jNQW1_dT7HMTAypwCtcvmjWPvTYINDu=w900-h600-k-no-pi0-ya20-ro0-fo100',
+    image_width: 10240,
+    image_height: 5120,
+  },
 ];
 
 export const seed = async (knex) => {
-  const seedExist = await knex('panoramas').select('*').where({ id: 70 });
+  const seedExist = await knex('panoramas').select('*').where({ id: 76 });
 
   if (!seedExist[0]) {
     const trx = await knex.transaction();
