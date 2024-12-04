@@ -86,6 +86,8 @@ export default {
         if (memoryIndex === -1) {
           acc.push({
             id: row.id,
+            source_type: row.source_type,
+            source_url: row.source_url,
             title: row.title,
             address: row.address,
             location: row.location,
