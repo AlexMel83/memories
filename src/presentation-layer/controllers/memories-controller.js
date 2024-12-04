@@ -4,6 +4,8 @@ import memoriesModel from '../../data-layer/models/memories-model.js';
 const queryMappings = {
   id: 'id',
   user_id: 'user_id',
+  sourceType: 'source_type',
+  sourceUrl: 'source_url',
   title: 'title',
   description: 'description',
   sortField: 'sort_field',

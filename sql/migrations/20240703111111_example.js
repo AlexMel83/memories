@@ -39,6 +39,8 @@ export const up = async (knex) => {
 
     await trx.schema.createTable('memories', (table) => {
       table.increments('id').primary().notNullable();
+      table.string('source_type', 100).nullable();
+      table.text('source_url').nullable();
       table.string('title', 100).notNullable();
       table.string('address').nullable();
       table.specificType('location', 'geography(POINT, 4326)').nullable();

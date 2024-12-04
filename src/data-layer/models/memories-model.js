@@ -2,7 +2,9 @@ import knex from './../../../config/knex.config.js';
 
 const memoriesTable = 'memories';
 const memoriesFields = [
-  'memories.id as memory_id',
+  'memories.id',
+  'memories.source_type',
+  'memories.source_url',
   'memories.title',
   'memories.address',
   'memories.location',
@@ -71,9 +73,7 @@ export default {
       }
 
       const groupedResult = result.reduce((acc, row) => {
-        const memoryIndex = acc.findIndex(
-          (memory) => memory.memory_id === row.memory_id,
-        );
+        const memoryIndex = acc.findIndex((memory) => memory.id === row.id);
 
         const photo = {
           id: row.photo_id,
@@ -85,7 +85,7 @@ export default {
 
         if (memoryIndex === -1) {
           acc.push({
-            memory_id: row.memory_id,
+            id: row.id,
             title: row.title,
             address: row.address,
             location: row.location,
@@ -103,6 +103,7 @@ export default {
             acc[memoryIndex].memory_photos.push(photo);
           }
         }
+
         return acc;
       }, []);
 

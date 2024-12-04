@@ -12,6 +12,8 @@ const validateQueryMemory = [
     .optional({ checkFalsy: true })
     .isNumeric()
     .withMessage('user_id is number'),
+  query('source_type').optional({ checkFalsy: true }).isString(),
+  query('source_url').optional({ checkFalsy: true }).isString(),
   query('title')
     .optional({ checkFalsy: true })
     .isString()
