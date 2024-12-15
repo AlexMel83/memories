@@ -110,6 +110,28 @@ export const up = async (knex) => {
       table.timestamp('created_at').defaultTo(knex.fn.now()).notNullable();
       table.timestamp('updated_at').defaultTo(knex.fn.now()).notNullable();
     });
+    await trx.schema.createTable('hashtags', (table) => {
+      table.increments('id').primary().notNullable();
+      table.string('name', 50).notNullable().unique();
+      table.timestamp('created_at').defaultTo(knex.fn.now()).notNullable();
+    });
+    await trx.schema.createTable('memory_hashtags', (table) => {
+      table.increments('id').primary().notNullable();
+      table
+        .integer('memory_id')
+        .notNullable()
+        .references('id')
+        .inTable('memories')
+        .onDelete('CASCADE');
+      table
+        .integer('hashtag_id')
+        .notNullable()
+        .references('id')
+        .inTable('hashtags')
+        .onDelete('CASCADE');
+      table.unique(['memory_id', 'hashtag_id']); // Уникальная пара memory_id + hashtag_id
+    });
+
     await trx.commit();
   } catch (error) {
     console.error(error);

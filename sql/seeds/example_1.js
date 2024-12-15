@@ -242,6 +242,16 @@ const memoryPhotosData = [
   },
 ];
 
+const hashtagsData = [
+  { name: 'культура' },
+  { name: 'мародери' },
+  { name: 'злочини' },
+];
+
+const memoryHashtagsData = [
+  // { memory_id: 7, hashtag_name: 'культура' },
+];
+
 export const seed = async (knex) => {
   const seedExist = await knex('users').select('*').where({ id: 1 });
 
@@ -252,6 +262,22 @@ export const seed = async (knex) => {
       await trx('users').insert(usersData);
       await trx('memories').insert(memoriesData);
       await trx('memory_photos').insert(memoryPhotosData);
+      for (const hashtag of hashtagsData) {
+        await trx('hashtags').insert(hashtag).onConflict('name').ignore();
+      }
+
+      for (const { memory_id, hashtag_name } of memoryHashtagsData) {
+        const [hashtag] = await trx('hashtags').where({ name: hashtag_name });
+        if (hashtag) {
+          await trx('memory_hashtags')
+            .insert({
+              memory_id,
+              hashtag_id: hashtag.id,
+            })
+            .onConflict(['memory_id', 'hashtag_id'])
+            .ignore();
+        }
+      }
 
       await trx.commit();
     } catch (error) {
