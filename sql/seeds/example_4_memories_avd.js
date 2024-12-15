@@ -59,33 +59,46 @@ const memoriesData = [
       user_id: 1,
       published: true,
     },
+    {
+      source_type: 'facebook',
+      source_url:
+        'https://www.facebook.com/100012226445753/videos/613483121126444/',
+      title: 'Авдіївська загальноосвітня школа І-ІІІ ступенів №7',
+      address:
+        'м. Авдіївка, Авдіївська загальноосвітня школа І-ІІІ ступенів №7',
+      location: 'SRID=4326;POINT(37.7351189 48.1330004)',
+      description:
+        'Росіянка приїхала в тимчасово окуповану Авдіївку МАРОДЕРИТИ',
+      user_id: 1,
+      published: true,
+    },
   ],
   memoryPhotosData = [
     {
-      memory_id: 7,
+      memory_id: 1,
       url: '/memoryimg/avd-narodniy-muzey.png',
     },
     {
-      memory_id: 10,
+      memory_id: 4,
       url: '/memoryimg/avd-shevchenko-1.jpg',
     },
     {
-      memory_id: 10,
+      memory_id: 4,
       url: '/memoryimg/avd-shevchenko-2.jpg',
     },
     {
-      memory_id: 10,
+      memory_id: 4,
       url: '/memoryimg/avd-shevchenko-3.jpg',
     },
   ];
 
 const memoryHashtagsData = [
-  { memory_id: 7, hashtag_name: 'культура' },
-  { memory_id: 8, hashtag_name: 'мародери' },
-  { memory_id: 8, hashtag_name: 'злочини' },
-  { memory_id: 9, hashtag_name: 'мародери' },
-  { memory_id: 9, hashtag_name: 'злочини' },
-  { memory_id: 10, hashtag_name: 'культура' },
+  { memory_id: 1, hashtag_name: 'культура' },
+  { memory_id: 2, hashtag_name: 'мародери' },
+  { memory_id: 2, hashtag_name: 'злочини' },
+  { memory_id: 3, hashtag_name: 'мародери' },
+  { memory_id: 3, hashtag_name: 'злочини' },
+  { memory_id: 4, hashtag_name: 'культура' },
 ];
 
 export const seed = async (knex) => {
