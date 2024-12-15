@@ -1,6 +1,8 @@
 import knex from './../../../config/knex.config.js';
 
 const memoriesTable = 'memories';
+const hashtagsTable = 'hashtags';
+const memoryHashtagsTable = 'memory_hashtags';
 const memoriesFields = [
   'memories.id',
   'memories.source_type',
@@ -55,8 +57,20 @@ export default {
           ...memoriesFields,
           knex.raw('ST_AsEWKT(location) as location'),
           ...memoryPhotosFields,
+          knex.raw('array_agg(h.name) as hashtags'),
         ])
-        .leftJoin('memory_photos as mp', 'mp.memory_id', 'memories.id');
+        .leftJoin('memory_photos as mp', 'mp.memory_id', 'memories.id')
+        .leftJoin(`${memoryHashtagsTable} as mh`, 'mh.memory_id', 'memories.id')
+        .leftJoin(`${hashtagsTable} as h`, 'h.id', 'mh.hashtag_id')
+        .groupBy([
+          'memories.id',
+          'mp.id',
+          'mp.memory_id',
+          'mp.url',
+          'mp.description',
+          'mp.created_at',
+          'mp.updated_at',
+        ]);
 
       for (const [key, value] of Object.entries(condition)) {
         const handler = conditionHandlers[key];
@@ -71,7 +85,6 @@ export default {
       if (!result.length) {
         return null;
       }
-
       const groupedResult = result.reduce((acc, row) => {
         const memoryIndex = acc.findIndex((memory) => memory.id === row.id);
 
@@ -99,6 +112,7 @@ export default {
             created_at: row.memory_created_at,
             updated_at: row.memory_updated_at,
             memory_photos: row.photo_id ? [photo] : [],
+            hashtags: row.hashtags ? row.hashtags.filter(Boolean) : [],
           });
         } else {
           if (row.photo_id) {
@@ -108,7 +122,6 @@ export default {
 
         return acc;
       }, []);
-
       return groupedResult;
     } catch (error) {
       console.error('Error fetching memories by condition:', error.message);
