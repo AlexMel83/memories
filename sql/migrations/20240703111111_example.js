@@ -56,7 +56,7 @@ export const up = async (knex) => {
       table.increments('id').primary().notNullable();
       table.integer('memory_id').notNullable();
       table.foreign('memory_id').references('memories.id').onDelete('CASCADE');
-      table.string('url', 255).notNullable().unique();
+      table.string('url', 255).notNullable();
       table.text('description').nullable();
       table.timestamp('created_at').defaultTo(knex.fn.now()).notNullable();
       table.timestamp('updated_at').defaultTo(knex.fn.now()).notNullable();
@@ -147,14 +147,16 @@ export const up = async (knex) => {
 export const down = async (knex) => {
   const trx = await knex.transaction();
   try {
-    await trx.schema.dropTableIfExists('session');
-    await trx.schema.dropTableIfExists('tokens');
+    await trx.schema.dropTableIfExists('memory_hashtags');
+    await trx.schema.dropTableIfExists('hashtags');
+    await trx.schema.dropTableIfExists('memory_photos');
     await trx.schema.dropTableIfExists('comments');
     await trx.schema.dropTableIfExists('favorite_memories');
-    await trx.schema.dropTableIfExists('memory_photos');
-    await trx.schema.dropTableIfExists('memories');
+    await trx.schema.dropTableIfExists('memories'); // Удаляем после зависимых таблиц
     await trx.schema.dropTableIfExists('panoramas');
+    await trx.schema.dropTableIfExists('tokens');
     await trx.schema.dropTableIfExists('users');
+    await trx.schema.dropTableIfExists('session');
     await trx.commit();
   } catch (error) {
     await trx.rollback();
