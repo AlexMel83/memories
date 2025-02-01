@@ -35,6 +35,8 @@ const server = http.createServer(app);
 
 const allowedOrigins = [
   ...(CLIENT_URL.split(',') || 'http://localhost:3000'),
+  'https://radavpo.starkon.pp.ua',
+  'https://devradavpo.starkon.pp.ua',
   'https://memory.pp.ua',
   'https://dev.memory.pp.ua',
   'http://localhost:8788',
