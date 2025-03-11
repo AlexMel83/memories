@@ -3,6 +3,7 @@ import authRouteInit from './auth.routes.js';
 import memoriesRouteInit from './memories.routes.js';
 import panoramasRouteInit from './panoramas.routes.js';
 import geoQueriesRouteInit from './geo-queries.routes.js';
+import intersectionRoutesInit from './intersection.routes.js';
 
 const routeInit = (app, express) => {
   app.use(express.urlencoded({ extended: true }));
@@ -12,6 +13,7 @@ const routeInit = (app, express) => {
   panoramasRouteInit(app);
   uploadsRouteInit(app);
   geoQueriesRouteInit(app);
+  intersectionRoutesInit(app);
 };
 
 export default routeInit;
