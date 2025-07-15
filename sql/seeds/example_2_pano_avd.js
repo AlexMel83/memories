@@ -288,7 +288,7 @@ const panoramasData = [
     heading: 260.19,
     tilt: 90.76,
     pano_id: 'AF1QipOIX6f_gPAKCxZUcDjvGH3Qr1gu_aCpv0TivNzj',
-    thumbnail_url: '/panoimg/Городская елка ДК.jpg',
+    thumbnail_url: '/panoimg/Miska yalynka DK.jpg',
     image_width: 900,
     image_height: 600,
   },
